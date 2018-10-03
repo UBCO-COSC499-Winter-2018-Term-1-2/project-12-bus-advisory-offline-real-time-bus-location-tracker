@@ -1,17 +1,17 @@
         Hours worked  team roles
-Kyle    6             Client Liason
+Kyle    6             Client Liaison
 Trevor  6             DevOps Lead
 Ini     6             Technical Lead
-Wasek   6             Project Manager
+Wasek   11             Product Manager
 Matt    6             Integration Lead
 
 Project 
 version control done with github
-prototyping done with balsamiq
-development tools android studio, atom, kontakt beacon api, linter
+Wireframing done with balsamiq
+development tools android studio, kontakt beacon api, maps API
 project management done with trello
 methodology scrumban
-CI tools Jenkins
+CI tools Jenkins/Travis
 Time Tracker toggl
 
 communications log
