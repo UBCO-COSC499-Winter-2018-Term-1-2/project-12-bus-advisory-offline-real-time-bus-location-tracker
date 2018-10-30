@@ -1,0 +1,4 @@
+1 h proofreading
+3 h use case diagram
+2 h meeting
+3 h usage scenarios
