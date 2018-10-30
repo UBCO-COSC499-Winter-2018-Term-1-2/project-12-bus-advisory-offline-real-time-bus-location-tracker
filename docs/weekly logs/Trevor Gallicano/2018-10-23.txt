@@ -1,0 +1,8 @@
+2 hrs - Proof read charter and presentation slides
+2 hrs - Finalize requirements on charter and slides
+.5 hrs - research Android permissions for functional requirements
+.5 hrs - Add beacon as actor on use case diagram
+1 hr - team meeting to go over design document
+5 min - create md file for scope and charter
+
+6 hrs Total
