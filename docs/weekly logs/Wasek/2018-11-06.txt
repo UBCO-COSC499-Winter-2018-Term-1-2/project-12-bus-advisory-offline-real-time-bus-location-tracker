@@ -1,0 +1,9 @@
+2 hrs - Database model design
+.5 hrs - review wire-frame
+1.5 hrs - Meeting with the team
+(1) Investigate into databases
+(1) Meeting and sync up with the engineering team lead
+(1.5) Meeting with the client
+(1.5) Technical Specifications
+(2) System Architecture Diagram
+(6) Investigate Kontakt.io beacon and its APIs
