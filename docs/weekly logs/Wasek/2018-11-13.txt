@@ -1,0 +1,7 @@
+(.5) API test plan
+(7) Prepare presentation slides
+(1) Finish project description and tech spec
+(1) NoSQL data model
+(.5) Client meeting
+(.5) Client communication
+(1.5) Team meeting

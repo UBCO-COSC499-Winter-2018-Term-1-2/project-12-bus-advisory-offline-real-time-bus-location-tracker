@@ -1,0 +1,4 @@
+1 hr - Team Meeting
+4 hr - Detailed test plan
+2 hr - Selecting CI solution.  For real this is the last time
+5 min. - Making MD file of design document
