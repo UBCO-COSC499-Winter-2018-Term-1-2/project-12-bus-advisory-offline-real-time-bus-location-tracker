@@ -1,0 +1,7 @@
+(2) Investigate Kontakt.io API responses and submit ticket
+(4) Review client proposed solution and modify COSC team's existing solution
+(.5) client communication
+(2) Tutorial
+(1.5) Meeting with the team
+
+Total : 10 hours
