@@ -1,0 +1,6 @@
+3.5 hrs - Install Jenkins and set up initial plug-ins and tools
+5.5 hrs - Finishing detailed testing plan
+1.5 hrs - Write presentation slides for testing
+.5 hrs  - Proofread/practice design and testing presentation
+
+11 hrs Total

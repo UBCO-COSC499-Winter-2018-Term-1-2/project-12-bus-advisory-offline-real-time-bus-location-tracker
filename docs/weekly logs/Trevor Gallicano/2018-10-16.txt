@@ -1,0 +1,5 @@
+1 hr - Functional requirements
+1.5 hrs - Use case diagram
+.5 hrs - Fill in work breakdown table
+1 hr - Meeting with engineering team
+.5 hrs - Updated non-functional requirements

@@ -1,0 +1,11 @@
+state diagram - 2
+wireframe review - .5
+client meeting 1 - .5
+client meeting 2 - 1
+ER diagram - 1.5
+group meeting - 1.5
+client communication - 1
+
+Total - 8 hours
+
+

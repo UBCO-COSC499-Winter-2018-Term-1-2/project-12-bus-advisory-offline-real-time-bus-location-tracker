@@ -1,0 +1,8 @@
+.5 hrs - review paper prototype
+1 hr - Review wireframing 
+1 hr - Client meeting to go over charter, design document, and schedule
+3 hrs - Research difficulty of incorporating Docker, Espresso, and Jenkins for project
+	(Conclusion: we will be using Espresso and Jenkins, but we will not be using Docker)
+3 hrs - Research CI solution (Jenkins)
+
+8.5 hrs Total
