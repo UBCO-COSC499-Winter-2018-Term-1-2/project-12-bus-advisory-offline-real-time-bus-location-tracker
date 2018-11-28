@@ -1,0 +1,5 @@
+3.5 hrs - Install Jenkins and set up initial plug-ins and tools
+5 hrs - Investigate tech stack (Android Studio/Esspresso/Jenkins)
+1 hr - Team meeting/planning
+
+9.5 hrs Total

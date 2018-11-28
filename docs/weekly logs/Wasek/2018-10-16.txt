@@ -1,0 +1,9 @@
+1 hr - Technical reqs
+1 hr - Scope statement/soft description
+1 hr - Out of scope
+2 hrs - Assumption 
+1 hour - Environmental constraint
+.5 hour - WBS
+1 hr - Polishing project workflow and methodologies, research Trello power ups
+1 hr - Meeting with the engineering team
+1 hr - Meeting with the team

@@ -1,0 +1,7 @@
+Tutorial - 2
+Client Comms - 2
+Logging - .5
+User groups - .5
+Meeting - 1
+
+Total - 6 hours
