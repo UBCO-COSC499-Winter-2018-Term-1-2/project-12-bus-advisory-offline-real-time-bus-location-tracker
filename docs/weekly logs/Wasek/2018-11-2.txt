@@ -1,0 +1,6 @@
+(1) Review functional and non-functional reqs based on new scope
+(4) Client communication and system design review
+(2) Meeting with the team
+(1) set up project, code review, and test
+
+Total : 8 hours
