@@ -51,6 +51,10 @@ public class MapActivityTest {
 
     }
     @Test
+    public void mapExists() {
+        onView(withId(R.id.mapfragment)).noActivity();
+    }
+    @Test
     public void mapTracks() {
         onView(withId(R.id.BusList)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("97 south"))).perform(click());
@@ -62,10 +66,7 @@ public class MapActivityTest {
         assertEquals(buslocationv2, 0.0, 0);
 
     }
-    @Test
-    public void mapTracks() {
-        onView(withId(R.id.mapfragment)).noActivity();
-    }
+
 
 
 
