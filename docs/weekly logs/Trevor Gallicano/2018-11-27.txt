@@ -1,0 +1,6 @@
+2 hr - Test Report
+1 hr - Team Meeting
+1 hr - Create IAM user for AWS
+4 hr - Update detailed test plan
+
+8 hr Total
