@@ -26,6 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".PushNotification" android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"></action>
+            </intent-filter>
+        </service>
 
         <meta-data android:name="com.here.android.maps.appid" android:value="dD1OxygyrEQKuSQKRAmp"/>
         <meta-data android:name="com.here.android.maps.apptoken" android:value="aBi_FliT9aqEBJ6DDZOLMA"/>
