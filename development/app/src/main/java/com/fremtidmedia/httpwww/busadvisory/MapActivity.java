@@ -82,9 +82,15 @@ public class MapActivity extends Activity {
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
+
             @Override
             public void onLocationChanged(Location location) {
-                Toast.makeText(MapActivity.this, location.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapActivity.this, Double.toString(location.getLatitude()) + ", " + Double.toString(location.getLongitude()) , Toast.LENGTH_SHORT).show();
+
+                //Active tracking code being worked on:
+                //map = mapFragment.getMap();
+                // map.setCenter(new GeoCoordinate(location.getLatitude(),location.getLongitude()), Map.Animation.NONE);
+                //createMapMarker();
             }
 
             @Override
@@ -127,9 +133,11 @@ public class MapActivity extends Activity {
                 if (error == OnEngineInitListener.Error.NONE) {
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
-                    map.setCenter(new GeoCoordinate(49.196261, -123.004773, 0.0),
+                    Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    map.setCenter(new GeoCoordinate(loc.getLatitude(), loc.getLongitude(), 0.0),
                             Map.Animation.NONE);
                     createMapMarker();
+
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
                 } else {
