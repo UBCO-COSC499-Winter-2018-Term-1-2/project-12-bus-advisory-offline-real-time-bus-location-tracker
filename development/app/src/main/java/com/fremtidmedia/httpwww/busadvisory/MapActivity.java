@@ -18,6 +18,7 @@ import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
+import com.kontakt.sdk.android.common.KontaktSDK;
 
 public class MapActivity extends Activity {
 
@@ -49,6 +50,7 @@ public class MapActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialize();
+        KontaktSDK.initialize("zwPcatzTlLvusdiKXJKImhTqqhVbAJyN");
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -103,5 +105,9 @@ public class MapActivity extends Activity {
                 }
             }
         });
+    }
+
+    private void kontaktDetect() {
+
     }
 }
