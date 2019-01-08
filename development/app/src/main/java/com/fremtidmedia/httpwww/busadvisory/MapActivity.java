@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.here.android.mpa.common.GeoCoordinate;
@@ -20,6 +22,21 @@ import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
 
 public class MapActivity extends Activity {
+
+    public void clickTrack(View views) {
+
+        Log.i("Info", "TRACK pressed");
+    }
+
+    public void clickBusNum(View views) {
+
+        Log.i("Info", "BusNum pressed");
+    }
+
+    public void clickExit(View views) {
+
+        Log.i("Info", "clickExit pressed");
+    }
 
     LocationManager locationManager;
     LocationListener locationListener;
