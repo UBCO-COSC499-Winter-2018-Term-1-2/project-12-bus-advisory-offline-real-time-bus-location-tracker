@@ -12,17 +12,28 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.here.android.mpa.common.GeoCoordinate;
+import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
+import com.here.android.mpa.common.PositioningManager;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
+import com.here.android.mpa.common.GeoPosition;
+import com.here.android.mpa.mapping.MapMarker;
+import com.here.android.mpa.mapping.MapState;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 public class MapActivity extends Activity {
 
     LocationManager locationManager;
     LocationListener locationListener;
+    // positioning manager instance
+    private PositioningManager posManager;
 
     // map embedded in the map fragment
     private Map map = null;
@@ -30,7 +41,26 @@ public class MapActivity extends Activity {
     // map fragment embedded in this activity
     private MapFragment mapFragment = null;
 
-    //
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (posManager != null) {
+            posManager.stop();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (posManager!= null) {
+            posManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
+        }
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -48,13 +78,19 @@ public class MapActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initialize();
+
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
+
             @Override
             public void onLocationChanged(Location location) {
-                Toast.makeText(MapActivity.this, location.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapActivity.this, Double.toString(location.getLatitude()) + ", " + Double.toString(location.getLongitude()) , Toast.LENGTH_SHORT).show();
+
+                //Active tracking code being worked on:
+                //map = mapFragment.getMap();
+                // map.setCenter(new GeoCoordinate(location.getLatitude(),location.getLongitude()), Map.Animation.NONE);
+                //createMapMarker();
             }
 
             @Override
@@ -80,13 +116,14 @@ public class MapActivity extends Activity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+                initialize();
             }
         }
+
     }
 
     private void initialize() {
         setContentView(R.layout.activity_map);
-
         // Search for the map fragment to finish setup by calling init().
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
 
@@ -96,9 +133,11 @@ public class MapActivity extends Activity {
                 if (error == OnEngineInitListener.Error.NONE) {
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
-                    // Set the map center to the Vancouver region (no animation)
-                    map.setCenter(new GeoCoordinate(49.196261, -123.004773, 0.0),
+                    Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    map.setCenter(new GeoCoordinate(loc.getLatitude(), loc.getLongitude(), 0.0),
                             Map.Animation.NONE);
+                    createMapMarker();
+
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
                 } else {
@@ -106,5 +145,17 @@ public class MapActivity extends Activity {
                 }
             }
         });
+    }
+
+    private void createMapMarker() {
+        Image marker_img = new Image();
+        try {
+            marker_img.setImageResource(R.drawable.iconfinder_map_marker_299087);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        map = mapFragment.getMap();
+        MapMarker marker = new MapMarker(map.getCenter(), marker_img);
+        map.addMapObject(marker);
     }
 }
