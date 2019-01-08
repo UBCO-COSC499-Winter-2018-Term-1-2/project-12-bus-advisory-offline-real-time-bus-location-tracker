@@ -56,7 +56,30 @@ public class MapActivity extends Activity {
     // map fragment embedded in this activity
     private MapFragment mapFragment = null;
 
+<<<<<<< HEAD
     //
+=======
+
+
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        if (posManager != null) {
+//            posManager.stop();
+//        }
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (posManager!= null) {
+//            posManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
+//        }
+//    }
+
+
+>>>>>>> parent of 72ae531... Revert "Update MapActivity.java"
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -150,4 +173,19 @@ public class MapActivity extends Activity {
             }
         };
     }
+<<<<<<< HEAD
+=======
+
+    private void createMapMarker() {
+        Image marker_img = new Image();
+        try {
+            marker_img.setImageResource(R.drawable.iconfinder_map_marker_299087);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        map = mapFragment.getMap();
+        MapMarker marker = new MapMarker(map.getCenter(), marker_img);
+        map.addMapObject(marker);
+    }
+>>>>>>> parent of 72ae531... Revert "Update MapActivity.java"
 }
