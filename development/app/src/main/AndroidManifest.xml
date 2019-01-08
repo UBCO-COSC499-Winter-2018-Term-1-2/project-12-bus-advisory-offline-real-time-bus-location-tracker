@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +17,8 @@
         android:hardwareAccelerated="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name="com.kontakt.sdk.android.ble.service.ProximityService" android:exported="false"/>
+
         <activity android:name=".MapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".PushNotification" android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"></action>
+            </intent-filter>
+        </service>
 
         <meta-data android:name="com.here.android.maps.appid" android:value="5l54EcRzl4oWAIxN6kjj"/>
         <meta-data android:name="com.here.android.maps.apptoken" android:value="P9BeNy0QddoPow_bGdKBSw"/>

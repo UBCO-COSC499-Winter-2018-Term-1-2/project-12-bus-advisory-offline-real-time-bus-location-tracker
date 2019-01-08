@@ -13,8 +13,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
@@ -27,13 +31,17 @@ import com.here.android.mpa.mapping.MapState;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
+import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
+import com.kontakt.sdk.android.common.KontaktSDK;
+import com.kontakt.sdk.android.common.profile.IBeaconDevice;
+import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
 public class MapActivity extends Activity {
 
     LocationManager locationManager;
     LocationListener locationListener;
-    // positioning manager instance
-    private PositioningManager posManager;
+    IBeaconDevice searchBeacon;
 
     // map embedded in the map fragment
     private Map map = null;
@@ -78,6 +86,15 @@ public class MapActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                Log.e("This Token", newToken);
+            }
+        });
+        initialize();
+        KontaktSDK.initialize("zwPcatzTlLvusdiKXJKImhTqqhVbAJyN");
 
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -109,9 +126,7 @@ public class MapActivity extends Activity {
             }
         };
 
-        if (Build.VERSION.SDK_INT < 23) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        }   else {
+
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
@@ -157,5 +172,14 @@ public class MapActivity extends Activity {
         map = mapFragment.getMap();
         MapMarker marker = new MapMarker(map.getCenter(), marker_img);
         map.addMapObject(marker);
+    private void kontaktDetect() {
+        IBeaconListener iBeaconListener = new SimpleIBeaconListener() {
+            @Override
+            public void onIBeaconDiscovered(IBeaconDevice ibeacon, IBeaconRegion region) {
+                if(ibeacon.equals(searchBeacon)){
+
+                }
+            }
+        };
     }
 }
