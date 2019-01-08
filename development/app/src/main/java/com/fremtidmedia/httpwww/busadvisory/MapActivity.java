@@ -68,21 +68,21 @@ public class MapActivity extends Activity {
 
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (posManager != null) {
-            posManager.stop();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (posManager!= null) {
-            posManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
-        }
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        if (posManager != null) {
+//            posManager.stop();
+//        }
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (posManager!= null) {
+//            posManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
+//        }
+//    }
 
 
     @Override
@@ -186,7 +186,7 @@ public class MapActivity extends Activity {
             }
         };
     }
-}
+
     private void createMapMarker() {
         Image marker_img = new Image();
         try {
