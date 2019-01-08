@@ -35,35 +35,24 @@
     <option name="height" value="1000" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="ProjectPane">
+      <pane id="AndroidView">
         <subPane>
           <expand>
             <path>
-              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
-              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
-              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
-              <item name="development" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
-              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
-              <item name="development" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="1abcf292:AndroidViewProjectNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="e9137016:NonAndroidModuleNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="AndroidView" />
+      <pane id="ProjectPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
