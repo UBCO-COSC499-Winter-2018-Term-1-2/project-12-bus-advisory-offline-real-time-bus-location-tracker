@@ -32,8 +32,9 @@
             </intent-filter>
         </service>
 
-        <meta-data android:name="com.here.android.maps.appid" android:value="dD1OxygyrEQKuSQKRAmp"/>
-        <meta-data android:name="com.here.android.maps.apptoken" android:value="aBi_FliT9aqEBJ6DDZOLMA"/>
+        <meta-data android:name="com.here.android.maps.appid" android:value="5l54EcRzl4oWAIxN6kjj"/>
+        <meta-data android:name="com.here.android.maps.apptoken" android:value="P9BeNy0QddoPow_bGdKBSw"/>
+        <meta-data android:name="com.here.android.maps.license.key" android:value="QVtf+AV5oz3CVuT8d9dZhWWiwkT7gvbUrHpxmjbswFqXkm+BwH9PlMxw2Bct2zf51zeX5DcMSq8B7Hlfqc4ZzM+HOTwXrmLPof1nCYApLAMEJX3bDhAj1AD7Bc10Ea7hvyrGM/nYjs5C0fa1e6AZCM8rKbMaa+3ihCuga6nB5Y3UameIfVUyrf36OiF2dH30UMPrSetjo4Y1Zv7iXvcuEtLASo6DTsC1HZtnnrk/rhbF2SaWKyVRerLHKlRwTgMYYl90pNDARcIdTIM0QDbnKQIFaCPPkeMPMJL29aSUeDtKZDOznkEELqwLZmPt6Sbw+MzkftialAWGD1gxpAybdcX5iludGg8CmnUlsKf8zZfBSuhR51k4OyagGsfWbKZDXg+7xnu5wwIDIl7K3FvQN8ZrfR3zHiCv1B+IiP9s9HOOEJo0toa3XrAU0UjVuVkP2v/glDAQ5ES+YGNCBttw6kth+Yp1moYVr8kw2Bl31yeVeDBNOngguXItwJGFbNg4VunvOPPLeLE3CjZVtTh+vRNX2jCwtrQtuPtOxujrY1gKxe4Gqt3AVGFL3QUgQUyZL35XW15XZ9gUa5E6OceKOPZZxKqgBsAQJ2Dq9alQxuUBHsl9HrZzt4oJIOeGDmTYnXTmaEXL+V+G8sRBLpCG2kbyiQtAB9R5zHBsKc2bVWk="/>
     </application>
 
 </manifest>
