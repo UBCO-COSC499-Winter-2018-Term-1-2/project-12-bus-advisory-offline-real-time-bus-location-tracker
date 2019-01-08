@@ -42,7 +42,7 @@ public class MapActivity extends Activity {
     private MapFragment mapFragment = null;
 
 
-
+//
 
     @Override
     protected void onPause() {
