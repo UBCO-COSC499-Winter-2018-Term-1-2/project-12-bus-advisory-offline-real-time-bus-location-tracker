@@ -96,6 +96,7 @@ public class MapActivity extends Activity {
         });
         initialize();
         KontaktSDK.initialize("zwPcatzTlLvusdiKXJKImhTqqhVbAJyN");
+        kontaktDetect();
 
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -103,7 +104,7 @@ public class MapActivity extends Activity {
 
             @Override
             public void onLocationChanged(Location location) {
-                Toast.makeText(MapActivity.this, Double.toString(location.getLatitude()) + ", " + Double.toString(location.getLongitude()) , Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MapActivity.this, Double.toString(location.getLatitude()) + ", " + Double.toString(location.getLongitude()) , Toast.LENGTH_SHORT).show();
 
                 //Active tracking code being worked on:
                 //map = mapFragment.getMap();
@@ -179,6 +180,7 @@ public class MapActivity extends Activity {
         IBeaconListener iBeaconListener = new SimpleIBeaconListener() {
             @Override
             public void onIBeaconDiscovered(IBeaconDevice ibeacon, IBeaconRegion region) {
+                Log.e("beacon", ibeacon.toString());
                 if(ibeacon.equals(searchBeacon)){
 
                 }
