@@ -1,5 +1,8 @@
 package com.fremtidmedia.httpwww.busadvisory;
 
+import android.location.Location;
+import android.location.LocationManager;
+
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.filters.LargeTest;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
@@ -51,17 +54,37 @@ public class MapActivityTest {
 //        assertEquals(buslocationv2, 0.0, 0);
 //
 //    }
-    @Test
-    public void listShowsStuff() {
-        onView(withId(R.id.BusList)).perform(click()).check(matches(withText("97")));
-    }
-    @Test
-    public void listExpands() {
-        onView(withId(R.id.BusList)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is("97 south"))).perform(click());
-        onView(withId(R.id.BusList))
-                .check(matches(withText(containsString("97 south"))));
+ //   @Test
+  //  public void listShowsStuff() {
+    //    onView(withId(R.id.BusList)).perform(click()).check(matches(withText("97")));
+   // }
+    //@Test
+    //public void listExpands() {
+      //  onView(withId(R.id.BusList)).perform(click());
+        ////onData(allOf(is(instanceOf(String.class)), is("97 south"))).perform(click());
+        //onView(withId(R.id.BusList))
+          //      .check(matches(withText(containsString("97 south"))));
 
+    //}
+
+    @Test
+    public void longCorrect() {
+        startTest();
+        Double lon = startTest().getLongitude();
+        assertTrue((119.4960) > (lon - 1.0) && (119.4960) < (lon + 1.0));
+    }
+
+    @Test
+    public void latCorrect() {
+        startTest();
+        Double lat = startTest().getLatitude();
+        assertTrue((49.8880) > (lat - 1.0) && (49.8880) < (lat + 1.0));
+    }
+
+    public Location startTest(){
+        MapActivity testMap = new MapActivity();
+        Location loc = testMap.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        return loc;
     }
 
 

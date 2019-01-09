@@ -30,8 +30,8 @@ import java.lang.ref.WeakReference;
 
 public class MapActivity extends Activity {
 
-    LocationManager locationManager;
-    LocationListener locationListener;
+    public LocationManager locationManager;
+    public LocationListener locationListener;
     // positioning manager instance
     private PositioningManager posManager;
 
