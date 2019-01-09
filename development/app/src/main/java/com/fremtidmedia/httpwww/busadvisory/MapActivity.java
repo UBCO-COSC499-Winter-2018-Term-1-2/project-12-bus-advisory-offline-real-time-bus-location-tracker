@@ -52,21 +52,6 @@ public class MapActivity extends Activity {
 
 //
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (posManager != null) {
-            posManager.stop();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (posManager!= null) {
-            posManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
-        }
-    }
 
 
     @Override
@@ -131,11 +116,10 @@ public class MapActivity extends Activity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
-                initialize();
             }
         }
 
-    }
+
 
     private void initialize() {
         setContentView(R.layout.activity_map);
@@ -172,6 +156,9 @@ public class MapActivity extends Activity {
         map = mapFragment.getMap();
         MapMarker marker = new MapMarker(map.getCenter(), marker_img);
         map.addMapObject(marker);
+
+    }
+
     private void kontaktDetect() {
         IBeaconListener iBeaconListener = new SimpleIBeaconListener() {
             @Override
