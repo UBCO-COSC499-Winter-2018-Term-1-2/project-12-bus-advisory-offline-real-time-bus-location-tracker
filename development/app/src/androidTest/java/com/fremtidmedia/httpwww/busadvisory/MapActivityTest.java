@@ -1,5 +1,8 @@
 package com.fremtidmedia.httpwww.busadvisory;
 
+import android.location.Location;
+import android.location.LocationManager;
+
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.filters.LargeTest;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
@@ -64,8 +67,27 @@ public class MapActivityTest {
 
     }
 
+    @Test
+    public void longCorrect() {
+        startTest();
+        Double lon = startTest().getLongitude();
+        assertTrue((119.4960) > (lon - 1.0) && (119.4960) < (lon + 1.0));
+    }
 
+    @Test
+    public void latCorrect() {
+        startTest();
+        Double lat = startTest().getLatitude();
+        assertTrue((49.8880) > (lat - 1.0) && (49.8880) < (lat + 1.0));
+    }
 
+    @Test
+    public Location startTest() {
+        MapActivity testMap = new MapActivity();
+        Location loc = testMap.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        return loc;
+
+    }
 
 
 }
