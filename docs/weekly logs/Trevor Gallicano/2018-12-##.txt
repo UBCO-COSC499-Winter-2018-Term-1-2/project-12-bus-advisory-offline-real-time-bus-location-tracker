@@ -1,0 +1,14 @@
+Log for December 2018
+
+8hrs - Set up AWS
+	-Create IAM user
+	-Create key pair for EC2
+	-Create VPC
+	-Modify security group on EC2
+	-Create web server on EC2
+5hrs - Configure Jenkins on AWS
+	-Ensure EC2 server uses the correct version of Java
+	-Install Jenkins and required libraries
+	-Set initial Jenkins admin information
+	-Create Jenkins Job
+2hrs - Documentation and Testing
