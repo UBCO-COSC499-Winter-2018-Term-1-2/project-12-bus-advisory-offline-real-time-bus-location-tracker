@@ -2,9 +2,10 @@
   "name": "rest-apis",
   "version": "1.0.0",
   "description": "",
-  "main": "handler.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/*.test.js",
+    "test-watch": "nodemon --exec 'npm test'"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,10 @@
     "serverless-http": "^1.8.0"
   },
   "devDependencies": {
-    "serverless-offline": "^3.31.3"
+    "expect": "^23.6.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.9",
+    "serverless-offline": "^3.31.3",
+    "supertest": "^3.3.0"
   }
 }

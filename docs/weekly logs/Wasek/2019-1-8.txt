@@ -1,0 +1,6 @@
+(4) Create /POST API to get beacon information from the app
+(3) Setup test environment and Test /POST/Triggers API
+(12) Investigate into AWS DynamoDB/NoSQL, Serverless technologies (AWS API Gateway, lambda, etc)
+(4) Setup MongoDB and connect with node
+(5) Meeting and documentation
+Total : 28 hours

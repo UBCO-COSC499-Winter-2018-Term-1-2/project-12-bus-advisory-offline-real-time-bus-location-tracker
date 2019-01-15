@@ -2,9 +2,7 @@ var mongoose = require('mongoose');
 
 var Trigger = mongoose.model('Trigger', {
     userId: {
-        type: String,
-        trim: true,
-        minlength: 1
+        type: String
     },
     tripId: {
         type: Number
