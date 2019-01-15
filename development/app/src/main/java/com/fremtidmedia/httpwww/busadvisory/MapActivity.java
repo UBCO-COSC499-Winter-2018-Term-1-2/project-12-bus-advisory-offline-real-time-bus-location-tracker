@@ -24,19 +24,26 @@ import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.common.PositioningManager;
+import com.here.android.mpa.common.ViewObject;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.mapping.MapMarker;
+import com.here.android.mpa.mapping.MapObject;
 import com.here.android.mpa.mapping.MapState;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
 import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
+
+import static com.here.android.mpa.internal.r.H;
 
 public class MapActivity extends Activity {
 
@@ -65,6 +72,8 @@ public class MapActivity extends Activity {
     // map fragment embedded in this activity
     private MapFragment mapFragment = null;
 
+    List<MapObject> objList = new ArrayList<>();
+
 
 //
 
@@ -78,7 +87,7 @@ public class MapActivity extends Activity {
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 0, locationListener);
                 }
             }
         }
@@ -87,6 +96,7 @@ public class MapActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_map);
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
@@ -104,6 +114,7 @@ public class MapActivity extends Activity {
 
             @Override
             public void onLocationChanged(Location location) {
+                initialize();
 //                Toast.makeText(MapActivity.this, Double.toString(location.getLatitude()) + ", " + Double.toString(location.getLongitude()) , Toast.LENGTH_SHORT).show();
 
                 //Active tracking code being worked on:
@@ -139,7 +150,6 @@ public class MapActivity extends Activity {
 
 
     private void initialize() {
-        setContentView(R.layout.activity_map);
         // Search for the map fragment to finish setup by calling init().
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
 
@@ -149,6 +159,7 @@ public class MapActivity extends Activity {
                 if (error == OnEngineInitListener.Error.NONE) {
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
+                    map.removeMapObjects(objList);
                     Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     map.setCenter(new GeoCoordinate(loc.getLatitude(), loc.getLongitude(), 0.0),
                             Map.Animation.NONE);
@@ -163,7 +174,7 @@ public class MapActivity extends Activity {
         });
     }
 
-    private void createMapMarker() {
+    public void createMapMarker() {
         Image marker_img = new Image();
         try {
             marker_img.setImageResource(R.drawable.iconfinder_map_marker_299087);
@@ -171,7 +182,9 @@ public class MapActivity extends Activity {
             e.printStackTrace();
         }
         map = mapFragment.getMap();
+
         MapMarker marker = new MapMarker(map.getCenter(), marker_img);
+        objList.add(marker);
         map.addMapObject(marker);
 
     }
