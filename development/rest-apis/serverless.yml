@@ -11,19 +11,24 @@
 #
 # Happy Coding!
 
-service: ubco-busadvisor # NOTE: update this with your service name
+service: ubco-busadvisor-rest-apis # NOTE: update this with your service name
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
+
+custom:
+  serverless-offline:
+#    httpsProtocol: "dev-certs"
+    port: 4000
 
 provider:
   name: aws
   runtime: nodejs8.10
 
 # you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+  stage: dev
+  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -55,8 +60,8 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: app.handler
+  app:
+    handler: index.handler
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
@@ -65,9 +70,17 @@ functions:
 #      - http:
 #          path: users/create
 #          method: get
-events:
-    - http: ANY /
-    - http: 'ANY {proxy+}'
+    events:
+        - http: ANY /
+        - http: 'ANY {proxy+}'
+#        - http:
+#          path: /
+#          method: ANY
+#          cors: true
+#        - http:
+#          path: /{proxy+}
+#          method: ANY
+#          cors: true
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic

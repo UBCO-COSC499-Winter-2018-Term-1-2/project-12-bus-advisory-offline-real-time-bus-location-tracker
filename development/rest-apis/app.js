@@ -1,4 +1,5 @@
 //var serverless = require('serverless-http');
+var cors = require("cors");
 //var express = require('express');
 //var app = express();
 //
@@ -16,6 +17,11 @@ var {Trigger} = require('./models/trigger');
 
 var app = express();
 
+app.use(cors());
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(bodyParser.json());
 
 app.post('/triggers', (req, res) => {
@@ -32,8 +38,10 @@ app.post('/triggers', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('Started on port 3000');
-});
-
+//app.listen(3000, () => {
+//    console.log('Started on port 3000');
+//});
+//
 module.exports = {app};
+
+//module.exports.handler = serverless(app);
