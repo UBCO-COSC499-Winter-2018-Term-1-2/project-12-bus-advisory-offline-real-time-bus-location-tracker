@@ -1,0 +1,6 @@
+Group meetings and communication - 2
+Live location tracking - 4
+Code cleanup - 1
+Client communication - 1
+
+total - 8
