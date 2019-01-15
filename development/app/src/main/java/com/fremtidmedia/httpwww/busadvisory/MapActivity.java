@@ -47,6 +47,7 @@ import static com.here.android.mpa.internal.r.H;
 
 public class MapActivity extends Activity {
 
+
     public void clickTrack(View views) {
 
         Log.i("Info", "TRACK pressed");
@@ -104,7 +105,6 @@ public class MapActivity extends Activity {
                 Log.e("This Token", newToken);
             }
         });
-        initialize();
         KontaktSDK.initialize("zwPcatzTlLvusdiKXJKImhTqqhVbAJyN");
         kontaktDetect();
 
@@ -115,12 +115,7 @@ public class MapActivity extends Activity {
             @Override
             public void onLocationChanged(Location location) {
                 initialize();
-//                Toast.makeText(MapActivity.this, Double.toString(location.getLatitude()) + ", " + Double.toString(location.getLongitude()) , Toast.LENGTH_SHORT).show();
 
-                //Active tracking code being worked on:
-                //map = mapFragment.getMap();
-                // map.setCenter(new GeoCoordinate(location.getLatitude(),location.getLongitude()), Map.Animation.NONE);
-                //createMapMarker();
             }
 
             @Override
@@ -143,12 +138,12 @@ public class MapActivity extends Activity {
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,2,0,locationListener);
             }
         }
 
 
-
+// creates map marker at users location and centers map on that location
     private void initialize() {
         // Search for the map fragment to finish setup by calling init().
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
@@ -160,10 +155,8 @@ public class MapActivity extends Activity {
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
                     map.removeMapObjects(objList);
-                    Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    map.setCenter(new GeoCoordinate(loc.getLatitude(), loc.getLongitude(), 0.0),
-                            Map.Animation.NONE);
-                    createMapMarker();
+                    userLocation();
+                    createMapMarker(userLocation());
 
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
@@ -174,19 +167,32 @@ public class MapActivity extends Activity {
         });
     }
 
-    public void createMapMarker() {
+    public void createMapMarker(Location loc) {
         Image marker_img = new Image();
         try {
             marker_img.setImageResource(R.drawable.iconfinder_map_marker_299087);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        map.getCenter();
         map = mapFragment.getMap();
-
-        MapMarker marker = new MapMarker(map.getCenter(), marker_img);
+        MapMarker marker = new MapMarker(new GeoCoordinate(loc.getLatitude(),loc.getLongitude()), marker_img);
         objList.add(marker);
         map.addMapObject(marker);
 
+    }
+
+    private Location userLocation() {
+        Location loc = null;
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+             loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+             map.setCenter(new GeoCoordinate(loc.getLatitude(), loc.getLongitude(), 0.0),
+                    Map.Animation.NONE);
+        }
+
+        return loc;
     }
 
     private void kontaktDetect() {
