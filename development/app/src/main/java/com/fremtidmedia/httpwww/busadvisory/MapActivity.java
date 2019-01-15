@@ -3,6 +3,7 @@ package com.fremtidmedia.httpwww.busadvisory;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.widget.Button;
 import android.widget.TextView;
 import android.util.Log;
 import android.view.View;
@@ -47,6 +49,9 @@ import static com.here.android.mpa.internal.r.H;
 
 public class MapActivity extends Activity {
 
+// Buttons
+
+    Button exitButton;
 
     public void clickTrack(View views) {
 
@@ -56,12 +61,23 @@ public class MapActivity extends Activity {
     public void clickBusNum(View views) {
 
         Log.i("Info", "BusNum pressed");
+
+        exitButton.setVisibility(View.VISIBLE);
+
+        // NEW ACTIVITY METHOD
+       // Intent intent = new Intent(this, );
+        //startActivity(intent);
+       // openBusNumAc();
     }
 
     public void clickExit(View views) {
 
         Log.i("Info", "clickExit pressed");
+
+        exitButton.setVisibility(View.INVISIBLE);
     }
+
+    // Button methods
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -140,6 +156,11 @@ public class MapActivity extends Activity {
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,2,0,locationListener);
             }
+
+
+        //Buttons
+        exitButton = findViewById(R.id.exit_button);
+            exitButton.setVisibility(View.INVISIBLE);
         }
 
 
