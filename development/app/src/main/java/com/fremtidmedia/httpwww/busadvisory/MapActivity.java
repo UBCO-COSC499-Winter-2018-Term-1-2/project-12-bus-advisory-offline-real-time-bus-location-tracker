@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -52,10 +53,34 @@ public class MapActivity extends Activity {
 // Buttons
 
     Button exitButton;
+   // Button trackButton;
+    Button fiveButton;
+    Button tenButton;
+    Button fifteenButton;
+    Button okButton;
+
+// TextView
+
+    TextView ETAmenu;
+
 
     public void clickTrack(View views) {
 
         Log.i("Info", "TRACK pressed");
+
+
+        // Making the ETA menu visible
+        fiveButton.setVisibility(View.VISIBLE);
+
+        tenButton.setVisibility(View.VISIBLE);
+
+        fifteenButton.setVisibility(View.VISIBLE);
+
+        ETAmenu.setVisibility(View.VISIBLE);
+
+
+        // Making the exit button visible
+        exitButton.setVisibility(View.VISIBLE);
     }
 
     public void clickBusNum(View views) {
@@ -74,8 +99,72 @@ public class MapActivity extends Activity {
 
         Log.i("Info", "clickExit pressed");
 
+        // sets exit button to be invisible
         exitButton.setVisibility(View.INVISIBLE);
+
+        // sets ETA menu to be invisible
+        fiveButton.setVisibility(View.INVISIBLE);
+
+        tenButton.setVisibility(View.INVISIBLE);
+
+        fifteenButton.setVisibility(View.INVISIBLE);
+
+        okButton.setVisibility(View.INVISIBLE);
+
+        ETAmenu.setVisibility(View.INVISIBLE);
+
+        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
+
+
     }
+
+    public void clickFive(View views){
+        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
+
+        okButton.setVisibility(View.VISIBLE);
+    }
+
+    public void clickTen(View views){
+        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
+
+        okButton.setVisibility(View.VISIBLE);
+
+    }
+
+    public void clickFifteen(View views){
+        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
+
+        okButton.setVisibility(View.VISIBLE);
+
+    }
+
+    public void clickOK(View views){
+        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
+
+       // TextView newTrack = (TextView)findViewById(R.id.track_button);
+       // newTrack.setText("TRACKING");
+       // newTrack.setBackgroundColor(Color.RED);
+
+        // sets exit button to be invisible
+        exitButton.setVisibility(View.INVISIBLE);
+
+        // sets ETA menu to be invisible
+        fiveButton.setVisibility(View.INVISIBLE);
+
+        tenButton.setVisibility(View.INVISIBLE);
+
+        fifteenButton.setVisibility(View.INVISIBLE);
+
+        ETAmenu.setVisibility(View.INVISIBLE);
+
+        okButton.setVisibility(View.INVISIBLE);
+    }
+
 
     // Button methods
 
@@ -161,6 +250,26 @@ public class MapActivity extends Activity {
         //Buttons
         exitButton = findViewById(R.id.exit_button);
             exitButton.setVisibility(View.INVISIBLE);
+
+        fiveButton = findViewById(R.id.five_button);
+            fiveButton.setVisibility(View.INVISIBLE);
+
+
+        tenButton = findViewById(R.id.ten_button);
+            tenButton.setVisibility(View.INVISIBLE);
+
+        fifteenButton = findViewById(R.id.fifteen_button);
+            fifteenButton.setVisibility(View.INVISIBLE);
+
+        okButton = findViewById(R.id.ok_button);
+            okButton.setVisibility(View.INVISIBLE);
+
+
+        // Text View
+        ETAmenu = findViewById(R.id.ETA_text);
+            ETAmenu.setVisibility(View.INVISIBLE);
+
+
         }
 
 
