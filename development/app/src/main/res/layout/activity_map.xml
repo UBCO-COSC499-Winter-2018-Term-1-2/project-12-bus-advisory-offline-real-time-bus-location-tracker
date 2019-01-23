@@ -35,7 +35,9 @@
         android:layout_marginBottom="15dp"
         android:background="@color/colorAccent"
         android:onClick="clickTrack"
-        android:text="TRACK" />
+        android:text="TRACK"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/BusNum"
@@ -75,7 +77,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginBottom="0dp"
-        android:background="#273093"
+        android:background="@color/colorPrimaryDark"
         android:gravity="bottom"
         android:text="UBCO Exchange Bay B"
         android:textColor="@android:color/white"
@@ -107,6 +109,75 @@
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/ETA_text"
+        android:layout_width="301dp"
+        android:layout_height="271dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:background="@color/colorPrimaryDark"
+        android:text="When would you like to be notified about the busses ETA (in minutes)?"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/five_button"
+        android:layout_width="58dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="94dp"
+        android:layout_marginBottom="293dp"
+        android:background="@android:color/holo_blue_light"
+        android:onClick="clickFive"
+        android:text="5"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/ten_button"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="161dp"
+        android:layout_marginBottom="291dp"
+        android:background="@android:color/holo_blue_light"
+        android:onClick="clickTen"
+        android:text="10"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/fifteen_button"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="234dp"
+        android:layout_marginBottom="291dp"
+        android:background="@android:color/holo_blue_light"
+        android:onClick="clickFifteen"
+        android:text="15"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignEnd="@+id/fifteen_button"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="-2dp"
+        android:layout_marginBottom="208dp"
+        android:background="@color/colorAccent"
+        android:onClick="clickOK"
+        android:text="OK"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
 
 
 </RelativeLayout>
