@@ -13,6 +13,9 @@ exports.addMessage = functions.https.onRequest((req, res) => {
     return res.redirect(303, snapshot.ref.toString());
   });
 });
+
+
+exports.addMessage = functions.firebase.
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
