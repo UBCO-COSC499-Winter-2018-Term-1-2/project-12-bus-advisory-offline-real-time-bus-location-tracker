@@ -13,8 +13,10 @@ var express = require('express');
 var bodyParser = require('body-parser');
 
 var {mongoose} = require('./db/mongoose');
+
 var {Trigger} = require('./models/trigger');
 var {BusLocation} = require('./models/busLocation');
+var {TripRequest} = require('./models/tripRequest');
 
 var app = express();
 
@@ -46,15 +48,33 @@ app.post('/buslocation', (req, res) => {
             type: req.body.location.type,
             coordinates: req.body.location.coordinates
         },
-        "timestamp": new Date().getTime()
+        timestamp: new Date().getTime()
     });
-
+    
     busLocation.save().then((doc) => {
         res.send(doc);
     }, (e) => {
         res.status(400).send(e);
     });
 });
+
+app.post('/triprequest', (req, res) => {
+    var tripRequest = new TripRequest({
+        userId: req.body.userId,
+        tripId: req.body.tripId,
+        busId: req.body.busId,
+        busStop: req.body.busStop,
+        reqestedTime: new Date().getTime(),
+        reminderTime: req.body.reminderTime  
+    });
+
+    tripRequest.save().then((doc) => {
+        res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+    });
+});
+
 
 //app.listen(3000, () => {
 //    console.log('Started on port 3000');
