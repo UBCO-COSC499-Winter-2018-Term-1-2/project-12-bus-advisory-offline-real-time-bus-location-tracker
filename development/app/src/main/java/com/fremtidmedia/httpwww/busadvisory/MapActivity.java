@@ -36,6 +36,13 @@ import com.here.android.mpa.mapping.MapObject;
 import com.here.android.mpa.mapping.MapState;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +52,7 @@ import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListene
 import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
+import android.os.AsyncTask;
 
 import static com.here.android.mpa.internal.r.H;
 
@@ -58,10 +66,46 @@ public class MapActivity extends Activity {
     Button tenButton;
     Button fifteenButton;
     Button okButton;
+    String id;
 
 // TextView
 
     TextView ETAmenu;
+
+    public class CallAPI extends AsyncTask<String, String, String> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) { //does task in background
+            String urlString = params[0]; // URL to call
+            String data = params[1]; //data to post
+            OutputStream out = null;
+
+
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                out = new BufferedOutputStream(urlConnection.getOutputStream());
+
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+                writer.write(data);
+                writer.flush();
+                writer.close();
+                out.close();
+
+                urlConnection.connect();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return "Failed";
+            }
+            return "Success";
+        }
+    }
 
 
     public void clickTrack(View views) {
@@ -203,6 +247,7 @@ public class MapActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
