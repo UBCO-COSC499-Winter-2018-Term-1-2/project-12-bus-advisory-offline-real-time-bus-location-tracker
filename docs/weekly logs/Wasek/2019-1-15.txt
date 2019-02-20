@@ -1,0 +1,8 @@
+(1) Planning documentation and code review
+(0.5) Communication with the engineering lead [0.5]
+(2) Group meeting
+(1) Review and update scope charter for client [1]
+(6) Configure serverless and deploy rest apis on AWS. [7]
+(2) deploy mongodb on AWS. [2]
+
+Total : 12.5 hours
