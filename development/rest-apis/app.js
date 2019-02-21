@@ -64,6 +64,10 @@ app.post('/triprequest', (req, res) => {
         tripId: req.body.tripId,
         busId: req.body.busId,
         busStop: req.body.busStop,
+        stopLocation: {
+            type: req.body.stopLocation.type,
+            coordinates: req.body.stopLocation.coordinates
+        },
         reqestedTime: new Date().getTime(),
         reminderTime: req.body.reminderTime  
     });

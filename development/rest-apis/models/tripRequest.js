@@ -14,6 +14,17 @@ var TripRequest = mongoose.model('TripRequest', {
         type: String,
         required: true
     },
+    stopLocation: {
+        type: {
+            type: String, // Don't do `{ location: { type: String } }`
+            enum: ['Point'], // 'location.type' must be 'Point'
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    },
     reqestedTime: Number,
     reminderTime: {
         type: Number,
