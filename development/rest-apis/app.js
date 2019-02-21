@@ -76,9 +76,9 @@ app.post('/triprequest', (req, res) => {
 });
 
 app.get('/buslocation', (req, res) => {
-  BusLocation.find().then((buslocations) => {
+  BusLocation.find().sort({timestamp:-1}).limit(1).then((buslocations) => {
     res.send({buslocations});
-    console.log(buslocations);
+//    console.log(buslocations);
   }, (e) => {
     res.status(400).send(e);
   });
