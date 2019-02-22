@@ -11,6 +11,8 @@ var cors = require("cors");
 
 var express = require('express');
 var bodyParser = require('body-parser');
+var _ = require('underscore');
+//var moment = require('moment');
 
 var {mongoose} = require('./db/mongoose');
 
@@ -50,7 +52,7 @@ app.post('/buslocation', (req, res) => {
         },
         timestamp: new Date().getTime()
     });
-    
+
     busLocation.save().then((doc) => {
         res.send(doc);
     }, (e) => {
@@ -64,7 +66,11 @@ app.post('/triprequest', (req, res) => {
         tripId: req.body.tripId,
         busId: req.body.busId,
         busStop: req.body.busStop,
-        reqestedTime: new Date().getTime(),
+        stopLocation: {
+            type: req.body.stopLocation.type,
+            coordinates: req.body.stopLocation.coordinates
+        },
+        requestedTime: new Date().getTime(),
         reminderTime: req.body.reminderTime  
     });
 
@@ -75,21 +81,31 @@ app.post('/triprequest', (req, res) => {
     });
 });
 
+// To get the latest bus location
 app.get('/buslocation', (req, res) => {
-  BusLocation.find().then((buslocations) => {
-    res.send({buslocations});
-    console.log(buslocations);
-  }, (e) => {
-    res.status(400).send(e);
-  });
+    BusLocation.find().sort({timestamp:-1}).limit(1).then((buslocations) => {
+        res.send({buslocations});
+        //    console.log(buslocations);
+    }, (e) => {
+        res.status(400).send(e);
+    });
 });
 
+// To check if there's an user at a certain bus stop
+// checking if there's a request in last 50 mins
 app.get('/triprequest', (req, res) => {
-  TripRequest.find().then((tripreqs) => {
-    res.send({tripreqs});
-  }, (e) => {
-    res.status(400).send(e);
-  });
+    TripRequest.find({
+        requestedTime : 
+        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
+    }).then((tripreqs) => {
+        const uniqueLocations = _.uniq(tripreqs, (unique) => unique.busStop);
+        //        const uniqueStops = tripreqs.filter((user) => user.busStop === "UBCO B");
+        //        console.log('reqsloc', uniqueLocations);
+        //        console.log('reqs', uniqueStops);
+        res.send({uniqueLocations});
+    }, (e) => {
+        res.status(400).send(e);
+    });
 });
 
 //app.get('/todos/:id', (req, res) => {
