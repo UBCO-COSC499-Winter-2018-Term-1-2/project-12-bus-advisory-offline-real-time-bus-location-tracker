@@ -25,7 +25,10 @@ var TripRequest = mongoose.model('TripRequest', {
             required: true
         }
     },
-    reqestedTime: Number,
+    requestedTime: {
+        type: Date,
+        required: true
+    },
     reminderTime: {
         type: Number,
         required: true
