@@ -15,7 +15,10 @@ var BusLocation = mongoose.model('BusLocation', {
       required: true
     }
   },
-    timestamp:Number
+    timestamp:{
+        type: Date,
+        required: true
+    }
 });
 
 module.exports = {BusLocation}
