@@ -3,13 +3,11 @@ package com.fremtidmedia.httpwww.busadvisory;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -20,30 +18,27 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
-import com.here.android.mpa.common.PositioningManager;
-import com.here.android.mpa.common.ViewObject;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
-import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
-import com.here.android.mpa.mapping.MapState;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +47,6 @@ import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListene
 import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
-import android.os.AsyncTask;
 
 import static com.here.android.mpa.internal.r.H;
 
@@ -67,45 +61,27 @@ public class MapActivity extends Activity {
     Button fifteenButton;
     Button okButton;
     String id;
+    RequestQueue queue;
 
-// TextView
+
 
     TextView ETAmenu;
 
-    public class CallAPI extends AsyncTask<String, String, String> {
+    public void makePostRequest(String url){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
 
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) { //does task in background
-            String urlString = params[0]; // URL to call
-            String data = params[1]; //data to post
-            OutputStream out = null;
-
-
-            try {
-                URL url = new URL(urlString);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                out = new BufferedOutputStream(urlConnection.getOutputStream());
-
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-                writer.write(data);
-                writer.flush();
-                writer.close();
-                out.close();
-
-                urlConnection.connect();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "Failed";
             }
-            return "Success";
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(stringRequest);
     }
+
 
 
     public void clickTrack(View views) {
@@ -247,6 +223,7 @@ public class MapActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        queue = Volley.newRequestQueue(this);
         id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -369,7 +346,17 @@ public class MapActivity extends Activity {
 
         return loc;
     }
-
+    private void topicSubscribe(String topic){
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(MapActivity.this, "Couldn't connect to server", Toast.LENGTH_SHORT);
+                        }
+                    }
+                });
+    }
     private void kontaktDetect() {
         IBeaconListener iBeaconListener = new SimpleIBeaconListener() {
             @Override
