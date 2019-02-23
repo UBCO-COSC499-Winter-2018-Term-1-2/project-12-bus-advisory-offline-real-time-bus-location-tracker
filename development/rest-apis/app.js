@@ -1,17 +1,9 @@
 //var serverless = require('serverless-http');
-var cors = require("cors");
-//var express = require('express');
-//var app = express();
-//
-//app.get('/', function (req, res) {
-//    res.send('Hello World!')
-//})
-//
-//module.exports.handler = serverless(app);
-
-var express = require('express');
-var bodyParser = require('body-parser');
-var _ = require('underscore');
+const cors = require("cors");
+const express = require('express');
+const bodyParser = require('body-parser');
+const _ = require('underscore');
+const {ObjectID} = require('mongodb');
 //var moment = require('moment');
 
 var {mongoose} = require('./db/mongoose');
@@ -83,9 +75,9 @@ app.post('/triprequest', (req, res) => {
 
 // To get the latest bus location
 app.get('/buslocation', (req, res) => {
-    BusLocation.find().sort({timestamp:-1}).limit(1).then((buslocations) => {
-        res.send({buslocations});
-        //    console.log(buslocations);
+    BusLocation.find().sort({timestamp:-1}).limit(1).then((buslocation) => {
+        res.send({buslocation});
+        //    console.log(buslocation);
     }, (e) => {
         res.status(400).send(e);
     });
@@ -125,6 +117,34 @@ app.get('/triprequest', (req, res) => {
 //    res.status(400).send();
 //  });
 //});
+
+app.patch('/buslocation/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, 'location');
+//    console.log('bd', body.location.coordinates);
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send('Please check your id');
+    }
+
+    if (body.location.coordinates) {
+        body.timestamp = new Date().getTime();
+
+        BusLocation.findByIdAndUpdate(id, {$set: body}, {new: true}).then((newLocation) => {
+            if (!newLocation) {
+                return res.status(404).send();
+            }
+
+            res.send({newLocation});
+        }).catch((e) => {
+            res.status(400).send(e);
+        })
+    } else {
+        return res.status(404).send('Please check your coordinates');
+    }
+
+});
+
 
 
 //app.listen(3000, () => {
