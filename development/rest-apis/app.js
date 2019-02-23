@@ -91,40 +91,47 @@ app.get('/triprequest', (req, res) => {
         { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
     }).then((tripreqs) => {
         const uniqueLocations = _.uniq(tripreqs, (unique) => unique.busStop);
-        //        const uniqueStops = tripreqs.filter((user) => user.busStop === "UBCO B");
-        //        console.log('reqsloc', uniqueLocations);
-        //        console.log('reqs', uniqueStops);
+    
         res.send({uniqueLocations});
     }, (e) => {
         res.status(400).send(e);
     });
 });
 
-//app.get('/todos/:id', (req, res) => {
-//  var id = req.params.id;
-//
-//  if (!ObjectID.isValid(id)) {
-//    return res.status(404).send();
-//  }
-//
-//  Todo.findById(id).then((todo) => {
-//    if (!todo) {
-//      return res.status(404).send();
-//    }
-//
-//    res.send({todo});
-//  }).catch((e) => {
-//    res.status(400).send();
-//  });
-//});
+app.get('/triprequest/:busstop', (req, res) => {
+    
+    TripRequest.find({
+        requestedTime : 
+        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
+    }).then((tripreqs) => {
+        
+        const passengerWaiting = tripreqs.filter((user) => {
+            var requestedStop = null;
+
+            if (req.params.busstop == "ubco-a"){
+                requestedStop = "UBCO A";
+            } else if (req.params.busstop == "ubco-b"){
+                requestedStop = "UBCO B";
+            }
+
+            return user.busStop === requestedStop;
+
+        });
+//        console.log('reqs', passengerWaiting);
+
+        res.send({passengerWaiting});
+    }).catch((e) => {
+        res.status(400).send(e);
+    })
+});
 
 app.patch('/buslocation/:id', (req, res) => {
     var id = req.params.id;
     var body = _.pick(req.body, 'location');
-//    console.log('bd', body.location.coordinates);
+    //    console.log('bd', body.location.coordinates);
 
     if (!ObjectID.isValid(id)) {
-        return res.status(404).send('Please check your id');
+        return res.status(404).send('Please provide correct id');
     }
 
     if (body.location.coordinates) {
