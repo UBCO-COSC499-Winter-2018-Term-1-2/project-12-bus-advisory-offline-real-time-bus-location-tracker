@@ -172,17 +172,46 @@ public class MapActivity extends Activity {
     LocationListener locationListener;
     IBeaconDevice searchBeacon;
 
-    // map embedded in the map fragment
     private Map map = null;
-
-    // map fragment embedded in this activity
     private MapFragment mapFragment = null;
+    private MapMarker marker;
+    private GeoCoordinate userLocation;
+    private PositioningManager positioningManager = null;
+    private PositioningManager.OnPositionChangedListener positionListener;
+    private boolean paused;
 
     List<MapObject> objList = new ArrayList<>();
 
 
-//
+// Resume positioning listener on wake up
+public void onResume() {
+    super.onResume();
+    paused = false;
+    if (positioningManager != null) {
+        positioningManager.start(
+                PositioningManager.LocationMethod.GPS_NETWORK);
+    }
+}
 
+    // To pause positioning listener
+    public void onPause() {
+        if (positioningManager != null) {
+            positioningManager.stop();
+        }
+        super.onPause();
+        paused = true;
+    }
+
+    // To remove the positioning listener
+    public void onDestroy() {
+        if (positioningManager != null) {
+            // Cleanup
+            positioningManager.removeListener(
+                    positionListener);
+        }
+        map = null;
+        super.onDestroy();
+    }
 
 
     @Override
@@ -192,7 +221,6 @@ public class MapActivity extends Activity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 0, locationListener);
                 }
             }
@@ -213,38 +241,43 @@ public class MapActivity extends Activity {
         KontaktSDK.initialize("zwPcatzTlLvusdiKXJKImhTqqhVbAJyN");
         kontaktDetect();
 
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
 
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-
+        mapFragment.init(new OnEngineInitListener() {
             @Override
-            public void onLocationChanged(Location location) {
-                initialize();
+            public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
+                if (error == OnEngineInitListener.Error.NONE) {
+                    map = mapFragment.getMap();
+                    map.removeMapObjects(objList);
+                    map.setCenter(userLocation, Map.Animation.NONE);
+                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
+                    positioningManager = PositioningManager.getInstance();
+                    positionListener = new PositioningManager.OnPositionChangedListener() {
+                        @Override
+                        public void onPositionUpdated(PositioningManager.LocationMethod method, GeoPosition position, boolean isMapMatched) {
+                            userLocation = position.getCoordinate();
+                        }
+                        @Override
+                        public void onPositionFixChanged(PositioningManager.LocationMethod method, PositioningManager.LocationStatus status) { }
+                    };
 
+                    try {
+                        positioningManager.addListener(new WeakReference<>(positionListener));
+                        if(!positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK)) {
+                            Log.e("HERE", "PositioningManager.start: Failed to start...");
+                        }
+                    } catch (Exception e) {
+                        Log.e("HERE", "Caught: " + e.getMessage());
+                    }
+                    map.getPositionIndicator().setVisible(true);
+                } else {
+                    System.out.println("ERROR: Cannot initialize Map Fragment");
+                }
             }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
+        });
 
 
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,2,0,locationListener);
-            }
+
 
 
         //Buttons
@@ -273,57 +306,23 @@ public class MapActivity extends Activity {
         }
 
 
-// creates map marker at users location and centers map on that location
-    private void initialize() {
-        // Search for the map fragment to finish setup by calling init().
-        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
 
-        mapFragment.init(new OnEngineInitListener() {
-            @Override
-            public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
-                if (error == OnEngineInitListener.Error.NONE) {
-                    // retrieve a reference of the map from the map fragment
-                    map = mapFragment.getMap();
-                    map.removeMapObjects(objList);
-                    userLocation();
-                    createMapMarker(userLocation());
 
-                    // Set the zoom level to the average between min and max
-                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
-                } else {
-                    System.out.println("ERROR: Cannot initialize Map Fragment");
-                }
-            }
-        });
-    }
-
-    public void createMapMarker(Location loc) {
+    public void createMapMarker(GeoCoordinate location) {
         Image marker_img = new Image();
         try {
             marker_img.setImageResource(R.drawable.iconfinder_map_marker_299087);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        map.getCenter();
         map = mapFragment.getMap();
-        MapMarker marker = new MapMarker(new GeoCoordinate(loc.getLatitude(),loc.getLongitude()), marker_img);
+        MapMarker marker = new MapMarker(location, marker_img);
         objList.add(marker);
         map.addMapObject(marker);
 
     }
 
-    private Location userLocation() {
-        Location loc = null;
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
-             loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-             map.setCenter(new GeoCoordinate(loc.getLatitude(), loc.getLongitude(), 0.0),
-                    Map.Animation.NONE);
-        }
 
-        return loc;
-    }
 
     private void kontaktDetect() {
         IBeaconListener iBeaconListener = new SimpleIBeaconListener() {
