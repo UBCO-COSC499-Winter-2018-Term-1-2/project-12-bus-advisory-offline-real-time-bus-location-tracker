@@ -88,7 +88,7 @@ app.get('/buslocation', (req, res) => {
 app.get('/triprequest', (req, res) => {
     TripRequest.find({
         requestedTime : 
-        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
+        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 100) }
     }).then((tripreqs) => {
         const uniqueLocations = _.uniq(tripreqs, (unique) => unique.busStop);
     
@@ -102,7 +102,7 @@ app.get('/triprequest/:busstop', (req, res) => {
     
     TripRequest.find({
         requestedTime : 
-        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
+        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 100) }
     }).then((tripreqs) => {
         
         const passengerWaiting = tripreqs.filter((user) => {
