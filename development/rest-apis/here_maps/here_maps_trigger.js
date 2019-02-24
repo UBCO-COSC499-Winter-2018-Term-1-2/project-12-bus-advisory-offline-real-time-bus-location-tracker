@@ -51,5 +51,6 @@ var sendRequest = (startLatLng, endLatLng, busStopName) => {
 
 
 module.exports = {
-
+getTime,
+sendRequest
 }
