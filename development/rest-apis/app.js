@@ -152,6 +152,24 @@ app.patch('/buslocation/:id', (req, res) => {
 
 });
 
+//Cancels a trip request
+app.delete('/triprequest/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send('Please provide correct id');
+  }
+
+  TripRequest.findByIdAndRemove(id).then((trip) => {
+    if (!trip) {
+      return res.status(404).send('The trip request was already deleted or cannot be found');
+    }
+
+    res.send({trip});
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
 
 
 //app.listen(3000, () => {
