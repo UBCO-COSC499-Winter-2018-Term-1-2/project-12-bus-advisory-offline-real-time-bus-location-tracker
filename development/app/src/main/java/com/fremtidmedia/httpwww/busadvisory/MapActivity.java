@@ -345,7 +345,6 @@ public void onResume() {
     }
 
 
-<<<<<<< HEAD
         return loc;
     }
     private void topicSubscribe(String topic){
@@ -359,9 +358,6 @@ public void onResume() {
                     }
                 });
     }
-=======
-
->>>>>>> development
     private void kontaktDetect() {
         IBeaconListener iBeaconListener = new SimpleIBeaconListener() {
             @Override
