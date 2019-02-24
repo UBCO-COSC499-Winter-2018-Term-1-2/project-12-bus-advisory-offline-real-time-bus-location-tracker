@@ -21,11 +21,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 
+// Gets user location and timestamp when they get on the bus
 app.post('/triggers', (req, res) => {
     var trigger = new Trigger({
         userId: req.body.userId,
         tripId: req.body.tripId,
-        beaconTrigger: req.body.beaconTrigger
+        beaconTrigger: req.body.beaconTrigger,
+        busId: req.body.busId,
+        startedAt: new Date().getTime() ,
+        startLocation: req.body.startLocation     
     });
 
     trigger.save().then((doc) => {
@@ -35,6 +39,35 @@ app.post('/triggers', (req, res) => {
     });
 });
 
+// Gets user location and timestamp when they get off the bus
+app.patch('/triggers/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, 'endLocation' );
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send('Please provide correct id');
+    }
+
+    if (body.endLocation.coordinates) {
+        body.completedAt = new Date().getTime();
+
+        Trigger.findByIdAndUpdate(id, {$set: body}, {new: true}).then((newTrigger) => {
+            if (!newTrigger) {
+                return res.status(404).send();
+            }
+
+            res.send({newTrigger});
+        }).catch((e) => {
+            res.status(400).send(e);
+        })
+    } else {
+        return res.status(404).send('Please check your coordinates');
+    }
+
+});
+
+
+//starts sending bus location
 app.post('/buslocation', (req, res) => {
     var busLocation = new BusLocation({
         busId: req.body.busId,
@@ -52,6 +85,7 @@ app.post('/buslocation', (req, res) => {
     });
 });
 
+//When a user makes a trip request (clicks on track button from the client side)
 app.post('/triprequest', (req, res) => {
     var tripRequest = new TripRequest({
         userId: req.body.userId,
@@ -84,11 +118,11 @@ app.get('/buslocation', (req, res) => {
 });
 
 // To check if there's an user at a certain bus stop
-// checking if there's a request in last 50 mins
+// checking if there's a request in last 100 mins
 app.get('/triprequest', (req, res) => {
     TripRequest.find({
         requestedTime : 
-        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
+        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 100) }
     }).then((tripreqs) => {
         const uniqueLocations = _.uniq(tripreqs, (unique) => unique.busStop);
     
@@ -98,11 +132,12 @@ app.get('/triprequest', (req, res) => {
     });
 });
 
+//returns individual bus stop info, if a passenger has planned a trip in last 100 mins
 app.get('/triprequest/:busstop', (req, res) => {
     
     TripRequest.find({
         requestedTime : 
-        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
+        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 100) }
     }).then((tripreqs) => {
         
         const passengerWaiting = tripreqs.filter((user) => {
@@ -125,6 +160,7 @@ app.get('/triprequest/:busstop', (req, res) => {
     })
 });
 
+//updates bus location
 app.patch('/buslocation/:id', (req, res) => {
     var id = req.params.id;
     var body = _.pick(req.body, 'location');
@@ -152,6 +188,24 @@ app.patch('/buslocation/:id', (req, res) => {
 
 });
 
+//Cancels a trip request
+app.delete('/triprequest/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send('Please provide correct id');
+  }
+
+  TripRequest.findByIdAndRemove(id).then((trip) => {
+    if (!trip) {
+      return res.status(404).send('The trip request was already deleted or cannot be found');
+    }
+
+    res.send({trip});
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
 
 
 //app.listen(3000, () => {
