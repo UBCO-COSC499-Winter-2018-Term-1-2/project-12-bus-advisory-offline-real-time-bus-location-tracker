@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -167,9 +164,6 @@ public class MapActivity extends Activity {
 
 
     // Button methods
-
-    LocationManager locationManager;
-    LocationListener locationListener;
     IBeaconDevice searchBeacon;
 
     private Map map = null;
@@ -188,8 +182,7 @@ public void onResume() {
     super.onResume();
     paused = false;
     if (positioningManager != null) {
-        positioningManager.start(
-                PositioningManager.LocationMethod.GPS_NETWORK);
+        positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
     }
 }
 
@@ -221,7 +214,7 @@ public void onResume() {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 0, locationListener);
+                    positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
                 }
             }
         }
