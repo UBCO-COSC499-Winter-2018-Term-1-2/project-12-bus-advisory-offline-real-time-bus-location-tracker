@@ -1,17 +1,9 @@
 //var serverless = require('serverless-http');
-var cors = require("cors");
-//var express = require('express');
-//var app = express();
-//
-//app.get('/', function (req, res) {
-//    res.send('Hello World!')
-//})
-//
-//module.exports.handler = serverless(app);
-
-var express = require('express');
-var bodyParser = require('body-parser');
-var _ = require('underscore');
+const cors = require("cors");
+const express = require('express');
+const bodyParser = require('body-parser');
+const _ = require('underscore');
+const {ObjectID} = require('mongodb');
 //var moment = require('moment');
 
 var {mongoose} = require('./db/mongoose');
@@ -83,9 +75,9 @@ app.post('/triprequest', (req, res) => {
 
 // To get the latest bus location
 app.get('/buslocation', (req, res) => {
-    BusLocation.find().sort({timestamp:-1}).limit(1).then((buslocations) => {
-        res.send({buslocations});
-        //    console.log(buslocations);
+    BusLocation.find().sort({timestamp:-1}).limit(1).then((buslocation) => {
+        res.send({buslocation});
+        //    console.log(buslocation);
     }, (e) => {
         res.status(400).send(e);
     });
@@ -99,32 +91,67 @@ app.get('/triprequest', (req, res) => {
         { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
     }).then((tripreqs) => {
         const uniqueLocations = _.uniq(tripreqs, (unique) => unique.busStop);
-        //        const uniqueStops = tripreqs.filter((user) => user.busStop === "UBCO B");
-        //        console.log('reqsloc', uniqueLocations);
-        //        console.log('reqs', uniqueStops);
+    
         res.send({uniqueLocations});
     }, (e) => {
         res.status(400).send(e);
     });
 });
 
-//app.get('/todos/:id', (req, res) => {
-//  var id = req.params.id;
-//
-//  if (!ObjectID.isValid(id)) {
-//    return res.status(404).send();
-//  }
-//
-//  Todo.findById(id).then((todo) => {
-//    if (!todo) {
-//      return res.status(404).send();
-//    }
-//
-//    res.send({todo});
-//  }).catch((e) => {
-//    res.status(400).send();
-//  });
-//});
+app.get('/triprequest/:busstop', (req, res) => {
+    
+    TripRequest.find({
+        requestedTime : 
+        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 50) }
+    }).then((tripreqs) => {
+        
+        const passengerWaiting = tripreqs.filter((user) => {
+            var requestedStop = null;
+
+            if (req.params.busstop == "ubco-a"){
+                requestedStop = "UBCO A";
+            } else if (req.params.busstop == "ubco-b"){
+                requestedStop = "UBCO B";
+            }
+
+            return user.busStop === requestedStop;
+
+        });
+//        console.log('reqs', passengerWaiting);
+
+        res.send({passengerWaiting});
+    }).catch((e) => {
+        res.status(400).send(e);
+    })
+});
+
+app.patch('/buslocation/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, 'location');
+    //    console.log('bd', body.location.coordinates);
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send('Please provide correct id');
+    }
+
+    if (body.location.coordinates) {
+        body.timestamp = new Date().getTime();
+
+        BusLocation.findByIdAndUpdate(id, {$set: body}, {new: true}).then((newLocation) => {
+            if (!newLocation) {
+                return res.status(404).send();
+            }
+
+            res.send({newLocation});
+        }).catch((e) => {
+            res.status(400).send(e);
+        })
+    } else {
+        return res.status(404).send('Please check your coordinates');
+    }
+
+});
+
 
 
 //app.listen(3000, () => {
