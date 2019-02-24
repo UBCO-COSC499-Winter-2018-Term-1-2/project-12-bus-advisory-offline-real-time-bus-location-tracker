@@ -28,7 +28,7 @@ var sendRequest = (startLatLng, endLatLng, busStopName) => {
                   title: `Your Bus is Arriving Soon`,
                   body: `Your Bus is arriving in approximately ${time} minutes`
                 },
-                topic: `${busStopName}${time}`
+                topic: `bus ${busStopName} time ${time}`
               };
               firebase.messaging.send(message).then((response) => {
                 // Response is a message ID string.
