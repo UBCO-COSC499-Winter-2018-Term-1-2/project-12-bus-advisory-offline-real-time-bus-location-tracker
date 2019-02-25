@@ -181,6 +181,7 @@ public class MapActivity extends Activity {
     private boolean paused;
 
     List<MapObject> objList = new ArrayList<>();
+    List<MapMarker> busStops = new ArrayList<>();
 
 
 // Resume positioning listener on wake up
@@ -221,7 +222,7 @@ public void onResume() {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 0, locationListener);
+                    positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
                 }
             }
         }
@@ -250,7 +251,27 @@ public void onResume() {
                     map = mapFragment.getMap();
                     map.removeMapObjects(objList);
                     map.setCenter(userLocation, Map.Animation.NONE);
-                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
+                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) /1.5);
+
+
+
+                    try {
+                        Image image = new Image();
+                        image.setImageResource(R.drawable.bus_stop);
+                        MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939675, -119.394632, 0.0), image);
+                        map.addMapObject(stop1);
+                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.936367, -119.391947, 0.0), image);
+                        map.addMapObject(stop2);
+
+                        busStops.add(stop1);
+                        busStops.add(stop2);
+
+                    } catch (Exception e) {
+                        Log.e("HERE", e.getMessage());
+                    }
+
+
+
                     positioningManager = PositioningManager.getInstance();
                     positionListener = new PositioningManager.OnPositionChangedListener() {
                         @Override
@@ -308,18 +329,40 @@ public void onResume() {
 
 
 
-    public void createMapMarker(GeoCoordinate location) {
+    public void createStops(GeoCoordinate location) {
         Image marker_img = new Image();
         try {
-            marker_img.setImageResource(R.drawable.iconfinder_map_marker_299087);
+            marker_img.setImageResource(R.drawable.bus_stop);
         } catch (IOException e) {
             e.printStackTrace();
         }
         map = mapFragment.getMap();
-        MapMarker marker = new MapMarker(location, marker_img);
-        objList.add(marker);
-        map.addMapObject(marker);
+        MapMarker stop1 = new MapMarker(location, marker_img);
+        busStops.add(stop1);
+        map.addMapObject(stop1);
+        MapMarker stop2 = new MapMarker(location, marker_img);
+        busStops.add(stop2);
+        map.addMapObject(stop2);
 
+    }
+
+    public MapMarker closestStop(ArrayList<MapMarker> stops ) {
+        double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
+        double tempX1 = Math.abs(userLocation.getLongitude() - stops.get(0).getCoordinate().getLatitude());
+        double smallestHyp = Math.hypot(tempY1, tempX1);
+        MapMarker closest = stops.get(0);
+        for (int i = 0; i < stops.size() ; i++) {
+            double tempY = Math.abs(stops.get(i).getCoordinate().getLatitude() - userLocation.getLatitude());
+            double tempX = Math.abs(stops.get(i).getCoordinate().getLongitude() - userLocation.getLongitude());
+            double tempHyp = Math.hypot(tempY, tempX);
+            if ( tempHyp < smallestHyp ){
+                smallestHyp = tempHyp;
+                closest = stops.get(i);
+
+            }
+        }
+        
+        return closest;
     }
 
 
