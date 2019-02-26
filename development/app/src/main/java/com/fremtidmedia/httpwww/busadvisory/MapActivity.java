@@ -268,6 +268,9 @@ public class MapActivity extends Activity {
                         map.addMapObject(stop1);
                         MapMarker stop2 = new MapMarker(new GeoCoordinate(49.936367, -119.391947, 0.0), image);
                         map.addMapObject(stop2);
+                        Image userImage = new Image();
+                        userImage.setImageResource(R.drawable.iconfinder_map_marker_299087);
+                        map.getPositionIndicator().setMarker(userImage);
 
                         busStops.add(stop1);
                         busStops.add(stop2);
@@ -296,6 +299,7 @@ public class MapActivity extends Activity {
                     } catch (Exception e) {
                         Log.e("HERE", "Caught: " + e.getMessage());
                     }
+
                     map.getPositionIndicator().setVisible(true);
                 } else {
                     System.out.println("ERROR: Cannot initialize Map Fragment");
