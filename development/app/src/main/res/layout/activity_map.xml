@@ -2,6 +2,7 @@
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -90,8 +91,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="370dp"
         android:layout_marginEnd="41dp"
+        android:layout_marginBottom="109dp"
         android:text="10"
         android:textColor="@android:color/white"
         android:textSize="24sp"
@@ -178,6 +181,21 @@
         android:text="OK"
         android:textColor="@android:color/white"
         android:textSize="30sp" />
+
+    <ImageButton
+        android:id="@+id/centerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/BusNum"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="318dp"
+        android:layout_marginBottom="173dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:elevation="0dp"
+        android:onClick="centerButton"
+        android:visibility="visible"
+        app:srcCompat="@android:drawable/ic_menu_mylocation" />
 
 
 </RelativeLayout>

@@ -165,6 +165,12 @@ public class MapActivity extends Activity {
         okButton.setVisibility(View.INVISIBLE);
     }
 
+    public void centerButton(View views){
+        map = mapFragment.getMap();
+        map.setCenter(userLocation, Map.Animation.NONE);
+
+    }
+
 
     // Button methods
 
@@ -184,12 +190,12 @@ public class MapActivity extends Activity {
     List<MapMarker> busStops = new ArrayList<>();
 
 
-// Resume positioning listener on wake up
-public void onResume() {
-    super.onResume();
-    paused = false;
-    if (positioningManager != null) {
-        positioningManager.start(
+    // Resume positioning listener on wake up
+    public void onResume() {
+        super.onResume();
+        paused = false;
+        if (positioningManager != null) {
+             positioningManager.start(
                 PositioningManager.LocationMethod.GPS_NETWORK);
     }
 }
