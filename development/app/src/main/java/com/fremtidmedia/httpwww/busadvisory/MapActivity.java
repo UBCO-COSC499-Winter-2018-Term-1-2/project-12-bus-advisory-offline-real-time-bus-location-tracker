@@ -31,14 +31,17 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.here.android.mpa.common.GeoCoordinate;
+import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
+import com.here.android.mpa.common.PositioningManager;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,21 +136,21 @@ public class MapActivity extends Activity {
 
         ETAmenu.setVisibility(View.INVISIBLE);
 
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        TextView new1 = findViewById(R.id.ETA_text);
         new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
 
 
     }
 
     public void clickFive(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        TextView new1 = findViewById(R.id.ETA_text);
         new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
 
         okButton.setVisibility(View.VISIBLE);
     }
 
     public void clickTen(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        TextView new1 = findViewById(R.id.ETA_text);
         new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
 
         okButton.setVisibility(View.VISIBLE);
@@ -155,7 +158,7 @@ public class MapActivity extends Activity {
     }
 
     public void clickFifteen(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        TextView new1 = findViewById(R.id.ETA_text);
         new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
 
         okButton.setVisibility(View.VISIBLE);
@@ -284,7 +287,7 @@ public void onResume() {
                     };
 
                     try {
-                        positioningManager.addListener(new WeakReference<>(positionListener));
+                        positioningManager.addListener(new WeakReference<PositioningManager.OnPositionChangedListener>(positionListener));
                         if(!positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK)) {
                             Log.e("HERE", "PositioningManager.start: Failed to start...");
                         }
@@ -341,19 +344,15 @@ public void onResume() {
         MapMarker marker = new MapMarker(location, marker_img);
         objList.add(marker);
         map.addMapObject(marker);
-
     }
 
-
-        return loc;
-    }
     private void topicSubscribe(String topic){
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (!task.isSuccessful()) {
-                            Toast.makeText(MapActivity.this, "Couldn't connect to server", Toast.LENGTH_SHORT);
+                            Toast.makeText(MapActivity.this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

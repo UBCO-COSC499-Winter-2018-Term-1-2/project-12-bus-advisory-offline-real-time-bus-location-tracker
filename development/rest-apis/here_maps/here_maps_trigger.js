@@ -11,7 +11,7 @@ return new Promise((resolve, reject) => {
     hm.configure(config.here_maps_config).then(() => {
 hm.requestSimpleString(startLatLng, endLatLng).then(
     (body) => {
-        resolve(body.response.route[0].summary.trafficTime);
+        resolve(Math.round(body.response.route[0].summary.trafficTime/60));
     }, (err) => {
     reject(err);
     });
@@ -21,24 +21,26 @@ hm.requestSimpleString(startLatLng, endLatLng).then(
 
 var sendRequest = (startLatLng, endLatLng, busStopName) => {
     return new Promise((resolve, reject) => {
-        var time = Math.round(getTime(startLatLng, endLatLng)/60);
+        getTime(startLatLng, endLatLng).then( (time) => {
         if( time <= 100 ) {
             var message = {
                 notification: {
                   title: `Your Bus is Arriving Soon`,
                   body: `Your Bus is arriving in approximately ${time} minutes`
                 },
-                topic: `bus ${busStopName} time ${time}`
+                condition: `\'bus${busStopName}time${time}\' in topics`
               };
-              firebase.messaging.send(message).then((response) => {
+              firebase.messaging().send(message).then((response) => {
                 // Response is a message ID string.
+                resolve(response);
                 console.log('Successfully sent message:', response);
               })
               .catch((error) => {
                 console.log('Error sending message:', error);
               });
         }
-    });
+      }).catch((err) => reject(err));
+  });
 };
 
 
@@ -48,9 +50,15 @@ var sendRequest = (startLatLng, endLatLng, busStopName) => {
 //     console.log(err)
 // });
 
+sendRequest("49.9399807,-119.395521", "49.9081381,-119.3917857", "UBCOA").then(() => {
+  console.log("success");
+}).catch((err) => {
+  console.log(err);
+});
+
 
 
 module.exports = {
 getTime,
 sendRequest
-}
+};

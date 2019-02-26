@@ -11,6 +11,6 @@ var firebaseConfig = {
     messagingSenderId: "691626187941"
   };
 module.exports = {
-    config: here_maps_config,
+    here_maps_config,
     firebaseConfig
 }
