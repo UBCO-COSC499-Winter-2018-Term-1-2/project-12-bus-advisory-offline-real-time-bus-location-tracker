@@ -34,9 +34,11 @@ var sendRequest = (startLatLng, endLatLng, busStopName) => {
                 // Response is a message ID string.
                 resolve(response);
                 console.log('Successfully sent message:', response);
+                firebase.messaging().goOffline();
               })
               .catch((error) => {
                 console.log('Error sending message:', error);
+                firebase.messaging().goOffline();
               });
         }
       }).catch((err) => reject(err));
@@ -52,8 +54,10 @@ var sendRequest = (startLatLng, endLatLng, busStopName) => {
 
 sendRequest("49.9399807,-119.395521", "49.9081381,-119.3917857", "UBCOA").then(() => {
   console.log("success");
+  process.exit();
 }).catch((err) => {
   console.log(err);
+  process.exit();
 });
 
 
