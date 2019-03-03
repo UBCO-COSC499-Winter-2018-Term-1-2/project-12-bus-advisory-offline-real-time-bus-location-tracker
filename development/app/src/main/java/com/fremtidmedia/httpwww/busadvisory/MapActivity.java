@@ -18,10 +18,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -68,6 +73,8 @@ public class MapActivity extends Activity {
     Button okButton;
     String id;
     RequestQueue queue;
+    Cache cache;
+    Network network;
 
 
 
@@ -281,7 +288,10 @@ public void onResume() {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        network = new BasicNetwork(new HurlStack());
         queue = Volley.newRequestQueue(this);
+        queue.start();
         id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
