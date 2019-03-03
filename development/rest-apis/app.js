@@ -78,6 +78,8 @@ app.post('/buslocation', (req, res) => {
         timestamp: new Date().getTime()
     });
 
+    // TODO: add trigger Here
+
     busLocation.save().then((doc) => {
         res.send(doc);
     }, (e) => {
