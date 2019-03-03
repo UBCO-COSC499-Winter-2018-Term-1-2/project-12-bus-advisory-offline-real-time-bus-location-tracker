@@ -179,6 +179,8 @@ public class MapActivity extends Activity {
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
     private boolean paused;
+    RequestQueue queue;
+
 
     List<MapObject> objList = new ArrayList<>();
 
@@ -213,6 +215,35 @@ public void onResume() {
         super.onDestroy();
     }
 
+    public void makePostRequest(String url){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(stringRequest);
+
+
+        public void makeGetRequest(String url){
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            queue.add(stringRequest);
+            //TODO @Matthew implement get method with JSON parsing
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -308,19 +339,6 @@ public void onResume() {
 
 
 
-    public void createMapMarker(GeoCoordinate location) {
-        Image marker_img = new Image();
-        try {
-            marker_img.setImageResource(R.drawable.iconfinder_map_marker_299087);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        map = mapFragment.getMap();
-        MapMarker marker = new MapMarker(location, marker_img);
-        objList.add(marker);
-        map.addMapObject(marker);
-
-    }
 
 
 
