@@ -22,6 +22,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,6 +52,8 @@ import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
+import org.json.JSONObject;
+
 import static com.here.android.mpa.internal.r.H;
 
 public class MapActivity extends Activity {
@@ -69,21 +72,6 @@ public class MapActivity extends Activity {
 
 
     TextView ETAmenu;
-
-    public void makePostRequest(String url){
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        queue.add(stringRequest);
-    }
 
 
 
@@ -202,7 +190,7 @@ public class MapActivity extends Activity {
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
     private boolean paused;
-    RequestQueue queue;
+//    RequestQueue queue;
 
 
     List<MapObject> objList = new ArrayList<>();
@@ -238,7 +226,7 @@ public void onResume() {
         super.onDestroy();
     }
 
-    public void makePostRequest(String url){
+    public void makePostRequest(String url) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -251,21 +239,29 @@ public void onResume() {
             }
         });
         queue.add(stringRequest);
+    }
 
 
         public void makeGetRequest(String url){
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // TODO: call create Marker function or whatever you're doing from here
+                            // For documentation on how to handle JSONObjects check out this site
+                            // https://developer.android.com/reference/org/json/JSONObject
+                        }
+                    }, new Response.ErrorListener() {
 
-                }
-            });
-            queue.add(stringRequest);
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error
+
+                        }
+                    });
+            queue.add(jsonObjectRequest);
+        }
             //TODO @Matthew implement get method with JSON parsing
 
     @Override
@@ -364,7 +360,6 @@ public void onResume() {
 
 
 
-<<<<<<< HEAD
     public void createMapMarker(GeoCoordinate location) {
         Image marker_img = new Image();
         try {
@@ -377,8 +372,6 @@ public void onResume() {
         objList.add(marker);
         map.addMapObject(marker);
     }
-=======
->>>>>>> master
 
     private void topicSubscribe(String topic){
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
