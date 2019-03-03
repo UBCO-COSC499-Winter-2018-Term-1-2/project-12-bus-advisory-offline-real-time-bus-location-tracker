@@ -202,6 +202,8 @@ public class MapActivity extends Activity {
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
     private boolean paused;
+    RequestQueue queue;
+
 
     List<MapObject> objList = new ArrayList<>();
 
@@ -236,6 +238,35 @@ public void onResume() {
         super.onDestroy();
     }
 
+    public void makePostRequest(String url){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(stringRequest);
+
+
+        public void makeGetRequest(String url){
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            queue.add(stringRequest);
+            //TODO @Matthew implement get method with JSON parsing
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -333,6 +364,7 @@ public void onResume() {
 
 
 
+<<<<<<< HEAD
     public void createMapMarker(GeoCoordinate location) {
         Image marker_img = new Image();
         try {
@@ -345,6 +377,8 @@ public void onResume() {
         objList.add(marker);
         map.addMapObject(marker);
     }
+=======
+>>>>>>> master
 
     private void topicSubscribe(String topic){
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
