@@ -188,6 +188,7 @@ public class MapActivity extends Activity {
 
     public void testBus(View views){
        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+       
     }
 
     // Button methods
@@ -279,10 +280,6 @@ public void onResume() {
 
                             }
 
-
-                            // TODO: call create Marker function or whatever you're doing from here
-                            // For documentation on how to handle JSONObjects check out this site
-                            // https://developer.android.com/reference/org/json/JSONObject
                         }
                     }, new Response.ErrorListener() {
 
