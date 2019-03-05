@@ -57,9 +57,12 @@ import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.here.android.mpa.internal.r.H;
+import static com.here.android.mpa.internal.r.e;
 
 public class MapActivity extends Activity {
 
@@ -183,6 +186,9 @@ public class MapActivity extends Activity {
         okButton.setVisibility(View.INVISIBLE);
     }
 
+    public void testBus(View views){
+       makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+    }
 
     // Button methods
 
@@ -255,6 +261,25 @@ public void onResume() {
 
                         @Override
                         public void onResponse(JSONObject response) {
+
+                            try {
+                               JSONArray location = response.getJSONArray("buslocation");
+                               JSONObject object1 = location.getJSONObject(0);
+                               JSONObject object2 = object1.getJSONObject("location");
+                               JSONArray object3 = object2.getJSONArray("coordinates");
+                               String lon = object3.getString(0);
+                               String lat = object3.getString(1);
+                               Log.d("Test", lat + ", " +  lon);
+                               GeoCoordinate busLoc = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
+                               createBus(busLoc);
+                            }
+                            catch (Exception e){
+
+                                Log.e("HERE", "Caught: " + e.getMessage());
+
+                            }
+
+
                             // TODO: call create Marker function or whatever you're doing from here
                             // For documentation on how to handle JSONObjects check out this site
                             // https://developer.android.com/reference/org/json/JSONObject
@@ -370,10 +395,10 @@ public void onResume() {
 
 
 
-    public void createMapMarker(GeoCoordinate location) {
+    public void createBus(GeoCoordinate location) {
         Image marker_img = new Image();
         try {
-            marker_img.setImageResource(R.drawable.iconfinder_map_marker_299087);
+            marker_img.setImageResource(R.drawable.bus);
         } catch (IOException e) {
             e.printStackTrace();
         }

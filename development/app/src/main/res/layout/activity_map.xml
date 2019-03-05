@@ -179,6 +179,15 @@
         android:textColor="@android:color/white"
         android:textSize="30sp" />
 
+    <Button
+        android:id="@+id/testBus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView3"
+        android:layout_alignEnd="@+id/BusNum"
+        android:onClick="testBus"
+        android:text="Button" />
+
 
 </RelativeLayout>
 
