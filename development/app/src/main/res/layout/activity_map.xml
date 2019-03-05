@@ -188,6 +188,17 @@
         android:onClick="testBus"
         android:text="Button" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView5"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-175dp"
+        android:layout_marginBottom="164dp"
+        android:onClick="testMarker"
+        android:text="Button" />
+
 
 </RelativeLayout>
 

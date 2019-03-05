@@ -188,7 +188,11 @@ public class MapActivity extends Activity {
 
     public void testBus(View views){
        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-       
+    }
+
+    public void testMarker(View views) {
+        GeoCoordinate tempBus = new GeoCoordinate(49.939073, -119.3, 0.0);
+        createBus(tempBus);
     }
 
     // Button methods
@@ -199,15 +203,13 @@ public class MapActivity extends Activity {
 
     private Map map = null;
     private MapFragment mapFragment = null;
-    private MapMarker marker;
     private GeoCoordinate userLocation;
+    private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
     private boolean paused;
+    private ArrayList<MapObject> markerList = new ArrayList<>();
 //    RequestQueue queue;
-
-
-    List<MapObject> objList = new ArrayList<>();
 
 
 // Resume positioning listener on wake up
@@ -270,9 +272,9 @@ public void onResume() {
                                JSONArray object3 = object2.getJSONArray("coordinates");
                                String lon = object3.getString(0);
                                String lat = object3.getString(1);
-                               Log.d("Test", lat + ", " +  lon);
-                               GeoCoordinate busLoc = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
-                               createBus(busLoc);
+                               busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
+                               Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
+                               createBus(busLocation);
                             }
                             catch (Exception e){
 
@@ -332,7 +334,6 @@ public void onResume() {
             public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
                 if (error == OnEngineInitListener.Error.NONE) {
                     map = mapFragment.getMap();
-                    map.removeMapObjects(objList);
                     map.setCenter(userLocation, Map.Animation.NONE);
                     map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
                     positioningManager = PositioningManager.getInstance();
@@ -393,16 +394,22 @@ public void onResume() {
 
 
     public void createBus(GeoCoordinate location) {
-        Image marker_img = new Image();
         try {
-            marker_img.setImageResource(R.drawable.bus);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Image image = new Image();
+            image.setImageResource(R.drawable.bus);
+
+            if(!markerList.isEmpty()) {
+                map.removeMapObjects(markerList);
+                markerList.clear();
+            }
+            MapMarker busMarker = new MapMarker(location, image);
+            markerList.add(busMarker);
+            map.addMapObjects(markerList);
+
+        }catch (Exception e) {
+            Log.e("HERE", "Caught: " + e.getMessage());
         }
-        map = mapFragment.getMap();
-        MapMarker marker = new MapMarker(location, marker_img);
-        objList.add(marker);
-        map.addMapObject(marker);
+
     }
 
     private void topicSubscribe(String topic){
