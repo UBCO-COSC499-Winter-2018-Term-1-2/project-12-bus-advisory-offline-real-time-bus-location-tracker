@@ -12,8 +12,10 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.TextView;
 import android.util.Log;
@@ -46,9 +48,38 @@ import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.widget.NumberPicker;
+import android.widget.TimePicker;
+
 import static com.here.android.mpa.internal.r.H;
 
 public class MapActivity extends Activity {
+
+    private TimePicker time_picker;
+
+    private Button button_set_time;
+
+
+
+
+
+
+
+
+
+
+   // FloatingActionButton FABexit = (FloatingActionButton) findViewById(R.id.FAB_exit);
+
+   // FABexit.setOnClickListener(new View.OnClickListener()
+
+
 
 // Buttons
 
@@ -59,9 +90,29 @@ public class MapActivity extends Activity {
     Button fifteenButton;
     Button okButton;
 
+
+
+
 // TextView
 
     TextView ETAmenu;
+
+
+/*
+    TimePicker.setOnTimeChangedListener( new TimePicker.onTimeChangedListener(){
+
+        String date;
+
+
+        @Override
+        public void onTimeChanged (TimePicker view,int hourOfDay, int minute){
+        // TODO Auto-generated method stub
+        date = String.valueOf(hourOfDay).toString() + ":" + String.valueOf(minute).toString();
+        Log.i("Info", date);
+    }
+
+    }
+    */
 
 
     public void clickTrack(View views) {
@@ -95,6 +146,8 @@ public class MapActivity extends Activity {
        // openBusNumAc();
     }
 
+    /*
+
     public void clickExit(View views) {
 
         Log.i("Info", "clickExit pressed");
@@ -116,19 +169,27 @@ public class MapActivity extends Activity {
         TextView new1 = (TextView)findViewById(R.id.ETA_text);
         new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
 
+        TextView newTrack = (TextView)findViewById(R.id.track_button);
+        newTrack.setText("TRACK");
+        newTrack.setBackgroundColor(Color.GRAY);
+        newTrack.setTextSize(TypedValue.COMPLEX_UNIT_SP,30f);
+
 
     }
+*/
+
+/*
 
     public void clickFive(View views){
         TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
+        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is 5 minutes away.");
 
         okButton.setVisibility(View.VISIBLE);
     }
 
     public void clickTen(View views){
         TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
+        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is 10 minutes away.");
 
         okButton.setVisibility(View.VISIBLE);
 
@@ -136,19 +197,19 @@ public class MapActivity extends Activity {
 
     public void clickFifteen(View views){
         TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
+        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is 15 minutes away.");
 
         okButton.setVisibility(View.VISIBLE);
 
     }
-
-    public void clickOK(View views){
+        public void clickOK(View views){
         TextView new1 = (TextView)findViewById(R.id.ETA_text);
         new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
 
-       // TextView newTrack = (TextView)findViewById(R.id.track_button);
-       // newTrack.setText("TRACKING");
-       // newTrack.setBackgroundColor(Color.RED);
+        TextView newTrack = (TextView)findViewById(R.id.track_button);
+        newTrack.setText("TRACKING");
+        newTrack.setBackgroundColor(Color.RED);
+        newTrack.setTextSize(TypedValue.COMPLEX_UNIT_SP,18f);
 
         // sets exit button to be invisible
         exitButton.setVisibility(View.INVISIBLE);
@@ -163,7 +224,10 @@ public class MapActivity extends Activity {
         ETAmenu.setVisibility(View.INVISIBLE);
 
         okButton.setVisibility(View.INVISIBLE);
+
+        exitButton.setVisibility(View.VISIBLE);
     }
+    */
 
 
     // Button methods
@@ -190,8 +254,7 @@ public class MapActivity extends Activity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 0, locationListener);
                 }
@@ -246,7 +309,7 @@ public class MapActivity extends Activity {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,2,0,locationListener);
             }
 
-
+/*
         //Buttons
         exitButton = findViewById(R.id.exit_button);
             exitButton.setVisibility(View.INVISIBLE);
@@ -266,10 +329,55 @@ public class MapActivity extends Activity {
 
 
         // Text View
-        ETAmenu = findViewById(R.id.ETA_text);
-            ETAmenu.setVisibility(View.INVISIBLE);
+        TRACKING = findViewById(R.id.tracking);
+            ETAmenu.setVisibility(View.VISIBLE);
 
 
+
+*/
+
+        final TextView TRACKING = findViewById(R.id.tracking);
+        TRACKING.setVisibility(View.INVISIBLE);
+
+        // FAB Buttons onClicks
+
+        //EXIT
+        final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
+        fabEXIT.hide();
+        fabEXIT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "Exit pressed");
+                TRACKING.setVisibility(View.INVISIBLE);
+                fabEXIT.hide();
+
+            }
+        });
+
+        //GO BUTTON
+        final FloatingActionButton fabGO = findViewById(R.id.floatingActionButtonGO);
+        fabGO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "GO pressed");
+                fabEXIT.show();
+                TRACKING.setVisibility(View.VISIBLE);
+
+
+
+            }
+        });
+
+        //BUSNUM BUTTON
+        FloatingActionButton fabBusNum = findViewById(R.id.floatingActionButtonBUSNUM);
+        fabBusNum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "GO pressed");
+
+
+            }
+        });
         }
 
 
