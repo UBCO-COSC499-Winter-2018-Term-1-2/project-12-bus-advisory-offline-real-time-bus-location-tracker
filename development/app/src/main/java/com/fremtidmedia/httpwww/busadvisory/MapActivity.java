@@ -74,6 +74,7 @@ public class MapActivity extends Activity {
     Button tenButton;
     Button fifteenButton;
     Button okButton;
+    Button testTrack;
     String id;
     RequestQueue queue;
     Cache cache;
@@ -98,6 +99,10 @@ public class MapActivity extends Activity {
         fifteenButton.setVisibility(View.VISIBLE);
 
         ETAmenu.setVisibility(View.VISIBLE);
+
+        testTrack.setVisibility(View.VISIBLE);
+
+
 
 
         // Making the exit button visible
@@ -191,7 +196,7 @@ public class MapActivity extends Activity {
     }
 
     public void testMarker(View views) {
-        GeoCoordinate tempBus = new GeoCoordinate(49.939073, -119.3, 0.0);
+        GeoCoordinate tempBus = new GeoCoordinate(49.943497, -119.387124, 0.0);
         createBus(tempBus);
     }
 
@@ -394,6 +399,7 @@ public void onResume() {
 
 
     public void createBus(GeoCoordinate location) {
+        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.45);
         try {
             Image image = new Image();
             image.setImageResource(R.drawable.bus);
@@ -405,6 +411,7 @@ public void onResume() {
             MapMarker busMarker = new MapMarker(location, image);
             markerList.add(busMarker);
             map.addMapObjects(markerList);
+            map.setCenter(location, Map.Animation.NONE);
 
         }catch (Exception e) {
             Log.e("HERE", "Caught: " + e.getMessage());
