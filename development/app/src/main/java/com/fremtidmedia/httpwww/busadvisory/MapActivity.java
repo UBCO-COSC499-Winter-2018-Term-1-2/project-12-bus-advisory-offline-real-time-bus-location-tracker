@@ -3,13 +3,11 @@ package com.fremtidmedia.httpwww.busadvisory;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -20,20 +18,33 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.here.android.mpa.common.GeoCoordinate;
+import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.common.PositioningManager;
-import com.here.android.mpa.common.ViewObject;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
-import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
-import com.here.android.mpa.mapping.MapState;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -46,7 +57,12 @@ import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static com.here.android.mpa.internal.r.H;
+import static com.here.android.mpa.internal.r.e;
 
 public class MapActivity extends Activity {
 
@@ -58,10 +74,16 @@ public class MapActivity extends Activity {
     Button tenButton;
     Button fifteenButton;
     Button okButton;
+    Button testTrack;
+    String id;
+    RequestQueue queue;
+    Cache cache;
+    Network network;
 
-// TextView
+
 
     TextView ETAmenu;
+
 
 
     public void clickTrack(View views) {
@@ -77,6 +99,10 @@ public class MapActivity extends Activity {
         fifteenButton.setVisibility(View.VISIBLE);
 
         ETAmenu.setVisibility(View.VISIBLE);
+
+        testTrack.setVisibility(View.VISIBLE);
+
+
 
 
         // Making the exit button visible
@@ -113,21 +139,21 @@ public class MapActivity extends Activity {
 
         ETAmenu.setVisibility(View.INVISIBLE);
 
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        TextView new1 = findViewById(R.id.ETA_text);
         new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
 
 
     }
 
     public void clickFive(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        TextView new1 = findViewById(R.id.ETA_text);
         new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
 
         okButton.setVisibility(View.VISIBLE);
     }
 
     public void clickTen(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        TextView new1 = findViewById(R.id.ETA_text);
         new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
 
         okButton.setVisibility(View.VISIBLE);
@@ -135,7 +161,7 @@ public class MapActivity extends Activity {
     }
 
     public void clickFifteen(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
+        TextView new1 = findViewById(R.id.ETA_text);
         new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
 
         okButton.setVisibility(View.VISIBLE);
@@ -165,12 +191,23 @@ public class MapActivity extends Activity {
         okButton.setVisibility(View.INVISIBLE);
     }
 
+<<<<<<< HEAD
     public void centerButton(View views){
         map = mapFragment.getMap();
         map.setCenter(userLocation, Map.Animation.NONE);
 
     }
 
+=======
+    public void testBus(View views){
+       makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+    }
+
+    public void testMarker(View views) {
+        GeoCoordinate tempBus = new GeoCoordinate(49.943497, -119.387124, 0.0);
+        createBus(tempBus);
+    }
+>>>>>>> test
 
     // Button methods
 
@@ -180,14 +217,19 @@ public class MapActivity extends Activity {
 
     private Map map = null;
     private MapFragment mapFragment = null;
-    private MapMarker marker;
     private GeoCoordinate userLocation;
+    private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
     private boolean paused;
+<<<<<<< HEAD
 
     List<MapObject> objList = new ArrayList<>();
     List<MapMarker> busStops = new ArrayList<>();
+=======
+    private ArrayList<MapObject> markerList = new ArrayList<>();
+//    RequestQueue queue;
+>>>>>>> test
 
 
     // Resume positioning listener on wake up
@@ -220,6 +262,58 @@ public class MapActivity extends Activity {
         super.onDestroy();
     }
 
+    public void makePostRequest(String url) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(stringRequest);
+    }
+
+
+        public void makeGetRequest(String url){
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            try {
+                               JSONArray location = response.getJSONArray("buslocation");
+                               JSONObject object1 = location.getJSONObject(0);
+                               JSONObject object2 = object1.getJSONObject("location");
+                               JSONArray object3 = object2.getJSONArray("coordinates");
+                               String lon = object3.getString(0);
+                               String lat = object3.getString(1);
+                               busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
+                               Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
+                               createBus(busLocation);
+                            }
+                            catch (Exception e){
+
+                                Log.e("HERE", "Caught: " + e.getMessage());
+
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // TODO: Handle error
+
+                        }
+                    });
+            queue.add(jsonObjectRequest);
+        }
+            //TODO @Matthew implement get method with JSON parsing
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -238,6 +332,11 @@ public class MapActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        network = new BasicNetwork(new HurlStack());
+        queue = Volley.newRequestQueue(this);
+        queue.start();
+        id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
@@ -255,7 +354,6 @@ public class MapActivity extends Activity {
             public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
                 if (error == OnEngineInitListener.Error.NONE) {
                     map = mapFragment.getMap();
-                    map.removeMapObjects(objList);
                     map.setCenter(userLocation, Map.Animation.NONE);
                     map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) /1.5);
 
@@ -292,7 +390,7 @@ public class MapActivity extends Activity {
                     };
 
                     try {
-                        positioningManager.addListener(new WeakReference<>(positionListener));
+                        positioningManager.addListener(new WeakReference<PositioningManager.OnPositionChangedListener>(positionListener));
                         if(!positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK)) {
                             Log.e("HERE", "PositioningManager.start: Failed to start...");
                         }
@@ -339,6 +437,7 @@ public class MapActivity extends Activity {
 
 
 
+<<<<<<< HEAD
     public void createStops(GeoCoordinate location) {
         Image marker_img = new Image();
         try {
@@ -353,9 +452,24 @@ public class MapActivity extends Activity {
         MapMarker stop2 = new MapMarker(location, marker_img);
         busStops.add(stop2);
         map.addMapObject(stop2);
+=======
+    public void createBus(GeoCoordinate location) {
+        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.45);
+        try {
+            Image image = new Image();
+            image.setImageResource(R.drawable.bus);
+>>>>>>> test
 
-    }
+            if(!markerList.isEmpty()) {
+                map.removeMapObjects(markerList);
+                markerList.clear();
+            }
+            MapMarker busMarker = new MapMarker(location, image);
+            markerList.add(busMarker);
+            map.addMapObjects(markerList);
+            map.setCenter(location, Map.Animation.NONE);
 
+<<<<<<< HEAD
     public MapMarker closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
         double tempX1 = Math.abs(userLocation.getLongitude() - stops.get(0).getCoordinate().getLatitude());
@@ -375,8 +489,25 @@ public class MapActivity extends Activity {
         return closest;
     }
 
+=======
+        }catch (Exception e) {
+            Log.e("HERE", "Caught: " + e.getMessage());
+        }
+>>>>>>> test
 
+    }
 
+    private void topicSubscribe(String topic){
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(MapActivity.this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
     private void kontaktDetect() {
         IBeaconListener iBeaconListener = new SimpleIBeaconListener() {
             @Override
