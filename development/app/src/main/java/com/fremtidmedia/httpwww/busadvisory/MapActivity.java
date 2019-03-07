@@ -191,14 +191,12 @@ public class MapActivity extends Activity {
         okButton.setVisibility(View.INVISIBLE);
     }
 
-<<<<<<< HEAD
     public void centerButton(View views){
         map = mapFragment.getMap();
         map.setCenter(userLocation, Map.Animation.NONE);
 
     }
 
-=======
     public void testBus(View views){
        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
     }
@@ -207,7 +205,6 @@ public class MapActivity extends Activity {
         GeoCoordinate tempBus = new GeoCoordinate(49.943497, -119.387124, 0.0);
         createBus(tempBus);
     }
->>>>>>> test
 
     // Button methods
 
@@ -222,14 +219,11 @@ public class MapActivity extends Activity {
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
     private boolean paused;
-<<<<<<< HEAD
 
     List<MapObject> objList = new ArrayList<>();
     List<MapMarker> busStops = new ArrayList<>();
-=======
     private ArrayList<MapObject> markerList = new ArrayList<>();
 //    RequestQueue queue;
->>>>>>> test
 
 
     // Resume positioning listener on wake up
@@ -437,7 +431,6 @@ public class MapActivity extends Activity {
 
 
 
-<<<<<<< HEAD
     public void createStops(GeoCoordinate location) {
         Image marker_img = new Image();
         try {
@@ -452,13 +445,11 @@ public class MapActivity extends Activity {
         MapMarker stop2 = new MapMarker(location, marker_img);
         busStops.add(stop2);
         map.addMapObject(stop2);
-=======
     public void createBus(GeoCoordinate location) {
         map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.45);
         try {
             Image image = new Image();
             image.setImageResource(R.drawable.bus);
->>>>>>> test
 
             if(!markerList.isEmpty()) {
                 map.removeMapObjects(markerList);
@@ -469,7 +460,9 @@ public class MapActivity extends Activity {
             map.addMapObjects(markerList);
             map.setCenter(location, Map.Animation.NONE);
 
-<<<<<<< HEAD
+        }catch (Exception e) {
+            Log.e("HERE", "Caught: " + e.getMessage());
+        }
     public MapMarker closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
         double tempX1 = Math.abs(userLocation.getLongitude() - stops.get(0).getCoordinate().getLatitude());
@@ -485,15 +478,10 @@ public class MapActivity extends Activity {
 
             }
         }
-        
+
         return closest;
     }
 
-=======
-        }catch (Exception e) {
-            Log.e("HERE", "Caught: " + e.getMessage());
-        }
->>>>>>> test
 
     }
 
