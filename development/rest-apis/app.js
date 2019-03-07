@@ -78,7 +78,7 @@ app.post('/buslocation', (req, res) => {
         timestamp: new Date().getTime()
     });
 
-    // TODO: add trigger Here
+
 
     busLocation.save().then((doc) => {
         res.send(doc);
@@ -167,7 +167,7 @@ app.patch('/buslocation/:id', (req, res) => {
     var id = req.params.id;
     var body = _.pick(req.body, 'location');
     //    console.log('bd', body.location.coordinates);
-
+    // TODO: add trigger Here
     if (!ObjectID.isValid(id)) {
         return res.status(404).send('Please provide correct id');
     }
