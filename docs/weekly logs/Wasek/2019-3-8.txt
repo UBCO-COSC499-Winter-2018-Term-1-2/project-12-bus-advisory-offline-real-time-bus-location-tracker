@@ -1,0 +1,14 @@
+(2) Teem meeting [1.5]
+(3.5) Backend meeting [3.5]
+(2) Update existing APIs [12]
+(2.5)Create unofficial API doc [2.5]
+(4) POST - Cloud server will store user’s travel time and distance anonymously in database. [1.5]
+(4) PATCH - Cloud server will store user’s travel time and distance anonymously in database. [1.5]
+(2) Admins will be able to view data stored in the online database hosted in AWS. [0]
+(4) DELETE /triprequest/:id so trip request is removed when the user does not wish to track a bus anymore [1]
+(0) update logic for time
+(4) GET /triprequest/:busstop Cloud server will send requested bus stop location of the passenger to an LTE enabled computer on the bus. [2]
+(5) Create a PATCH API for bus location updates [5]
+(1) Meeting with Eng team [1]
+
+Total : 31.5 hours
