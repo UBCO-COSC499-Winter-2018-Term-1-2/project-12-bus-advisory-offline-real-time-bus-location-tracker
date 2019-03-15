@@ -23,7 +23,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp" />
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="1dp" />
 
 
     <TextView
@@ -70,31 +71,9 @@
         app:backgroundTint="@color/black"
         app:srcCompat="@android:drawable/ic_delete" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButtonBUSNUM"
-        android:layout_width="107dp"
-        android:layout_height="87dp"
-        android:layout_above="@+id/textView3"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="324dp"
-        android:layout_marginBottom="1dp"
-        android:clickable="true"
-        app:backgroundTint="@android:color/darker_gray"
-        app:fabCustomSize="80dp"
-        app:srcCompat="@mipmap/ic_launcher" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButtonGO"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="13dp"
-        android:layout_marginBottom="9dp"
-        android:clickable="true"
-        app:backgroundTint="@android:color/holo_green_light"
-        app:fabCustomSize="60dp"
-        app:srcCompat="@android:drawable/presence_online" />
+
+
 
     <TextView
         android:id="@+id/tracking"
@@ -102,12 +81,73 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="83dp"
         android:text="TRACKING"
         android:textColor="@android:color/holo_red_light"
         android:textSize="36sp"
         android:textStyle="bold" />
 
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="453dp"
+        android:layout_marginEnd="-208dp"
+        android:layout_marginBottom="9dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/newGO"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@android:color/transparent"
+            app:backgroundTint="@android:color/holo_green_light" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="16dp"
+            android:text="GO"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="74dp"
+            android:layout_height="59dp"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom|right"
+            android:layout_marginTop="375dp"
+            android:layout_marginEnd="76dp"
+            android:layout_marginBottom="9dp">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/newBusNum"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:color/transparent"
+                app:backgroundTint="#D3D3D3	" />
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="16dp"
+                android:text="97"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+
     //presence_online
 
 </RelativeLayout>
+
+
 

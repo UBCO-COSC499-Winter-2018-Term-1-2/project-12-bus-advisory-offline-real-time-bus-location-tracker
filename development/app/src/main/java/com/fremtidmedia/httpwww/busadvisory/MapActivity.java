@@ -16,11 +16,28 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.TextView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import android.content.DialogInterface;
+import android.app.AlertDialog.Builder;
+import android.app.AlertDialog;
+
+
+import android.content.Context;
+import android.graphics.*;
+import android.graphics.drawable.Drawable;
+import android.text.InputType;
+import android.util.AttributeSet;
+import android.util.TypedValue;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.NumberPicker;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -57,6 +74,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
+
+import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 
 import static com.here.android.mpa.internal.r.H;
 
@@ -113,6 +132,11 @@ public class MapActivity extends Activity {
 
     }
     */
+
+
+
+
+
 
 
     public void clickTrack(View views) {
@@ -336,49 +360,190 @@ public class MapActivity extends Activity {
 
 */
 
+        //TRACKING & its animation
         final TextView TRACKING = findViewById(R.id.tracking);
         TRACKING.setVisibility(View.INVISIBLE);
 
-        // FAB Buttons onClicks
+        final Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(200);
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
 
-        //EXIT
+
+
+
+
+
+
+        /*
+        numberPicker.build();
+
+
+        numberPicker.defaultValue(1);
+
+        numberPicker.minValue(1);
+        numberPicker.maxValue(100);
+        numberPicker.defaultValue(1);
+        numberPicker.backgroundColor(Color.WHITE);
+        numberPicker.separatorColor(Color.TRANSPARENT);
+        numberPicker.textColor(Color.BLACK);
+        numberPicker.textSize(20);
+        numberPicker.enableFocusability(false);
+        numberPicker.wrapSelectorWheel(true);
+        numberPicker.build();
+
+        new AlertDialog.Builder(this)
+                .setTitle("How much time?");
+                .setView(numberPicker)
+        NUM.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Snackbar.make(findViewById(R.id.your_container), "You picked : " + numberPicker.getValue(), Snackbar.LENGTH_LONG).show();
+            }
+        })
+        NUM.show();
+
+        */
+        /*
+
+
+        <biz.kasual.materialnumberpicker.MaterialNumberPicker
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:npBackgroundColor="@color/colorAccent"
+        app:npDefaultValue="10"
+        app:npMaxValue="50"
+        app:npMinValue="1"
+        app:npSeparatorColor="@color/colorAccent"
+        app:npTextColor="@color/colorPrimary"
+        app:npTextSize="25sp" />
+         */
+
+
+        // FAB Buttons onClicks & Number Picker
+
+        //EXIT ()
         final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
         fabEXIT.hide();
         fabEXIT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "Exit pressed");
+                TRACKING.clearAnimation();
                 TRACKING.setVisibility(View.INVISIBLE);
                 fabEXIT.hide();
+                //fabGO.show(); <- tears, for some reason this isn't working...
+                // i think itds because the function is undeneath it
 
             }
         });
 
-        //GO BUTTON
-        final FloatingActionButton fabGO = findViewById(R.id.floatingActionButtonGO);
+        //NUMBER PICKER
+        final MaterialNumberPicker numberPicker = new MaterialNumberPicker(this);
+
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(100);
+        numberPicker.setBackgroundColor(Color.WHITE);
+        numberPicker.setSeparatorColor(Color.TRANSPARENT);
+        numberPicker.setTextColor(Color.BLACK);
+        numberPicker.setTextSize(50);
+        //numberPicker.isFocusabilityEnabled();
+        numberPicker.setWrapSelectorWheel(true);
+        numberPicker.buildLayer();
+
+        final AlertDialog.Builder newAL = new AlertDialog.Builder(this);
+
+        newAL.setTitle("How much time?");
+        newAL.setView(numberPicker);
+
+        newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                fabEXIT.show();
+                TRACKING.setVisibility(View.VISIBLE);
+                TRACKING.startAnimation(anim);
+
+
+            }
+        });
+
+        //GO BUTTON (this function is for the GO button... the methods go in here)
+        final FloatingActionButton fabGO = findViewById(R.id.newGO
+        );
         fabGO.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-                fabEXIT.show();
-                TRACKING.setVisibility(View.VISIBLE);
+                //fabEXIT.show();
+               // TRACKING.setVisibility(View.VISIBLE);
+               // TRACKING.startAnimation(anim);
+                newAL.create().show();
 
 
 
             }
         });
 
-        //BUSNUM BUTTON
-        FloatingActionButton fabBusNum = findViewById(R.id.floatingActionButtonBUSNUM);
+        //BUSNUM BUTTON (the functions for the BUSNUM GO HERE)
+        FloatingActionButton fabBusNum = findViewById(R.id.newBusNum);
         fabBusNum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
 
-
             }
         });
+
+
         }
+
+        /*
+        <android.support.design.button.MaterialButton
+        android:id="@+id/fab_GO"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="0dp"
+        android:background="@android:color/holo_green_light"
+        android:text="GO"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:cornerRadius="56dp"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+        <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonGO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="82dp"
+        android:layout_marginBottom="117dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/holo_green_light"
+        app:fabCustomSize="60dp" />
+
+        <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonBUSNUM"
+        android:layout_width="107dp"
+        android:layout_height="87dp"
+        android:layout_above="@+id/textView3"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="127dp"
+        android:layout_marginBottom="191dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/darker_gray"
+        app:fabCustomSize="80dp"
+        app:srcCompat="@mipmap/ic_launcher" />
+         */
+
+
 
 
 // creates map marker at users location and centers map on that location
