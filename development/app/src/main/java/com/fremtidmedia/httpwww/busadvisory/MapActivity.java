@@ -201,10 +201,6 @@ public class MapActivity extends Activity {
        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
     }
 
-    public void testMarker(View views) {
-        GeoCoordinate tempBus = new GeoCoordinate(49.943497, -119.387124, 0.0);
-        createBus(tempBus);
-    }
 
     // Button methods
 
@@ -289,6 +285,7 @@ public class MapActivity extends Activity {
                                busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
                                Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
                                createBus(busLocation);
+                               centerView(busLocation);
                             }
                             catch (Exception e){
 
@@ -349,7 +346,7 @@ public class MapActivity extends Activity {
                 if (error == OnEngineInitListener.Error.NONE) {
                     map = mapFragment.getMap();
                     map.setCenter(userLocation, Map.Animation.NONE);
-                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) /1.5);
+                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) /1.75);
 
 
 
@@ -431,6 +428,7 @@ public class MapActivity extends Activity {
 
 
 
+
     public void createStops(GeoCoordinate location) {
         Image marker_img = new Image();
         try {
@@ -445,8 +443,15 @@ public class MapActivity extends Activity {
         MapMarker stop2 = new MapMarker(location, marker_img);
         busStops.add(stop2);
         map.addMapObject(stop2);
+
+    }
+
+    public void centerView (GeoCoordinate location){
+        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.5);
+        map.setCenter(location, Map.Animation.NONE);
+    }
+
     public void createBus(GeoCoordinate location) {
-        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.45);
         try {
             Image image = new Image();
             image.setImageResource(R.drawable.bus);
@@ -458,11 +463,13 @@ public class MapActivity extends Activity {
             MapMarker busMarker = new MapMarker(location, image);
             markerList.add(busMarker);
             map.addMapObjects(markerList);
-            map.setCenter(location, Map.Animation.NONE);
 
         }catch (Exception e) {
             Log.e("HERE", "Caught: " + e.getMessage());
         }
+
+    }
+
     public MapMarker closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
         double tempX1 = Math.abs(userLocation.getLongitude() - stops.get(0).getCoordinate().getLatitude());
@@ -482,8 +489,6 @@ public class MapActivity extends Activity {
         return closest;
     }
 
-
-    }
 
     private void topicSubscribe(String topic){
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
