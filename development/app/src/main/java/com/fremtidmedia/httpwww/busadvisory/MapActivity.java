@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -199,6 +200,9 @@ public class MapActivity extends Activity {
 
     public void testBus(View views){
        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+
+       //new BusUpdate().execute();
+
     }
 
 
@@ -214,7 +218,8 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
-    private boolean paused;
+    private boolean paused = false;
+    private boolean tracking = true;
 
     List<MapObject> objList = new ArrayList<>();
     List<MapMarker> busStops = new ArrayList<>();
@@ -226,6 +231,7 @@ public class MapActivity extends Activity {
     public void onResume() {
         super.onResume();
         paused = false;
+        tracking = true;
         if (positioningManager != null) {
              positioningManager.start(
                 PositioningManager.LocationMethod.GPS_NETWORK);
@@ -239,6 +245,7 @@ public class MapActivity extends Activity {
         }
         super.onPause();
         paused = true;
+        tracking = false;
     }
 
     // To remove the positioning listener
@@ -250,6 +257,7 @@ public class MapActivity extends Activity {
         }
         map = null;
         super.onDestroy();
+        tracking = false;
     }
 
     public void makePostRequest(String url) {
@@ -424,6 +432,37 @@ public class MapActivity extends Activity {
 
 
         }
+
+    private class BusUpdate extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            while (tracking == true) {
+                for (int i = 0; i < 3; i++) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+            Log.d("Bus", "location updated");
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
 
 
 
