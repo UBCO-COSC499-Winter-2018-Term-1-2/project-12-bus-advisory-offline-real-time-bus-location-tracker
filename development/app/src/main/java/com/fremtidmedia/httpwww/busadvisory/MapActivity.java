@@ -7,16 +7,23 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+<<<<<<< HEAD
 import android.nfc.Tag;
+=======
+>>>>>>> 129-Theme-Change
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.widget.Button;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+
+import android.content.DialogInterface;
+import android.app.AlertDialog;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -40,14 +47,16 @@ import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
+<<<<<<< HEAD
 import com.here.android.mpa.common.PositioningManager;
+=======
+>>>>>>> 129-Theme-Change
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +66,7 @@ import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
+<<<<<<< HEAD
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -204,11 +214,21 @@ public class MapActivity extends Activity {
 
     // Button methods
 
+=======
+import biz.kasual.materialnumberpicker.MaterialNumberPicker;
+
+public class MapActivity extends Activity {
+
+>>>>>>> 129-Theme-Change
     LocationManager locationManager;
     LocationListener locationListener;
     IBeaconDevice searchBeacon;
 
     private Map map = null;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 129-Theme-Change
     private MapFragment mapFragment = null;
     private GeoCoordinate userLocation;
     private GeoCoordinate busLocation;
@@ -241,6 +261,7 @@ public class MapActivity extends Activity {
         paused = true;
     }
 
+<<<<<<< HEAD
     // To remove the positioning listener
     public void onDestroy() {
         if (positioningManager != null) {
@@ -306,14 +327,22 @@ public class MapActivity extends Activity {
         }
             //TODO @Matthew implement get method with JSON parsing
 
+=======
+>>>>>>> 129-Theme-Change
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+<<<<<<< HEAD
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
+=======
+                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 0, locationListener);
+>>>>>>> 129-Theme-Change
                 }
             }
         }
@@ -400,32 +429,95 @@ public class MapActivity extends Activity {
 
 
 
-        //Buttons
-        exitButton = findViewById(R.id.exit_button);
-            exitButton.setVisibility(View.INVISIBLE);
 
-        fiveButton = findViewById(R.id.five_button);
-            fiveButton.setVisibility(View.INVISIBLE);
+        //TRACKING & its animation
+        final TextView TRACKING = findViewById(R.id.tracking);
+        TRACKING.setVisibility(View.INVISIBLE);
+
+        final Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(200);
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+
+        final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
+        fabEXIT.hide();
+        fabEXIT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "Exit pressed");
+                TRACKING.clearAnimation();
+                TRACKING.setVisibility(View.INVISIBLE);
+                fabEXIT.hide();
+
+            }
+        });
+
+        //NUMBER PICKER
+        final MaterialNumberPicker numberPicker = new MaterialNumberPicker(this);
+
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(100);
+        numberPicker.setBackgroundColor(Color.WHITE);
+        numberPicker.setSeparatorColor(Color.TRANSPARENT);
+        numberPicker.setTextColor(Color.BLACK);
+        numberPicker.setTextSize(50);
+        numberPicker.setWrapSelectorWheel(true);
+        numberPicker.buildLayer();
+
+        final AlertDialog.Builder newAL = new AlertDialog.Builder(this);
+
+        newAL.setTitle("How much time?");
+        newAL.setView(numberPicker);
+
+        newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                fabEXIT.show();
+                TRACKING.setVisibility(View.VISIBLE);
+                TRACKING.startAnimation(anim);
 
 
-        tenButton = findViewById(R.id.ten_button);
-            tenButton.setVisibility(View.INVISIBLE);
+            }
+        });
 
-        fifteenButton = findViewById(R.id.fifteen_button);
-            fifteenButton.setVisibility(View.INVISIBLE);
+        final FloatingActionButton fabGO = findViewById(R.id.newGO
+        );
+        fabGO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "GO pressed");
+                newAL.create().show();
 
-        okButton = findViewById(R.id.ok_button);
-            okButton.setVisibility(View.INVISIBLE);
 
 
-        // Text View
-        ETAmenu = findViewById(R.id.ETA_text);
-            ETAmenu.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        FloatingActionButton fabBusNum = findViewById(R.id.newBusNum);
+        fabBusNum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "GO pressed");
+
+            }
+        });
 
 
         }
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+// creates map marker at users location and centers map on that location
+    private void initialize() {
+        // Search for the map fragment to finish setup by calling init().
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
+>>>>>>> 129-Theme-Change
 
 
 
