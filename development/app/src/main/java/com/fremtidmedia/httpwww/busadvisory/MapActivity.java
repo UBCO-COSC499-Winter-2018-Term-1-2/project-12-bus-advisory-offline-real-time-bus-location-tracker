@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,6 +22,7 @@ import android.view.View;
 
 import android.content.DialogInterface;
 import android.app.AlertDialog;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -51,6 +53,7 @@ import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +62,9 @@ import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListene
 import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 
@@ -79,7 +85,10 @@ public class MapActivity extends Activity {
     List<MapObject> objList = new ArrayList<>();
     List<MapMarker> busStops = new ArrayList<>();
     private ArrayList<MapObject> markerList = new ArrayList<>();
-//    RequestQueue queue;
+    RequestQueue queue;
+    Cache cache;
+    Network network;
+    String id;
 
 
     // Resume positioning listener on wake up
@@ -131,7 +140,6 @@ public class MapActivity extends Activity {
         public void makeGetRequest(String url){
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
                         @Override
                         public void onResponse(JSONObject response) {
 
@@ -164,7 +172,6 @@ public class MapActivity extends Activity {
                     });
             queue.add(jsonObjectRequest);
         }
-            //TODO @Matthew implement get method with JSON parsing
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
