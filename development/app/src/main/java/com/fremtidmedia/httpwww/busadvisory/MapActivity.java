@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -11,12 +12,17 @@ import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.widget.Button;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import android.util.Log;
 import android.view.View;
+
+import android.content.DialogInterface;
+import android.app.AlertDialog;
 import android.widget.Toast;
 
 import com.android.volley.Cache;
@@ -59,154 +65,11 @@ import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.here.android.mpa.internal.r.H;
-import static com.here.android.mpa.internal.r.e;
+import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 
 public class MapActivity extends Activity {
-
-// Buttons
-
-    Button exitButton;
-   // Button trackButton;
-    Button fiveButton;
-    Button tenButton;
-    Button fifteenButton;
-    Button okButton;
-    Button testTrack;
-    String id;
-    RequestQueue queue;
-    Cache cache;
-    Network network;
-
-
-
-    TextView ETAmenu;
-
-
-
-    public void clickTrack(View views) {
-
-        Log.i("Info", "TRACK pressed");
-
-
-        // Making the ETA menu visible
-        fiveButton.setVisibility(View.VISIBLE);
-
-        tenButton.setVisibility(View.VISIBLE);
-
-        fifteenButton.setVisibility(View.VISIBLE);
-
-        ETAmenu.setVisibility(View.VISIBLE);
-
-        testTrack.setVisibility(View.VISIBLE);
-
-
-
-
-        // Making the exit button visible
-        exitButton.setVisibility(View.VISIBLE);
-    }
-
-    public void clickBusNum(View views) {
-
-        Log.i("Info", "BusNum pressed");
-
-        exitButton.setVisibility(View.VISIBLE);
-
-        // NEW ACTIVITY METHOD
-       // Intent intent = new Intent(this, );
-        //startActivity(intent);
-       // openBusNumAc();
-    }
-
-    public void clickExit(View views) {
-
-        Log.i("Info", "clickExit pressed");
-
-        // sets exit button to be invisible
-        exitButton.setVisibility(View.INVISIBLE);
-
-        // sets ETA menu to be invisible
-        fiveButton.setVisibility(View.INVISIBLE);
-
-        tenButton.setVisibility(View.INVISIBLE);
-
-        fifteenButton.setVisibility(View.INVISIBLE);
-
-        okButton.setVisibility(View.INVISIBLE);
-
-        ETAmenu.setVisibility(View.INVISIBLE);
-
-        TextView new1 = findViewById(R.id.ETA_text);
-        new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
-
-
-    }
-
-    public void clickFive(View views){
-        TextView new1 = findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
-
-        okButton.setVisibility(View.VISIBLE);
-    }
-
-    public void clickTen(View views){
-        TextView new1 = findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
-
-        okButton.setVisibility(View.VISIBLE);
-
-    }
-
-    public void clickFifteen(View views){
-        TextView new1 = findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
-
-        okButton.setVisibility(View.VISIBLE);
-
-    }
-
-    public void clickOK(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
-
-       // TextView newTrack = (TextView)findViewById(R.id.track_button);
-       // newTrack.setText("TRACKING");
-       // newTrack.setBackgroundColor(Color.RED);
-
-        // sets exit button to be invisible
-        exitButton.setVisibility(View.INVISIBLE);
-
-        // sets ETA menu to be invisible
-        fiveButton.setVisibility(View.INVISIBLE);
-
-        tenButton.setVisibility(View.INVISIBLE);
-
-        fifteenButton.setVisibility(View.INVISIBLE);
-
-        ETAmenu.setVisibility(View.INVISIBLE);
-
-        okButton.setVisibility(View.INVISIBLE);
-    }
-
-    public void centerButton(View views){
-        map = mapFragment.getMap();
-        map.setCenter(userLocation, Map.Animation.NONE);
-
-    }
-
-    public void testBus(View views){
-       makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-
-       //new BusUpdate().execute();
-
-    }
-
-
-    // Button methods
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -224,7 +87,14 @@ public class MapActivity extends Activity {
     List<MapObject> objList = new ArrayList<>();
     List<MapMarker> busStops = new ArrayList<>();
     private ArrayList<MapObject> markerList = new ArrayList<>();
-//    RequestQueue queue;
+    RequestQueue queue;
+    Cache cache;
+    Network network;
+    String id;
+
+    public void testBus(View views){
+        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+    }
 
 
     // Resume positioning listener on wake up
@@ -279,7 +149,6 @@ public class MapActivity extends Activity {
         public void makeGetRequest(String url){
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
                         @Override
                         public void onResponse(JSONObject response) {
 
@@ -312,7 +181,6 @@ public class MapActivity extends Activity {
                     });
             queue.add(jsonObjectRequest);
         }
-            //TODO @Matthew implement get method with JSON parsing
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -408,27 +276,79 @@ public class MapActivity extends Activity {
 
 
 
-        //Buttons
-        exitButton = findViewById(R.id.exit_button);
-            exitButton.setVisibility(View.INVISIBLE);
 
-        fiveButton = findViewById(R.id.five_button);
-            fiveButton.setVisibility(View.INVISIBLE);
+        //TRACKING & its animation
+        final TextView TRACKING = findViewById(R.id.tracking);
+        TRACKING.setVisibility(View.INVISIBLE);
+
+        final Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(200);
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+
+        final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
+        fabEXIT.hide();
+        fabEXIT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "Exit pressed");
+                TRACKING.clearAnimation();
+                TRACKING.setVisibility(View.INVISIBLE);
+                fabEXIT.hide();
+
+            }
+        });
+
+        //NUMBER PICKER
+        final MaterialNumberPicker numberPicker = new MaterialNumberPicker(this);
+
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(100);
+        numberPicker.setBackgroundColor(Color.WHITE);
+        numberPicker.setSeparatorColor(Color.TRANSPARENT);
+        numberPicker.setTextColor(Color.BLACK);
+        numberPicker.setTextSize(50);
+        numberPicker.setWrapSelectorWheel(true);
+        numberPicker.buildLayer();
+
+        final AlertDialog.Builder newAL = new AlertDialog.Builder(this);
+
+        newAL.setTitle("How much time?");
+        newAL.setView(numberPicker);
+
+        newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                fabEXIT.show();
+                TRACKING.setVisibility(View.VISIBLE);
+                TRACKING.startAnimation(anim);
 
 
-        tenButton = findViewById(R.id.ten_button);
-            tenButton.setVisibility(View.INVISIBLE);
+            }
+        });
 
-        fifteenButton = findViewById(R.id.fifteen_button);
-            fifteenButton.setVisibility(View.INVISIBLE);
+        final FloatingActionButton fabGO = findViewById(R.id.newGO
+        );
+        fabGO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "GO pressed");
+                newAL.create().show();
 
-        okButton = findViewById(R.id.ok_button);
-            okButton.setVisibility(View.INVISIBLE);
 
 
-        // Text View
-        ETAmenu = findViewById(R.id.ETA_text);
-            ETAmenu.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        FloatingActionButton fabBusNum = findViewById(R.id.newBusNum);
+        fabBusNum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "GO pressed");
+
+            }
+        });
 
 
         }

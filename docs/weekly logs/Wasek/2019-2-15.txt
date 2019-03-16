@@ -1,0 +1,8 @@
+(4) Cloud server will get data of the live position of busses from small board computers. [7]
+(4) Cloud server will send bus stop location of the passenger to an LTE enabled computer on the bus. [4]
+(4) Cloud server will send tracked bus location to the application. [4]
+(4) Cloud server will receive user selected bus stop and time reminder from the application. [4]
+(3) Backend Meeting [3]
+(2) Team meetings [2]
+
+Total : 24 hours

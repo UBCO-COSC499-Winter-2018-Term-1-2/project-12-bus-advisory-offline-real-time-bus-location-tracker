@@ -24,63 +24,19 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp" />
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="1dp" />
 
-
-    <Button
-        android:id="@+id/track_button"
-        android:layout_width="106dp"
-        android:layout_height="58dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="15dp"
-        android:background="@color/colorAccent"
-        android:onClick="clickTrack"
-        android:text="TRACK"
-        android:textColor="@android:color/white"
-        android:textSize="30sp" />
-
-    <Button
-        android:id="@+id/BusNum"
-        android:layout_width="96dp"
-        android:layout_height="91dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="586dp"
-        android:background="@drawable/round_button"
-        android:onClick="clickBusNum"
-        android:padding="15dp"
-        android:text="97"
-        android:textColor="@android:color/white"
-        android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/exit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="99dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:background="@android:color/transparent"
-        android:onClick="clickExit"
-        android:text="X"
-        android:textColor="@android:color/holo_red_light"
-        android:textSize="@android:dimen/notification_large_icon_width" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
-        android:layout_height="164dp"
+        android:layout_height="75dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginBottom="0dp"
-        android:background="@color/colorPrimaryDark"
-        android:clickable="true"
+        android:background="#333333"
         android:gravity="bottom"
         android:onClick="testBus"
         android:text="UBCO Exchange Bay B"
@@ -89,114 +45,103 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="370dp"
-        android:layout_marginEnd="41dp"
-        android:layout_marginBottom="109dp"
-        android:text="10"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/track_button"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="83dp"
-        android:text="Minutes"
+        android:layout_marginEnd="224dp"
+        android:layout_marginBottom="26dp"
+        android:text="10 Minutes"
         android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButtonEXIT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="338dp"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        app:backgroundTint="@color/black"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+
+
+
+
     <TextView
-        android:id="@+id/ETA_text"
-        android:layout_width="301dp"
-        android:layout_height="271dp"
+        android:id="@+id/tracking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
-        android:background="@color/colorPrimaryDark"
-        android:text="When would you like to be notified about the busses ETA (in minutes)?"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="24sp" />
+        android:layout_marginTop="83dp"
+        android:text="TRACKING"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="36sp"
+        android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/centerViewButton"
-        android:layout_width="53dp"
+
+    <FrameLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView4"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginBottom="177dp"
-        android:background="@android:drawable/ic_menu_mylocation"
-        android:onClick="centerButton"
-        android:visibility="visible" />
+        android:layout_alignParentTop="true"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="453dp"
+        android:layout_marginEnd="-208dp"
+        android:layout_marginBottom="9dp">
 
-    <Button
-        android:id="@+id/five_button"
-        android:layout_width="58dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="94dp"
-        android:layout_marginBottom="293dp"
-        android:background="@android:color/holo_blue_light"
-        android:onClick="clickFive"
-        android:text="5"
-        android:textColor="@android:color/white"
-        android:textSize="30sp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/newGO"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@android:color/transparent"
+            app:backgroundTint="@android:color/holo_green_light" />
 
-    <Button
-        android:id="@+id/ten_button"
-        android:layout_width="64dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="161dp"
-        android:layout_marginBottom="291dp"
-        android:background="@android:color/holo_blue_light"
-        android:onClick="clickTen"
-        android:text="10"
-        android:textColor="@android:color/white"
-        android:textSize="30sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="16dp"
+            android:text="GO"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </FrameLayout>
 
-    <Button
-        android:id="@+id/fifteen_button"
-        android:layout_width="64dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="234dp"
-        android:layout_marginBottom="291dp"
-        android:background="@android:color/holo_blue_light"
-        android:onClick="clickFifteen"
-        android:text="15"
-        android:textColor="@android:color/white"
-        android:textSize="30sp" />
+        <FrameLayout
+            android:layout_width="74dp"
+            android:layout_height="59dp"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom|right"
+            android:layout_marginTop="375dp"
+            android:layout_marginEnd="76dp"
+            android:layout_marginBottom="9dp">
 
-    <Button
-        android:id="@+id/ok_button"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_alignEnd="@+id/fifteen_button"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="-2dp"
-        android:layout_marginBottom="208dp"
-        android:background="@color/colorAccent"
-        android:onClick="clickOK"
-        android:text="OK"
-        android:textColor="@android:color/white"
-        android:textSize="30sp" />
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/newBusNum"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:color/transparent"
+                app:backgroundTint="#D3D3D3	" />
 
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="16dp"
+                android:text="97"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+
+    //presence_online
 
 </RelativeLayout>
-
