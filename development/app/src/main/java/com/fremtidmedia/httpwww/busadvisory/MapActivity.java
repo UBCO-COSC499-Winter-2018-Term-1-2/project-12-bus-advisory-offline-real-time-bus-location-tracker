@@ -384,7 +384,7 @@ public class MapActivity extends Activity {
                         image.setImageResource(R.drawable.bus_stop);
                         MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
                         map.addMapObject(stop1);
-                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.976448, -119.394334, 0.0), image);
+                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.93407, -119.401548, 0.0), image);
                         map.addMapObject(stop2);
                         Image userImage = new Image();
                         userImage.setImageResource(R.drawable.iconfinder_map_marker_299087);
