@@ -54,11 +54,6 @@
         android:textSize="30sp"
         android:textStyle="bold" />
 
-    //insert old stuff here
-
-
-    //insert stuff before this
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButtonEXIT"
         android:layout_width="wrap_content"
