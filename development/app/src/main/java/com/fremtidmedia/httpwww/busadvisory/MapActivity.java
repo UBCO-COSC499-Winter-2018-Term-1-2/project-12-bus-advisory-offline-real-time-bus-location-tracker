@@ -117,21 +117,7 @@ public class MapActivity extends Activity {
     TextView ETAmenu;
 
 
-/*
-    TimePicker.setOnTimeChangedListener( new TimePicker.onTimeChangedListener(){
 
-        String date;
-
-
-        @Override
-        public void onTimeChanged (TimePicker view,int hourOfDay, int minute){
-        // TODO Auto-generated method stub
-        date = String.valueOf(hourOfDay).toString() + ":" + String.valueOf(minute).toString();
-        Log.i("Info", date);
-    }
-
-    }
-    */
 
 
 
@@ -170,88 +156,7 @@ public class MapActivity extends Activity {
        // openBusNumAc();
     }
 
-    /*
 
-    public void clickExit(View views) {
-
-        Log.i("Info", "clickExit pressed");
-
-        // sets exit button to be invisible
-        exitButton.setVisibility(View.INVISIBLE);
-
-        // sets ETA menu to be invisible
-        fiveButton.setVisibility(View.INVISIBLE);
-
-        tenButton.setVisibility(View.INVISIBLE);
-
-        fifteenButton.setVisibility(View.INVISIBLE);
-
-        okButton.setVisibility(View.INVISIBLE);
-
-        ETAmenu.setVisibility(View.INVISIBLE);
-
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
-
-        TextView newTrack = (TextView)findViewById(R.id.track_button);
-        newTrack.setText("TRACK");
-        newTrack.setBackgroundColor(Color.GRAY);
-        newTrack.setTextSize(TypedValue.COMPLEX_UNIT_SP,30f);
-
-
-    }
-*/
-
-/*
-
-    public void clickFive(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is 5 minutes away.");
-
-        okButton.setVisibility(View.VISIBLE);
-    }
-
-    public void clickTen(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is 10 minutes away.");
-
-        okButton.setVisibility(View.VISIBLE);
-
-    }
-
-    public void clickFifteen(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is 15 minutes away.");
-
-        okButton.setVisibility(View.VISIBLE);
-
-    }
-        public void clickOK(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
-
-        TextView newTrack = (TextView)findViewById(R.id.track_button);
-        newTrack.setText("TRACKING");
-        newTrack.setBackgroundColor(Color.RED);
-        newTrack.setTextSize(TypedValue.COMPLEX_UNIT_SP,18f);
-
-        // sets exit button to be invisible
-        exitButton.setVisibility(View.INVISIBLE);
-
-        // sets ETA menu to be invisible
-        fiveButton.setVisibility(View.INVISIBLE);
-
-        tenButton.setVisibility(View.INVISIBLE);
-
-        fifteenButton.setVisibility(View.INVISIBLE);
-
-        ETAmenu.setVisibility(View.INVISIBLE);
-
-        okButton.setVisibility(View.INVISIBLE);
-
-        exitButton.setVisibility(View.VISIBLE);
-    }
-    */
 
 
     // Button methods
@@ -333,32 +238,7 @@ public class MapActivity extends Activity {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,2,0,locationListener);
             }
 
-/*
-        //Buttons
-        exitButton = findViewById(R.id.exit_button);
-            exitButton.setVisibility(View.INVISIBLE);
 
-        fiveButton = findViewById(R.id.five_button);
-            fiveButton.setVisibility(View.INVISIBLE);
-
-
-        tenButton = findViewById(R.id.ten_button);
-            tenButton.setVisibility(View.INVISIBLE);
-
-        fifteenButton = findViewById(R.id.fifteen_button);
-            fifteenButton.setVisibility(View.INVISIBLE);
-
-        okButton = findViewById(R.id.ok_button);
-            okButton.setVisibility(View.INVISIBLE);
-
-
-        // Text View
-        TRACKING = findViewById(R.id.tracking);
-            ETAmenu.setVisibility(View.VISIBLE);
-
-
-
-*/
 
         //TRACKING & its animation
         final TextView TRACKING = findViewById(R.id.tracking);
@@ -376,51 +256,7 @@ public class MapActivity extends Activity {
 
 
 
-        /*
-        numberPicker.build();
 
-
-        numberPicker.defaultValue(1);
-
-        numberPicker.minValue(1);
-        numberPicker.maxValue(100);
-        numberPicker.defaultValue(1);
-        numberPicker.backgroundColor(Color.WHITE);
-        numberPicker.separatorColor(Color.TRANSPARENT);
-        numberPicker.textColor(Color.BLACK);
-        numberPicker.textSize(20);
-        numberPicker.enableFocusability(false);
-        numberPicker.wrapSelectorWheel(true);
-        numberPicker.build();
-
-        new AlertDialog.Builder(this)
-                .setTitle("How much time?");
-                .setView(numberPicker)
-        NUM.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Snackbar.make(findViewById(R.id.your_container), "You picked : " + numberPicker.getValue(), Snackbar.LENGTH_LONG).show();
-            }
-        })
-        NUM.show();
-
-        */
-        /*
-
-
-        <biz.kasual.materialnumberpicker.MaterialNumberPicker
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        app:npBackgroundColor="@color/colorAccent"
-        app:npDefaultValue="10"
-        app:npMaxValue="50"
-        app:npMinValue="1"
-        app:npSeparatorColor="@color/colorAccent"
-        app:npTextColor="@color/colorPrimary"
-        app:npTextSize="25sp" />
-         */
 
 
         // FAB Buttons onClicks & Number Picker
@@ -500,48 +336,7 @@ public class MapActivity extends Activity {
 
         }
 
-        /*
-        <android.support.design.button.MaterialButton
-        android:id="@+id/fab_GO"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="0dp"
-        android:background="@android:color/holo_green_light"
-        android:text="GO"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:cornerRadius="56dp"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-        <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButtonGO"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="82dp"
-        android:layout_marginBottom="117dp"
-        android:clickable="true"
-        app:backgroundTint="@android:color/holo_green_light"
-        app:fabCustomSize="60dp" />
-
-        <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButtonBUSNUM"
-        android:layout_width="107dp"
-        android:layout_height="87dp"
-        android:layout_above="@+id/textView3"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="127dp"
-        android:layout_marginBottom="191dp"
-        android:clickable="true"
-        app:backgroundTint="@android:color/darker_gray"
-        app:fabCustomSize="80dp"
-        app:srcCompat="@mipmap/ic_launcher" />
-         */
 
 
 
