@@ -90,6 +90,10 @@ public class MapActivity extends Activity {
     Network network;
     String id;
 
+    public void testBus(View views){
+        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+    }
+
 
     // Resume positioning listener on wake up
     public void onResume() {
