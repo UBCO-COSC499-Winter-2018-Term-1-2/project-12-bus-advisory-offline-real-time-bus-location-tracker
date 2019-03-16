@@ -7,10 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-<<<<<<< HEAD
 import android.nfc.Tag;
-=======
->>>>>>> 129-Theme-Change
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -47,10 +44,7 @@ import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
-<<<<<<< HEAD
 import com.here.android.mpa.common.PositioningManager;
-=======
->>>>>>> 129-Theme-Change
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
 import com.here.android.mpa.mapping.MapMarker;
@@ -66,169 +60,15 @@ import com.kontakt.sdk.android.common.KontaktSDK;
 import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
-<<<<<<< HEAD
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import static com.here.android.mpa.internal.r.H;
-import static com.here.android.mpa.internal.r.e;
-
-public class MapActivity extends Activity {
-
-// Buttons
-
-    Button exitButton;
-   // Button trackButton;
-    Button fiveButton;
-    Button tenButton;
-    Button fifteenButton;
-    Button okButton;
-    Button testTrack;
-    String id;
-    RequestQueue queue;
-    Cache cache;
-    Network network;
-
-
-
-    TextView ETAmenu;
-
-
-
-    public void clickTrack(View views) {
-
-        Log.i("Info", "TRACK pressed");
-
-
-        // Making the ETA menu visible
-        fiveButton.setVisibility(View.VISIBLE);
-
-        tenButton.setVisibility(View.VISIBLE);
-
-        fifteenButton.setVisibility(View.VISIBLE);
-
-        ETAmenu.setVisibility(View.VISIBLE);
-
-        testTrack.setVisibility(View.VISIBLE);
-
-
-
-
-        // Making the exit button visible
-        exitButton.setVisibility(View.VISIBLE);
-    }
-
-    public void clickBusNum(View views) {
-
-        Log.i("Info", "BusNum pressed");
-
-        exitButton.setVisibility(View.VISIBLE);
-
-        // NEW ACTIVITY METHOD
-       // Intent intent = new Intent(this, );
-        //startActivity(intent);
-       // openBusNumAc();
-    }
-
-    public void clickExit(View views) {
-
-        Log.i("Info", "clickExit pressed");
-
-        // sets exit button to be invisible
-        exitButton.setVisibility(View.INVISIBLE);
-
-        // sets ETA menu to be invisible
-        fiveButton.setVisibility(View.INVISIBLE);
-
-        tenButton.setVisibility(View.INVISIBLE);
-
-        fifteenButton.setVisibility(View.INVISIBLE);
-
-        okButton.setVisibility(View.INVISIBLE);
-
-        ETAmenu.setVisibility(View.INVISIBLE);
-
-        TextView new1 = findViewById(R.id.ETA_text);
-        new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
-
-
-    }
-
-    public void clickFive(View views){
-        TextView new1 = findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
-
-        okButton.setVisibility(View.VISIBLE);
-    }
-
-    public void clickTen(View views){
-        TextView new1 = findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
-
-        okButton.setVisibility(View.VISIBLE);
-
-    }
-
-    public void clickFifteen(View views){
-        TextView new1 = findViewById(R.id.ETA_text);
-        new1.setText("\n Bus Tracker Activated! \n \n \n We will notify you once the bus is nearby");
-
-        okButton.setVisibility(View.VISIBLE);
-
-    }
-
-    public void clickOK(View views){
-        TextView new1 = (TextView)findViewById(R.id.ETA_text);
-        new1.setText("When would you like to be notified about the busses ETA (in minutes)?");
-
-       // TextView newTrack = (TextView)findViewById(R.id.track_button);
-       // newTrack.setText("TRACKING");
-       // newTrack.setBackgroundColor(Color.RED);
-
-        // sets exit button to be invisible
-        exitButton.setVisibility(View.INVISIBLE);
-
-        // sets ETA menu to be invisible
-        fiveButton.setVisibility(View.INVISIBLE);
-
-        tenButton.setVisibility(View.INVISIBLE);
-
-        fifteenButton.setVisibility(View.INVISIBLE);
-
-        ETAmenu.setVisibility(View.INVISIBLE);
-
-        okButton.setVisibility(View.INVISIBLE);
-    }
-
-    public void centerButton(View views){
-        map = mapFragment.getMap();
-        map.setCenter(userLocation, Map.Animation.NONE);
-
-    }
-
-    public void testBus(View views){
-       makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-    }
-
-
-    // Button methods
-
-=======
 import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 
 public class MapActivity extends Activity {
 
->>>>>>> 129-Theme-Change
     LocationManager locationManager;
     LocationListener locationListener;
     IBeaconDevice searchBeacon;
 
     private Map map = null;
-<<<<<<< HEAD
-=======
-
->>>>>>> 129-Theme-Change
     private MapFragment mapFragment = null;
     private GeoCoordinate userLocation;
     private GeoCoordinate busLocation;
@@ -261,7 +101,6 @@ public class MapActivity extends Activity {
         paused = true;
     }
 
-<<<<<<< HEAD
     // To remove the positioning listener
     public void onDestroy() {
         if (positioningManager != null) {
@@ -327,22 +166,14 @@ public class MapActivity extends Activity {
         }
             //TODO @Matthew implement get method with JSON parsing
 
-=======
->>>>>>> 129-Theme-Change
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-<<<<<<< HEAD
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
-=======
-                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 0, locationListener);
->>>>>>> 129-Theme-Change
                 }
             }
         }
@@ -384,7 +215,7 @@ public class MapActivity extends Activity {
                         image.setImageResource(R.drawable.bus_stop);
                         MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
                         map.addMapObject(stop1);
-                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.93407, -119.401548, 0.0), image);
+                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.976448, -119.394334, 0.0), image);
                         map.addMapObject(stop2);
                         Image userImage = new Image();
                         userImage.setImageResource(R.drawable.iconfinder_map_marker_299087);
@@ -507,17 +338,6 @@ public class MapActivity extends Activity {
         }
 
 
-<<<<<<< HEAD
-=======
-
-
-
-
-// creates map marker at users location and centers map on that location
-    private void initialize() {
-        // Search for the map fragment to finish setup by calling init().
-        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
->>>>>>> 129-Theme-Change
 
 
 
