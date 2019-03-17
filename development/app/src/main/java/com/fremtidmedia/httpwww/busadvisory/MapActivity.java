@@ -100,6 +100,10 @@ public class MapActivity extends Activity {
     }
 
 
+    public void centerView (View views) {
+        centerView(userLocation);
+    }
+
     // Resume positioning listener on wake up
     public void onResume() {
         super.onResume();
@@ -419,7 +423,7 @@ public class MapActivity extends Activity {
     }
 
     public void centerView (GeoCoordinate location){
-        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.5);
+        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.6);
         map.setCenter(location, Map.Animation.NONE);
     }
 
