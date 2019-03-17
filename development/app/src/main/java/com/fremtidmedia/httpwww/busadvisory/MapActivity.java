@@ -56,6 +56,7 @@ import com.here.android.mpa.mapping.MapObject;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
@@ -71,8 +72,10 @@ import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 
 public class MapActivity extends Activity {
 
-    LocationManager locationManager;
-    LocationListener locationListener;
+    private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
+    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[] {
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+
     IBeaconDevice searchBeacon;
 
     private Map map = null;
@@ -182,18 +185,28 @@ public class MapActivity extends Activity {
             queue.add(jsonObjectRequest);
         }
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
+                         Log.d("HERE", "Permissions not accepted");
+                     } else {
+                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
+                     }
+                }
+                else{
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
                 }
             }
         }
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -228,13 +241,13 @@ public class MapActivity extends Activity {
 
                     try {
                         Image image = new Image();
-                        image.setImageResource(R.drawable.bus_stop);
+                        image.setImageResource(R.drawable.ic_action_trip_origin);
                         MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
                         map.addMapObject(stop1);
                         MapMarker stop2 = new MapMarker(new GeoCoordinate(49.976448, -119.394334, 0.0), image);
                         map.addMapObject(stop2);
                         Image userImage = new Image();
-                        userImage.setImageResource(R.drawable.iconfinder_map_marker_299087);
+                        userImage.setImageResource(R.drawable.ic_action_person_pin);
                         map.getPositionIndicator().setMarker(userImage);
 
                         busStops.add(stop1);
@@ -413,7 +426,7 @@ public class MapActivity extends Activity {
     public void createBus(GeoCoordinate location) {
         try {
             Image image = new Image();
-            image.setImageResource(R.drawable.bus);
+            image.setImageResource(R.drawable.ic_action_directions_bus);
 
             if(!markerList.isEmpty()) {
                 map.removeMapObjects(markerList);
