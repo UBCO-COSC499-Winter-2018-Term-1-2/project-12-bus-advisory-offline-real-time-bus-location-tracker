@@ -58,6 +58,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
@@ -67,6 +69,7 @@ import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 
@@ -84,8 +87,9 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
-    private boolean paused = false;
-    private boolean tracking = true;
+    Timer t = null;
+    BusTask tt = null;
+
 
     List<MapObject> objList = new ArrayList<>();
     List<MapMarker> busStops = new ArrayList<>();
@@ -96,7 +100,14 @@ public class MapActivity extends Activity {
     String id;
 
     public void testBus(View views){
-        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+        t = new Timer();
+        tt = new BusTask();
+        t.schedule(tt, 0, 5000);
+        TextView t3 = findViewById(R.id.textView3);
+        t3.setClickable(false);
+        centerView(busLocation);
+
+
     }
 
 
@@ -104,37 +115,32 @@ public class MapActivity extends Activity {
         centerView(userLocation);
     }
 
-    // Resume positioning listener on wake up
     public void onResume() {
         super.onResume();
-        paused = false;
-        tracking = true;
         if (positioningManager != null) {
              positioningManager.start(
                 PositioningManager.LocationMethod.GPS_NETWORK);
     }
 }
 
-    // To pause positioning listener
     public void onPause() {
+        super.onPause();
         if (positioningManager != null) {
             positioningManager.stop();
         }
-        super.onPause();
-        paused = true;
-        tracking = false;
+
     }
 
-    // To remove the positioning listener
     public void onDestroy() {
         if (positioningManager != null) {
             // Cleanup
             positioningManager.removeListener(
                     positionListener);
         }
+        tt.cancel();
+        t.cancel();
         map = null;
         super.onDestroy();
-        tracking = false;
     }
 
     public void makePostRequest(String url) {
@@ -169,7 +175,6 @@ public class MapActivity extends Activity {
                                busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
                                Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
                                createBus(busLocation);
-                               centerView(busLocation);
                             }
                             catch (Exception e){
 
@@ -220,6 +225,7 @@ public class MapActivity extends Activity {
         network = new BasicNetwork(new HurlStack());
         queue = Volley.newRequestQueue(this);
         queue.start();
+        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
         id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -313,6 +319,10 @@ public class MapActivity extends Activity {
                 TRACKING.clearAnimation();
                 TRACKING.setVisibility(View.INVISIBLE);
                 fabEXIT.hide();
+                tt.cancel();
+                t.cancel();
+                TextView t3 = findViewById(R.id.textView3);
+                t3.setClickable(true);
 
             }
         });
@@ -370,39 +380,16 @@ public class MapActivity extends Activity {
 
         }
 
-    private class BusUpdate extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            while (tracking == true) {
-                for (int i = 0; i < 3; i++) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
 
-            return null;
-        }
+
+    class BusTask extends TimerTask {
 
         @Override
-        protected void onPostExecute(Void result) {
+         public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-            Log.d("Bus", "location updated");
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
+            Log.d("HERE", "Bus location updated");
         }
     }
-
-
-
 
 
     public void createStops(GeoCoordinate location) {
@@ -446,7 +433,7 @@ public class MapActivity extends Activity {
 
     }
 
-    public MapMarker closestStop(ArrayList<MapMarker> stops ) {
+    public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
         double tempX1 = Math.abs(userLocation.getLongitude() - stops.get(0).getCoordinate().getLatitude());
         double smallestHyp = Math.hypot(tempY1, tempX1);
@@ -461,8 +448,8 @@ public class MapActivity extends Activity {
 
             }
         }
-
-        return closest;
+        GeoCoordinate closeStop = new GeoCoordinate(closest.getCoordinate().getLatitude(),closest.getCoordinate().getLongitude());
+        return closeStop;
     }
 
 
