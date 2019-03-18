@@ -105,6 +105,7 @@ public class MapActivity extends Activity {
         t.schedule(tt, 0, 5000);
         TextView t3 = findViewById(R.id.textView3);
         t3.setClickable(false);
+        createBus(busLocation);
         centerView(busLocation);
 
 
@@ -174,7 +175,6 @@ public class MapActivity extends Activity {
                                String lat = object3.getString(1);
                                busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
                                Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
-                               createBus(busLocation);
                             }
                             catch (Exception e){
 
@@ -251,10 +251,10 @@ public class MapActivity extends Activity {
 
                     try {
                         Image image = new Image();
-                        image.setImageResource(R.drawable.ic_action_trip_origin);
+                        image.setImageResource(R.drawable.ic_trip_origin);
                         MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
                         map.addMapObject(stop1);
-                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.976448, -119.394334, 0.0), image);
+                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.934023, -119.401581, 0.0), image);
                         map.addMapObject(stop2);
                         Image userImage = new Image();
                         userImage.setImageResource(R.drawable.ic_action_person_pin);
@@ -319,6 +319,10 @@ public class MapActivity extends Activity {
                 TRACKING.clearAnimation();
                 TRACKING.setVisibility(View.INVISIBLE);
                 fabEXIT.hide();
+                if(!markerList.isEmpty()) {
+                    map.removeMapObjects(markerList);
+                    markerList.clear();
+                }
                 tt.cancel();
                 t.cancel();
                 TextView t3 = findViewById(R.id.textView3);
