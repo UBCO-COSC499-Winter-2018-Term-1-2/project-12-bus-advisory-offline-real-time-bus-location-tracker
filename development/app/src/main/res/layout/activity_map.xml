@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <!-- Map Fragment embedded with the map object -->
 
     <fragment
-        class="com.here.android.mpa.mapping.MapFragment"
         android:id="@+id/mapfragment"
+        class="com.here.android.mpa.mapping.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 
     <android.support.v7.widget.RecyclerView
@@ -23,7 +22,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="1dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp" />
 
@@ -35,6 +34,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
+        android:layout_marginTop="106dp"
         android:layout_marginBottom="0dp"
         android:background="#333333"
         android:gravity="bottom"
@@ -83,10 +83,11 @@
 
 
     <FrameLayout
+        android:id="@+id/FL1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/BusList"
-        android:layout_marginTop="534dp"
+        android:layout_above="@+id/textView3"
+        android:layout_marginBottom="-75dp"
         android:elevation="25dp">
 
         <android.support.design.widget.FloatingActionButton
@@ -141,34 +142,33 @@
     </FrameLayout>
 
     <FrameLayout
-            android:layout_width="74dp"
-            android:layout_height="59dp"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="bottom|right"
-            android:layout_marginTop="375dp"
-            android:layout_marginEnd="76dp"
-            android:layout_marginBottom="9dp">
+        android:id="@+id/FL3"
+        android:layout_width="74dp"
+        android:layout_height="59dp"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="375dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="9dp">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/newBusNum"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@android:color/transparent"
-                app:backgroundTint="#D3D3D3	" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/newBusNum"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@android:color/transparent"
+            app:backgroundTint="#D3D3D3	" />
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="16dp"
-                android:text="97"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-        </FrameLayout>
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="16dp"
+            android:text="97"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+    </FrameLayout>
 
-
-    //presence_online
 
 </RelativeLayout>
