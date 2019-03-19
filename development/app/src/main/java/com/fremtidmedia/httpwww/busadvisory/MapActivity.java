@@ -96,8 +96,8 @@ public class MapActivity extends Activity {
     private PositioningManager.OnPositionChangedListener positionListener;
     private MapRoute m_mapRoute;
     private int arrTime;
-    Timer t = null;
-    BusTask tt = null;
+    Timer timer = null;
+    BusTask timerTask = null;
 
 
 
@@ -140,12 +140,11 @@ public class MapActivity extends Activity {
 
     public void onDestroy() {
         if (positioningManager != null) {
-            // Cleanup
             positioningManager.removeListener(
                     positionListener);
         }
-        tt.cancel();
-        t.cancel();
+        timerTask.cancel();
+        timer.cancel();
         map = null;
         super.onDestroy();
     }
@@ -215,9 +214,9 @@ public class MapActivity extends Activity {
                             String lat = object3.getString(1);
                             busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
                             Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
-                            t = new Timer();
-                            tt = new BusTask();
-                            t.schedule(tt, 0, 5000);
+                            timer = new Timer();
+                            timerTask = new BusTask();
+                            timer.schedule(timerTask, 0, 5000);
                         }
                         catch (Exception e){
 
@@ -268,8 +267,6 @@ public class MapActivity extends Activity {
         network = new BasicNetwork(new HurlStack());
         queue = Volley.newRequestQueue(this);
         queue.start();
-        //makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-        initialize("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
         id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -303,6 +300,7 @@ public class MapActivity extends Activity {
                         Image userImage = new Image();
                         userImage.setImageResource(R.drawable.ic_action_person_pin);
                         map.getPositionIndicator().setMarker(userImage);
+                        initialize("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
 
                         busStops.add(stop1);
                         busStops.add(stop2);
@@ -367,9 +365,6 @@ public class MapActivity extends Activity {
                     map.removeMapObjects(markerList);
                     markerList.clear();
                 }
-               // map.removeMapObject(m_mapRoute);
-                tt.cancel();
-                t.cancel();
                 TextView t3 = findViewById(R.id.textView3);
                 t3.setClickable(true);
 
@@ -439,7 +434,7 @@ public class MapActivity extends Activity {
             if (time != 0 &&  time >= 60) {
                 Log.d("kyle", Integer.toString(time));
             }else if(time < 60) {
-                Log.d("kyle", "Soon.tm");
+                Log.d("kyle", "<1 minute");
             }
             createBus(busLocation);
             Log.d("HERE", "Bus location updated");
