@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -151,7 +152,7 @@ public class MapActivity extends Activity {
                                JSONArray location = response.getJSONArray("buslocation");
                                JSONObject object1 = location.getJSONObject(0);
                                JSONObject object2 = object1.getJSONObject("location");
-                               JSONArray object3 = object2.getJSONArray("coordinates");
+                                                               JSONArray object3 = object2.getJSONArray("coordinates");
                                String lon = object3.getString(0);
                                String lat = object3.getString(1);
                                busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
@@ -295,6 +296,8 @@ public class MapActivity extends Activity {
             }
         });
 
+        final FloatingActionButton fabGO = findViewById(R.id.newGO);
+
         //NUMBER PICKER
         final MaterialNumberPicker numberPicker = new MaterialNumberPicker(this);
 
@@ -309,41 +312,72 @@ public class MapActivity extends Activity {
 
         final AlertDialog.Builder newAL = new AlertDialog.Builder(this);
 
-        newAL.setTitle("How much time?");
+        newAL.setTitle("Remind me of My Bus Arrival at My stop (In Minutes)");
         newAL.setView(numberPicker);
 
         newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                fabEXIT.show();
-                TRACKING.setVisibility(View.VISIBLE);
-                TRACKING.startAnimation(anim);
+/*
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                break;
 
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+
+*/
+                fabEXIT.show();
+                //TRACKING.setVisibility(View.VISIBLE);
+                //TRACKING.startAnimation(anim);
+                fabGO.hide();
 
             }
         });
 
-        final FloatingActionButton fabGO = findViewById(R.id.newGO
-        );
+
+        final TextView GoText = findViewById(R.id.GoText);
+
+
+
         fabGO.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //boolean f = true;
                 Log.i("Info", "GO pressed");
                 newAL.create().show();
+/*
+                if(f){
+                    GoText.setText("X");
+                    fabGO.setBackgroundTintList(ColorStateList.valueOf(Color.MAGENTA));
+                    f = false;
+                }
 
+                else if(!f){
+                    GoText.setText("GO");
+                    fabGO.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+                }
+*/
 
 
             }
         });
 
-        FloatingActionButton fabBusNum = findViewById(R.id.newBusNum);
-        fabBusNum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("Info", "GO pressed");
 
-            }
-        });
+
+
 
 
         }

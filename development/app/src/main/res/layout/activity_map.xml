@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="224dp"
-        android:layout_marginBottom="26dp"
+        android:layout_marginBottom="31dp"
         android:text="10 Minutes"
         android:textColor="@android:color/white"
         android:textSize="30sp"
@@ -62,8 +62,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="338dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="454dp"
         android:clickable="true"
         app:backgroundTint="@color/black"
         app:srcCompat="@android:drawable/ic_delete" />
@@ -102,6 +102,7 @@
             app:backgroundTint="@android:color/holo_green_light" />
 
         <TextView
+            android:id="@+id/GoText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -113,33 +114,18 @@
             android:textStyle="bold" />
     </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="74dp"
-            android:layout_height="59dp"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="bottom|right"
-            android:layout_marginTop="375dp"
-            android:layout_marginEnd="76dp"
-            android:layout_marginBottom="9dp">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/newBusNum"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@android:color/transparent"
-                app:backgroundTint="#D3D3D3	" />
-
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="16dp"
-                android:text="97"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
-        </FrameLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView5"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="19dp"
+        android:layout_marginBottom="-28dp"
+        android:text="97"
+        android:textColor="@color/white"
+        android:textSize="50sp"
+        android:textStyle="bold" />
 
 
     //presence_online
