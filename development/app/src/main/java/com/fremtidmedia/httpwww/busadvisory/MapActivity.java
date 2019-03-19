@@ -67,6 +67,7 @@ import com.here.android.mpa.routing.RouteManager;
 import com.here.android.mpa.routing.RouteOptions;
 import com.here.android.mpa.routing.RoutePlan;
 import com.here.android.mpa.routing.RouteResult;
+import com.here.android.mpa.routing.RouteTta;
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
 import com.kontakt.sdk.android.common.KontaktSDK;
@@ -93,7 +94,7 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
-    private MapRoute mapRoute;
+    private MapRoute m_mapRoute;
     Timer t = null;
     BusTask tt = null;
 
@@ -384,7 +385,7 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-                Integer time = arrivalEst(busLocation, closestStop(busStops));
+                Integer time = arrivalEst();
                 Log.d("Kyle", Integer.toString(time));
             }
         });
@@ -428,7 +429,51 @@ public class MapActivity extends Activity {
 
     }
 
-    public int arrivalEst (GeoCoordinate stop, GeoCoordinate bus) {
+    public void arrivalEst () {
+
+        RouteManager rm = new RouteManager();
+        RoutePlan routePlan = new RoutePlan();
+        RouteOptions routeOptions = new RouteOptions();
+        routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
+        routeOptions.setHighwaysAllowed(false);
+        routeOptions.setRouteType(RouteOptions.Type.SHORTEST);
+        routeOptions.setRouteCount(1);
+        routePlan.setRouteOptions(routeOptions);
+
+        routePlan.addWaypoint(busLocation);
+        routePlan.addWaypoint(closestStop(busStops));
+
+        rm.calculateRoute(routePlan,
+                new RouteManager.Listener() {
+                    @Override
+                    public void onProgress(int i) {
+
+                    }
+
+                    @Override
+                    public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> routeResults) {
+                        if (error == RouteManager.Error.NONE) {
+                            if (routeResults.get(0).getRoute() != null) {
+                                m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
+                                m_mapRoute.setManeuverNumberVisible(true);
+                                map.addMapObject(m_mapRoute);
+
+
+                            } else {
+                                Log.e("Kyle", "Results are not valid");
+
+
+                            }
+                        } else {
+                            Log.e("Kyle", "Route calculation error");
+
+                        }
+                    }
+                });
+
+    }
+
+        /**
         RouteManager rm = new RouteManager();
         RoutePlan routePlan = new RoutePlan();
         RouteOptions routeOptions = new RouteOptions();
@@ -469,14 +514,14 @@ public class MapActivity extends Activity {
 
                 });
 
- **/
+
 
         int timeInSeconds = mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
         Log.d("kyle", Integer.toString(timeInSeconds));
         return timeInSeconds;
 
+         **/
 
-    }
 
 
 
