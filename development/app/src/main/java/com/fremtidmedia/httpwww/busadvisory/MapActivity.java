@@ -91,8 +91,8 @@ public class MapActivity extends Activity {
     BusTask tt = null;
 
 
-    List<MapObject> objList = new ArrayList<>();
-    List<MapMarker> busStops = new ArrayList<>();
+
+    private ArrayList<MapMarker> busStops = new ArrayList<>();
     private ArrayList<MapObject> markerList = new ArrayList<>();
     RequestQueue queue;
     Cache cache;
@@ -109,6 +109,9 @@ public class MapActivity extends Activity {
         centerView(busLocation);
 
 
+    }
+
+    public void testStopLoc (View views) {
     }
 
 
@@ -160,7 +163,7 @@ public class MapActivity extends Activity {
     }
 
 
-        public void makeGetRequest(String url){
+    public void makeGetRequest(String url){
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                         @Override
@@ -377,10 +380,11 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-
+                GeoCoordinate loc = closestStop(busStops);
+                Log.d("kyle", Double.toString(loc.getLatitude()) + ", " + Double.toString(loc.getLongitude()));
             }
         });
-
+        
 
         }
 
@@ -454,6 +458,7 @@ public class MapActivity extends Activity {
         }
         GeoCoordinate closeStop = new GeoCoordinate(closest.getCoordinate().getLatitude(),closest.getCoordinate().getLongitude());
         return closeStop;
+
     }
 
 
