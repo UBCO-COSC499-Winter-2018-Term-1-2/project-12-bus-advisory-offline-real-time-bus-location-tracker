@@ -111,8 +111,6 @@ public class MapActivity extends Activity {
 
     }
 
-    public void testStopLoc (View views) {
-    }
 
 
     public void centerView (View views) {
