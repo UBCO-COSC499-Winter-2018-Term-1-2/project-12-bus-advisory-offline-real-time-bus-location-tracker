@@ -61,10 +61,10 @@
         android:id="@+id/floatingActionButtonEXIT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="343dp"
-        android:layout_marginTop="454dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="596dp"
+        android:layout_marginEnd="25dp"
         android:clickable="true"
         app:backgroundTint="@color/black"
         app:srcCompat="@android:drawable/ic_delete" />
@@ -89,8 +89,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/BusList"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="29dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="30dp"
         android:elevation="25dp">
 
         <android.support.design.widget.FloatingActionButton
@@ -122,7 +122,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|right"
-        android:layout_marginTop="453dp"
+        android:layout_marginTop="596dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginBottom="9dp">
 
         <android.support.design.widget.FloatingActionButton
