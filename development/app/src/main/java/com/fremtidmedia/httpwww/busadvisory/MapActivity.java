@@ -99,7 +99,6 @@ public class MapActivity extends Activity {
     Cache cache;
     Network network;
     String id;
-   // final FloatingActionButton fabGO = findViewById(R.id.newGO);
 
     public void testBus(View views){
         t = new Timer();
@@ -108,7 +107,6 @@ public class MapActivity extends Activity {
         TextView t3 = findViewById(R.id.textView3);
         t3.setClickable(false);
         centerView(busLocation);
-        //fabGO.show();
 
 
     }
@@ -303,7 +301,7 @@ public class MapActivity extends Activity {
 
 
 
-        //TRACKING & its animation
+        //TRACKING & its animation (might not use)
         final TextView TRACKING = findViewById(R.id.tracking);
         TRACKING.setVisibility(View.INVISIBLE);
 
@@ -329,8 +327,6 @@ public class MapActivity extends Activity {
                 builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       // TRACKING.clearAnimation();
-                       // TRACKING.setVisibility(View.INVISIBLE);
                         fabEXIT.hide();
                         if(!markerList.isEmpty()) {
                             map.removeMapObjects(markerList);
@@ -372,7 +368,6 @@ public class MapActivity extends Activity {
         fabGO.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //boolean f = true;
                 Log.i("Info", "GO pressed");
 
                 //NUMBER PICKER
@@ -389,7 +384,7 @@ public class MapActivity extends Activity {
 
                 final AlertDialog.Builder newAL = new AlertDialog.Builder(MapActivity.this);
 
-                newAL.setTitle("Remind me of my bus arrival at my stop (in minutes)");
+                newAL.setTitle("Remind me (in minutes) of my bus arrival at my stop (in minutes)");
                 newAL.setView(numberPicker);
 
                 newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
@@ -397,8 +392,6 @@ public class MapActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
 
                         fabEXIT.show();
-                        //TRACKING.setVisibility(View.VISIBLE);
-                        //TRACKING.startAnimation(anim);
                         fabGO.hide();
 
                     }
