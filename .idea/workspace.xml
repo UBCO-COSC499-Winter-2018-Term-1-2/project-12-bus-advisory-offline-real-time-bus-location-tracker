@@ -17,36 +17,80 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MapActivity.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/development/app/src/main/java/com/fremtidmedia/httpwww/busadvisory/MapActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="59" selection-start-line="59" selection-end-line="59" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="267" />
-    <option name="y" value="106" />
+    <option name="x" value="266" />
+    <option name="y" value="105" />
     <option name="width" value="1400" />
-    <option name="height" value="803" />
+    <option name="height" value="804" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="ProjectPane" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="AndroidView" />
-      <pane id="ProjectPane" />
       <pane id="PackagesPane" />
+      <pane id="AndroidView" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
+              <item name="development" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
+              <item name="development" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
+              <item name="development" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
+              <item name="development" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
+              <item name="development" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="project-12-bus-advisory-offline-real-time-bus-location-tracker" type="462c0819:PsiDirectoryNode" />
+              <item name="development" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="res" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -126,7 +170,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="214" y="85" width="1120" height="642" extended-state="0" />
+    <frame x="213" y="84" width="1120" height="643" extended-state="0" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
@@ -148,15 +192,22 @@
       <window_info id="Captures" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/development/app/src/main/java/com/fremtidmedia/httpwww/busadvisory/MapActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1003">
+          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/development/app/src/main/java/com/fremtidmedia/httpwww/busadvisory/MapActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="867">
@@ -166,7 +217,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/development/app/src/main/java/com/fremtidmedia/httpwww/busadvisory/MapActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
+        <state relative-caret-position="402">
           <caret line="59" selection-start-line="59" selection-end-line="59" />
         </state>
       </provider>
