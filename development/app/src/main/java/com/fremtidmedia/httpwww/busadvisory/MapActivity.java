@@ -99,6 +99,7 @@ public class MapActivity extends Activity {
     Cache cache;
     Network network;
     String id;
+   // final FloatingActionButton fabGO = findViewById(R.id.newGO);
 
     public void testBus(View views){
         t = new Timer();
@@ -107,6 +108,7 @@ public class MapActivity extends Activity {
         TextView t3 = findViewById(R.id.textView3);
         t3.setClickable(false);
         centerView(busLocation);
+        //fabGO.show();
 
 
     }
@@ -310,6 +312,7 @@ public class MapActivity extends Activity {
         anim.setStartOffset(20);
         anim.setRepeatMode(Animation.REVERSE);
         anim.setRepeatCount(Animation.INFINITE);
+        final FloatingActionButton fabGO = findViewById(R.id.newGO);
 
         final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
         fabEXIT.hide();
@@ -317,68 +320,46 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "Exit pressed");
-                TRACKING.clearAnimation();
-                TRACKING.setVisibility(View.INVISIBLE);
-                fabEXIT.hide();
-                if(!markerList.isEmpty()) {
-                    map.removeMapObjects(markerList);
-                    markerList.clear();
-                }
-                tt.cancel();
-                t.cancel();
-                TextView t3 = findViewById(R.id.textView3);
-                t3.setClickable(true);
 
-            }
-        });
+                //ARE U SURE ALERT
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+                builder.setTitle("Confirmation");
+                builder.setMessage("Are you sure you want to stop tracking the bus?");
 
-        final FloatingActionButton fabGO = findViewById(R.id.newGO);
-
-        //NUMBER PICKER
-        final MaterialNumberPicker numberPicker = new MaterialNumberPicker(this);
-
-        numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(100);
-        numberPicker.setBackgroundColor(Color.WHITE);
-        numberPicker.setSeparatorColor(Color.TRANSPARENT);
-        numberPicker.setTextColor(Color.BLACK);
-        numberPicker.setTextSize(50);
-        numberPicker.setWrapSelectorWheel(true);
-        numberPicker.buildLayer();
-
-        final AlertDialog.Builder newAL = new AlertDialog.Builder(this);
-
-        newAL.setTitle("Remind me of My Bus Arrival at My stop (In Minutes)");
-        newAL.setView(numberPicker);
-
-        newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-/*
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
-                            case DialogInterface.BUTTON_POSITIVE:
-                                //Yes button clicked
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                //No button clicked
-                                break;
+                       // TRACKING.clearAnimation();
+                       // TRACKING.setVisibility(View.INVISIBLE);
+                        fabEXIT.hide();
+                        if(!markerList.isEmpty()) {
+                            map.removeMapObjects(markerList);
+                            markerList.clear();
                         }
+                     //   tt.cancel();
+                      //  t.cancel();
+                        TextView t3 = findViewById(R.id.textView3);
+                        t3.setClickable(true);
+
+                        fabGO.show();
+
+                        dialog.dismiss();
                     }
-                };
+                });
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-*/
-                fabEXIT.show();
-                //TRACKING.setVisibility(View.VISIBLE);
-                //TRACKING.startAnimation(anim);
-                fabGO.hide();
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog al = builder.create();
+                al.show();
+
+
+
 
             }
         });
@@ -394,34 +375,42 @@ public class MapActivity extends Activity {
                 //boolean f = true;
                 Log.i("Info", "GO pressed");
 
+                //NUMBER PICKER
+                MaterialNumberPicker numberPicker = new MaterialNumberPicker(MapActivity.this);
+
+                numberPicker.setMinValue(1);
+                numberPicker.setMaxValue(100);
+                numberPicker.setBackgroundColor(Color.WHITE);
+                numberPicker.setSeparatorColor(Color.TRANSPARENT);
+                numberPicker.setTextColor(Color.BLACK);
+                numberPicker.setTextSize(50);
+                numberPicker.setWrapSelectorWheel(true);
+                numberPicker.buildLayer();
+
+                final AlertDialog.Builder newAL = new AlertDialog.Builder(MapActivity.this);
+
+                newAL.setTitle("Remind me of my bus arrival at my stop (in minutes)");
+                newAL.setView(numberPicker);
+
+                newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        fabEXIT.show();
+                        //TRACKING.setVisibility(View.VISIBLE);
+                        //TRACKING.startAnimation(anim);
+                        fabGO.hide();
+
+                    }
+                });
 
                 newAL.create().show();
-/*
-                if(f){
-                    GoText.setText("X");
-                    fabGO.setBackgroundTintList(ColorStateList.valueOf(Color.MAGENTA));
-                    f = false;
-                }
-
-                else if(!f){
-                    GoText.setText("GO");
-                    fabGO.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
-                }
-*/
 
 
             }
         });
 
-        FloatingActionButton fabBusNum = findViewById(R.id.newBusNum);
-        fabBusNum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("Info", "GO pressed");
-                GeoCoordinate loc = closestStop(busStops);
-                Log.d("kyle", Double.toString(loc.getLatitude()) + ", " + Double.toString(loc.getLongitude()));
-            }
-        });
+
 
 
         }

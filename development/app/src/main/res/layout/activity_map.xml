@@ -145,34 +145,18 @@
             android:textStyle="bold" />
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/FL3"
-        android:layout_width="74dp"
-        android:layout_height="59dp"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="bottom|right"
-        android:layout_marginTop="375dp"
-        android:layout_marginEnd="76dp"
-        android:layout_marginBottom="9dp">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/newBusNum"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@android:color/transparent"
-            app:backgroundTint="#D3D3D3	" />
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:elevation="16dp"
-            android:text="97"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/white"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-    </FrameLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/FL1"
+        android:layout_alignBottom="@+id/textView5"
+        android:layout_marginEnd="-10dp"
+        android:layout_marginBottom="-23dp"
+        android:text="97"
+        android:textColor="@color/white"
+        android:textSize="50sp"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>
