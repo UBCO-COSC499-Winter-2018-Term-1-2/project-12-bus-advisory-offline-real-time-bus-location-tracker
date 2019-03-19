@@ -93,7 +93,7 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
-    public MapRoute mapRoute;
+    private MapRoute mapRoute;
     Timer t = null;
     BusTask tt = null;
 
@@ -441,6 +441,10 @@ public class MapActivity extends Activity {
         routePlan.addWaypoint(stop);
         routePlan.addWaypoint(bus);
 
+        rm.calculateRoute(routePlan, new RouteListener());
+
+
+/**
 
         rm.calculateRoute(routePlan,
                 new RouteManager.Listener() {
@@ -465,12 +469,34 @@ public class MapActivity extends Activity {
 
                 });
 
+ **/
+
         int timeInSeconds = mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
-        Log.d("route", Integer.toString(timeInSeconds));
+        Log.d("kyle", Integer.toString(timeInSeconds));
         return timeInSeconds;
 
 
     }
+
+
+
+    private class RouteListener implements RouteManager.Listener {
+
+        public void onProgress(int percentage) {
+
+        }
+
+        public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> routeResult) {
+            if (error == RouteManager.Error.NONE) {
+                mapRoute = new MapRoute(routeResult.get(0).getRoute());
+                map.addMapObject(mapRoute);
+            }
+            else {
+                Log.e("Kyle", "Route calculation error");
+            }
+        }
+    }
+
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
