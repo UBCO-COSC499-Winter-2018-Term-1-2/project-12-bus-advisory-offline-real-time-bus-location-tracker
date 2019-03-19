@@ -24,7 +24,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="1dp"
         android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp" />
+        android:layout_marginEnd="1dp"
+        android:onClick="testStopLoc" />
 
 
     <TextView
@@ -84,10 +85,12 @@
 
     <FrameLayout
         android:id="@+id/FL1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView3"
-        android:layout_marginBottom="-75dp"
+        android:layout_alignTop="@+id/BusList"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="29dp"
         android:elevation="25dp">
 
         <android.support.design.widget.FloatingActionButton
