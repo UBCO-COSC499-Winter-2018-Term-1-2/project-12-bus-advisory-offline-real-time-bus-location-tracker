@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -110,13 +109,13 @@ public class MapActivity extends Activity {
     String id;
 
     public void testBus(View views){
-      /*  t = new Timer();
+        t = new Timer();
         tt = new BusTask();
         t.schedule(tt, 0, 5000);
         TextView t3 = findViewById(R.id.textView3);
         t3.setClickable(false);
         centerView(busLocation);
-*/
+
 
     }
 
@@ -310,7 +309,7 @@ public class MapActivity extends Activity {
 
 
 
-        //TRACKING & its animation (might not use)
+        //TRACKING & its animation
         final TextView TRACKING = findViewById(R.id.tracking);
         TRACKING.setVisibility(View.INVISIBLE);
 
@@ -319,12 +318,6 @@ public class MapActivity extends Activity {
         anim.setStartOffset(20);
         anim.setRepeatMode(Animation.REVERSE);
         anim.setRepeatCount(Animation.INFINITE);
-
-        final TextView GoText = findViewById(R.id.GoText);
-        GoText.setVisibility(View.INVISIBLE);
-        final FloatingActionButton fabGO = findViewById(R.id.newGO);
-        fabGO.hide();
-
 
         final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
         fabEXIT.hide();
@@ -345,108 +338,58 @@ public class MapActivity extends Activity {
                 TextView t3 = findViewById(R.id.textView3);
                 t3.setClickable(true);
 
-                //ARE U SURE ALERT
-                AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-                builder.setTitle("Confirmation");
-                builder.setMessage("Are you sure you want to cancel your reminder?");
+            }
+        });
 
-                builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        fabEXIT.hide();
-                        if(!markerList.isEmpty()) {
-                            map.removeMapObjects(markerList);
-                            markerList.clear();
-                        }
-                     //   tt.cancel();
-                      //  t.cancel();
-                        TextView t3 = findViewById(R.id.BottomBAR);
-                        t3.setClickable(true);
+        //NUMBER PICKER
+        final MaterialNumberPicker numberPicker = new MaterialNumberPicker(this);
 
-                        fabGO.hide();
-                        GoText.setVisibility(View.INVISIBLE);
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(100);
+        numberPicker.setBackgroundColor(Color.WHITE);
+        numberPicker.setSeparatorColor(Color.TRANSPARENT);
+        numberPicker.setTextColor(Color.BLACK);
+        numberPicker.setTextSize(50);
+        numberPicker.setWrapSelectorWheel(true);
+        numberPicker.buildLayer();
 
-                        dialog.dismiss();
-                    }
-                });
+        final AlertDialog.Builder newAL = new AlertDialog.Builder(this);
 
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        newAL.setTitle("How much time?");
+        newAL.setView(numberPicker);
 
-                        dialog.dismiss();
-                    }
-                });
-
-                AlertDialog al = builder.create();
-                al.show();
-
-
-
+        newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                fabEXIT.show();
+                TRACKING.setVisibility(View.VISIBLE);
+                TRACKING.startAnimation(anim);
 
 
             }
         });
 
-
-
-
-
-
+        final FloatingActionButton fabGO = findViewById(R.id.newGO
+        );
         fabGO.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-
-                //NUMBER PICKER
-                MaterialNumberPicker numberPicker = new MaterialNumberPicker(MapActivity.this);
-
-                numberPicker.setMinValue(1);
-                numberPicker.setMaxValue(100);
-                numberPicker.setBackgroundColor(Color.WHITE);
-                numberPicker.setSeparatorColor(Color.TRANSPARENT);
-                numberPicker.setTextColor(Color.BLACK);
-                numberPicker.setTextSize(50);
-                numberPicker.setWrapSelectorWheel(true);
-                numberPicker.buildLayer();
-
-                final AlertDialog.Builder newAL = new AlertDialog.Builder(MapActivity.this);
-
-                newAL.setTitle("Remind me before the bus arrival \n (in minutes) at my stop");
-                newAL.setView(numberPicker);
-
-                newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        fabEXIT.show();
-                        fabGO.hide();
-
-                    }
-                });
-
                 newAL.create().show();
 
 
+
             }
         });
 
-        TextView t0 = findViewById(R.id.textView97);
-        final TextView BottomBar = findViewById(R.id.BottomBAR);
-
-        BottomBar.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabBusNum = findViewById(R.id.newBusNum);
+        fabBusNum.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                fabGO.show();
-                GoText.setVisibility(View.VISIBLE);
-                t = new Timer();
-                tt = new BusTask();
-                t.schedule(tt, 0, 5000);
-                BottomBar.setClickable(false);
-                centerView(busLocation);
+            public void onClick(View view) {
+                Log.i("Info", "GO pressed");
+                arrivalEst();
             }
         });
-
 
 
         }
@@ -539,7 +482,7 @@ public class MapActivity extends Activity {
                 });
         return arrTime;
     }
-
+    
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
