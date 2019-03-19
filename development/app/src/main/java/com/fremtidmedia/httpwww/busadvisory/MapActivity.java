@@ -117,10 +117,6 @@ public class MapActivity extends Activity {
 
     }
 
-    public void testArr(View views){
-        Integer time = arrivalEst(busLocation, closestStop(busStops));
-    }
-
 
 
     public void centerView (View views) {
@@ -388,8 +384,8 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-                GeoCoordinate loc = closestStop(busStops);
-                Log.d("kyle", Double.toString(loc.getLatitude()) + ", " + Double.toString(loc.getLongitude()));
+                Integer time = arrivalEst(busLocation, closestStop(busStops));
+                Log.d("Kyle", Integer.toString(time));
             }
         });
 
@@ -456,11 +452,17 @@ public class MapActivity extends Activity {
                     @Override
                     public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> list) {
                         if (error == RouteManager.Error.NONE) {
-                            // Render the route on the map
-                            mapRoute = new MapRoute(list.get(0).getRoute());
-                            map.addMapObject(mapRoute);
+                            if (list.get(0).getRoute() != null) {
+                                mapRoute = new MapRoute(list.get(0).getRoute());
+                                map.addMapObject(mapRoute);
+                            }else {
+                                Log.e("Kyle", "Results are not valid");
+                            }
+                        } else {
+                            Log.e("Kyle", "Route calculation error");
+                        }
                     }
-                    }
+
                 });
 
         int timeInSeconds = mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
