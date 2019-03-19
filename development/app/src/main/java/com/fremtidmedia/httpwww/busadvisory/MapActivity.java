@@ -109,9 +109,6 @@ public class MapActivity extends Activity {
     String id;
 
     public void testBus(View views){
-        t = new Timer();
-        tt = new BusTask();
-        t.schedule(tt, 0, 5000);
         TextView t3 = findViewById(R.id.textView3);
         t3.setClickable(false);
         centerView(busLocation);
@@ -203,6 +200,43 @@ public class MapActivity extends Activity {
             queue.add(jsonObjectRequest);
         }
 
+    public void initialize(String url){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            JSONArray location = response.getJSONArray("buslocation");
+                            JSONObject object1 = location.getJSONObject(0);
+                            JSONObject object2 = object1.getJSONObject("location");
+                            JSONArray object3 = object2.getJSONArray("coordinates");
+                            String lon = object3.getString(0);
+                            String lat = object3.getString(1);
+                            busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
+                            Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
+                            t = new Timer();
+                            tt = new BusTask();
+                            t.schedule(tt, 0, 5000);
+                        }
+                        catch (Exception e){
+
+                            Log.e("HERE", "Caught: " + e.getMessage());
+
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+
+                    }
+                });
+        queue.add(jsonObjectRequest);
+    }
+
 
 
     @Override
@@ -234,7 +268,8 @@ public class MapActivity extends Activity {
         network = new BasicNetwork(new HurlStack());
         queue = Volley.newRequestQueue(this);
         queue.start();
-        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+        //makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+        initialize("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
         id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -387,7 +422,6 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-                arrivalEst();
             }
         });
 
@@ -407,7 +441,6 @@ public class MapActivity extends Activity {
             }else if(time < 60) {
                 Log.d("kyle", "Soon.tm");
             }
-
             createBus(busLocation);
             Log.d("HERE", "Bus location updated");
         }
@@ -450,8 +483,13 @@ public class MapActivity extends Activity {
         routeOptions.setRouteCount(1);
         routePlan.setRouteOptions(routeOptions);
 
-        routePlan.addWaypoint(busLocation);
-        routePlan.addWaypoint(closestStop(busStops));
+
+        if (busLocation != null && closestStop(busStops) != null){
+            routePlan.addWaypoint(busLocation);
+            routePlan.addWaypoint(closestStop(busStops));
+
+
+
 
         rm.calculateRoute(routePlan,
                 new RouteManager.Listener() {
@@ -480,6 +518,9 @@ public class MapActivity extends Activity {
                         }
                     }
                 });
+        }else{
+            Log.d("Kyle", "null waypoints");
+        }
         return arrTime;
     }
     
