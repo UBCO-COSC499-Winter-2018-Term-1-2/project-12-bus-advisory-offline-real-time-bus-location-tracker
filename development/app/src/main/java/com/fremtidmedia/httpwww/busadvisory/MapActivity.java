@@ -408,24 +408,6 @@ public class MapActivity extends Activity {
         }
     }
 
-
-    public void createStops(GeoCoordinate location) {
-        Image marker_img = new Image();
-        try {
-            marker_img.setImageResource(R.drawable.bus_stop);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        map = mapFragment.getMap();
-        MapMarker stop1 = new MapMarker(location, marker_img);
-        busStops.add(stop1);
-        map.addMapObject(stop1);
-        MapMarker stop2 = new MapMarker(location, marker_img);
-        busStops.add(stop2);
-        map.addMapObject(stop2);
-
-    }
-
     public void centerView (GeoCoordinate location){
         map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.6);
         map.setCenter(location, Map.Animation.NONE);
@@ -464,31 +446,28 @@ public class MapActivity extends Activity {
         routePlan.addWaypoint(bus);
 
 
+        rm.calculateRoute(routePlan,
+                new RouteManager.Listener() {
+                    @Override
+                    public void onProgress(int i) {
 
-         class RouteListener implements RouteManager.Listener {
+                    }
 
-            // Method defined in Listener
-            public void onProgress(int percentage) {
-                // Display a message indicating calculation progress
-            }
-
-            // Method defined in Listener
-            public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> routeResult) {
-                // If the route was calculated successfully
-                if (error == RouteManager.Error.NONE) {
-                    // Render the route on the map
-                    mapRoute = new MapRoute(routeResult.get(0).getRoute());
-                    map.addMapObject(mapRoute);
-                }
-                else {
-                    // Display a message indicating route calculation failure
-                }
-            }
-        }
+                    @Override
+                    public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> list) {
+                        if (error == RouteManager.Error.NONE) {
+                            // Render the route on the map
+                            mapRoute = new MapRoute(list.get(0).getRoute());
+                            map.addMapObject(mapRoute);
+                    }
+                    }
+                });
 
         int timeInSeconds = mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
-         Log.d("route", Integer.toString(timeInSeconds));
+        Log.d("route", Integer.toString(timeInSeconds));
         return timeInSeconds;
+
+
     }
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
