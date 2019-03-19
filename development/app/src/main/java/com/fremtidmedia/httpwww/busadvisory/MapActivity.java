@@ -105,7 +105,6 @@ public class MapActivity extends Activity {
         t.schedule(tt, 0, 5000);
         TextView t3 = findViewById(R.id.textView3);
         t3.setClickable(false);
-        createBus(busLocation);
         centerView(busLocation);
 
 
@@ -393,6 +392,7 @@ public class MapActivity extends Activity {
         @Override
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+            createBus(busLocation);
             Log.d("HERE", "Bus location updated");
         }
     }
