@@ -384,7 +384,7 @@ public class MapActivity extends Activity {
                 Log.d("kyle", Double.toString(loc.getLatitude()) + ", " + Double.toString(loc.getLongitude()));
             }
         });
-        
+
 
         }
 
