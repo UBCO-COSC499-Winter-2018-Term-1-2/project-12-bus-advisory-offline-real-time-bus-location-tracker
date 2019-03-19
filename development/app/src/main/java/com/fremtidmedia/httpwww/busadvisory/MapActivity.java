@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -56,7 +57,10 @@ import com.here.android.mpa.mapping.MapObject;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
@@ -66,13 +70,16 @@ import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 
 public class MapActivity extends Activity {
 
-    LocationManager locationManager;
-    LocationListener locationListener;
+    private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
+    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[] {
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+
     IBeaconDevice searchBeacon;
 
     private Map map = null;
@@ -81,10 +88,12 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
-    private boolean paused;
+    Timer t = null;
+    BusTask tt = null;
 
-    List<MapObject> objList = new ArrayList<>();
-    List<MapMarker> busStops = new ArrayList<>();
+
+
+    private ArrayList<MapMarker> busStops = new ArrayList<>();
     private ArrayList<MapObject> markerList = new ArrayList<>();
     RequestQueue queue;
     Cache cache;
@@ -92,36 +101,46 @@ public class MapActivity extends Activity {
     String id;
 
     public void testBus(View views){
-        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+        t = new Timer();
+        tt = new BusTask();
+        t.schedule(tt, 0, 5000);
+        TextView t3 = findViewById(R.id.textView3);
+        t3.setClickable(false);
+        centerView(busLocation);
+
+
     }
 
 
-    // Resume positioning listener on wake up
+
+    public void centerView (View views) {
+        centerView(userLocation);
+    }
+
     public void onResume() {
         super.onResume();
-        paused = false;
         if (positioningManager != null) {
              positioningManager.start(
                 PositioningManager.LocationMethod.GPS_NETWORK);
     }
 }
 
-    // To pause positioning listener
     public void onPause() {
+        super.onPause();
         if (positioningManager != null) {
             positioningManager.stop();
         }
-        super.onPause();
-        paused = true;
+
     }
 
-    // To remove the positioning listener
     public void onDestroy() {
         if (positioningManager != null) {
             // Cleanup
             positioningManager.removeListener(
                     positionListener);
         }
+        tt.cancel();
+        t.cancel();
         map = null;
         super.onDestroy();
     }
@@ -142,7 +161,7 @@ public class MapActivity extends Activity {
     }
 
 
-        public void makeGetRequest(String url){
+    public void makeGetRequest(String url){
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                         @Override
@@ -157,8 +176,6 @@ public class MapActivity extends Activity {
                                String lat = object3.getString(1);
                                busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
                                Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
-                               createBus(busLocation);
-                               centerView(busLocation);
                             }
                             catch (Exception e){
 
@@ -178,18 +195,28 @@ public class MapActivity extends Activity {
             queue.add(jsonObjectRequest);
         }
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
+                         Log.d("HERE", "Permissions not accepted");
+                     } else {
+                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
+                     }
+                }
+                else{
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
                 }
             }
         }
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -199,6 +226,7 @@ public class MapActivity extends Activity {
         network = new BasicNetwork(new HurlStack());
         queue = Volley.newRequestQueue(this);
         queue.start();
+        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
         id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -224,13 +252,13 @@ public class MapActivity extends Activity {
 
                     try {
                         Image image = new Image();
-                        image.setImageResource(R.drawable.bus_stop);
+                        image.setImageResource(R.drawable.ic_trip_origin);
                         MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
                         map.addMapObject(stop1);
-                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.976448, -119.394334, 0.0), image);
+                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.934023, -119.401581, 0.0), image);
                         map.addMapObject(stop2);
                         Image userImage = new Image();
-                        userImage.setImageResource(R.drawable.iconfinder_map_marker_299087);
+                        userImage.setImageResource(R.drawable.ic_action_person_pin);
                         map.getPositionIndicator().setMarker(userImage);
 
                         busStops.add(stop1);
@@ -292,6 +320,14 @@ public class MapActivity extends Activity {
                 TRACKING.clearAnimation();
                 TRACKING.setVisibility(View.INVISIBLE);
                 fabEXIT.hide();
+                if(!markerList.isEmpty()) {
+                    map.removeMapObjects(markerList);
+                    markerList.clear();
+                }
+                tt.cancel();
+                t.cancel();
+                TextView t3 = findViewById(R.id.textView3);
+                t3.setClickable(true);
 
             }
         });
@@ -358,7 +394,7 @@ public class MapActivity extends Activity {
                 //boolean f = true;
                 Log.i("Info", "GO pressed");
 
-                
+
                 newAL.create().show();
 /*
                 if(f){
@@ -377,15 +413,30 @@ public class MapActivity extends Activity {
             }
         });
 
-
-
-
+        FloatingActionButton fabBusNum = findViewById(R.id.newBusNum);
+        fabBusNum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", "GO pressed");
+                GeoCoordinate loc = closestStop(busStops);
+                Log.d("kyle", Double.toString(loc.getLatitude()) + ", " + Double.toString(loc.getLongitude()));
+            }
+        });
 
 
         }
 
 
 
+    class BusTask extends TimerTask {
+
+        @Override
+         public void run() {
+            makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+            createBus(busLocation);
+            Log.d("HERE", "Bus location updated");
+        }
+    }
 
 
     public void createStops(GeoCoordinate location) {
@@ -406,14 +457,14 @@ public class MapActivity extends Activity {
     }
 
     public void centerView (GeoCoordinate location){
-        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.5);
+        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.6);
         map.setCenter(location, Map.Animation.NONE);
     }
 
     public void createBus(GeoCoordinate location) {
         try {
             Image image = new Image();
-            image.setImageResource(R.drawable.bus);
+            image.setImageResource(R.drawable.ic_action_directions_bus);
 
             if(!markerList.isEmpty()) {
                 map.removeMapObjects(markerList);
@@ -429,7 +480,7 @@ public class MapActivity extends Activity {
 
     }
 
-    public MapMarker closestStop(ArrayList<MapMarker> stops ) {
+    public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
         double tempX1 = Math.abs(userLocation.getLongitude() - stops.get(0).getCoordinate().getLatitude());
         double smallestHyp = Math.hypot(tempY1, tempX1);
@@ -444,8 +495,9 @@ public class MapActivity extends Activity {
 
             }
         }
+        GeoCoordinate closeStop = new GeoCoordinate(closest.getCoordinate().getLatitude(),closest.getCoordinate().getLongitude());
+        return closeStop;
 
-        return closest;
     }
 
 
