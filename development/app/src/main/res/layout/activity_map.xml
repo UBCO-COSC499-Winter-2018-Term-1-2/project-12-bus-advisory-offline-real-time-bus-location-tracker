@@ -152,7 +152,8 @@
         android:layout_gravity="bottom|right"
         android:layout_marginTop="375dp"
         android:layout_marginEnd="76dp"
-        android:layout_marginBottom="9dp">
+        android:layout_marginBottom="9dp"
+        android:onClick="testArr">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/newBusNum"

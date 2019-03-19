@@ -61,6 +61,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.here.android.mpa.mapping.MapRoute;
+import com.here.android.mpa.routing.Route;
+import com.here.android.mpa.routing.RouteManager;
+import com.here.android.mpa.routing.RouteOptions;
+import com.here.android.mpa.routing.RoutePlan;
+import com.here.android.mpa.routing.RouteResult;
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
 import com.kontakt.sdk.android.common.KontaktSDK;
@@ -87,6 +93,7 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
+    public MapRoute mapRoute;
     Timer t = null;
     BusTask tt = null;
 
@@ -108,6 +115,10 @@ public class MapActivity extends Activity {
         centerView(busLocation);
 
 
+    }
+
+    public void testArr(View views){
+        Integer time = arrivalEst(busLocation, closestStop(busStops));
     }
 
 
@@ -437,6 +448,47 @@ public class MapActivity extends Activity {
             Log.e("HERE", "Caught: " + e.getMessage());
         }
 
+    }
+
+    public int arrivalEst (GeoCoordinate stop, GeoCoordinate bus) {
+        RouteManager rm = new RouteManager();
+        RoutePlan routePlan = new RoutePlan();
+        RouteOptions routeOptions = new RouteOptions();
+        routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
+        routeOptions.setHighwaysAllowed(false);
+        routeOptions.setRouteType(RouteOptions.Type.SHORTEST);
+        routeOptions.setRouteCount(1);
+        routePlan.setRouteOptions(routeOptions);
+
+        routePlan.addWaypoint(stop);
+        routePlan.addWaypoint(bus);
+
+
+
+         class RouteListener implements RouteManager.Listener {
+
+            // Method defined in Listener
+            public void onProgress(int percentage) {
+                // Display a message indicating calculation progress
+            }
+
+            // Method defined in Listener
+            public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> routeResult) {
+                // If the route was calculated successfully
+                if (error == RouteManager.Error.NONE) {
+                    // Render the route on the map
+                    mapRoute = new MapRoute(routeResult.get(0).getRoute());
+                    map.addMapObject(mapRoute);
+                }
+                else {
+                    // Display a message indicating route calculation failure
+                }
+            }
+        }
+
+        int timeInSeconds = mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
+         Log.d("route", Integer.toString(timeInSeconds));
+        return timeInSeconds;
     }
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
