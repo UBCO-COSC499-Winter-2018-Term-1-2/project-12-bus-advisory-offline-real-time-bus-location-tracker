@@ -387,8 +387,6 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-                makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-                Log.d("Kyle", busLocation.getLatitude() + ", " + busLocation.getLongitude());
             }
         });
 
