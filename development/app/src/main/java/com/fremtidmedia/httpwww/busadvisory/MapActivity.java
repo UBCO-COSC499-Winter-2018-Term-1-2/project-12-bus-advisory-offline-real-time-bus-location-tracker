@@ -357,6 +357,8 @@ public class MapActivity extends Activity {
             public void onClick(View view) {
                 //boolean f = true;
                 Log.i("Info", "GO pressed");
+
+                
                 newAL.create().show();
 /*
                 if(f){
