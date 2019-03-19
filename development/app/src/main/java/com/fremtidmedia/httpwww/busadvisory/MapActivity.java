@@ -268,7 +268,6 @@ public class MapActivity extends Activity {
                         Image userImage = new Image();
                         userImage.setImageResource(R.drawable.ic_action_person_pin);
                         map.getPositionIndicator().setMarker(userImage);
-                        //arrTime = arrivalEst();
 
                         busStops.add(stop1);
                         busStops.add(stop2);
@@ -387,6 +386,9 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
+                arrivalEst();
+                Integer time = routeCalc();
+                Log.d("Kyle", Integer.toString(time));
             }
         });
 
@@ -400,8 +402,8 @@ public class MapActivity extends Activity {
         @Override
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-            Integer time = arrivalEst();
-            Log.d("Kyle", Integer.toString(time));
+            arrivalEst();
+            //routeCalc();
             createBus(busLocation);
             Log.d("HERE", "Bus location updated");
         }
@@ -431,7 +433,12 @@ public class MapActivity extends Activity {
 
     }
 
-    public int arrivalEst () {
+    public int routeCalc() {
+        arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
+        return arrTime;
+    }
+
+    public void arrivalEst () {
 
         RouteManager rm = new RouteManager();
         RoutePlan routePlan = new RoutePlan();
@@ -458,7 +465,7 @@ public class MapActivity extends Activity {
                             if (routeResults.get(0).getRoute() != null) {
                                 m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
                                 m_mapRoute.setManeuverNumberVisible(true);
-                                arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
+                                routeCalc();
                                 map.addMapObject(m_mapRoute);
 
                             } else {
@@ -472,7 +479,6 @@ public class MapActivity extends Activity {
                         }
                     }
                 });
-        return arrTime;
     }
     
 
