@@ -332,6 +332,7 @@ public class MapActivity extends Activity {
                     map.removeMapObjects(markerList);
                     markerList.clear();
                 }
+               // map.removeMapObject(m_mapRoute);
                 tt.cancel();
                 t.cancel();
                 TextView t3 = findViewById(R.id.textView3);
@@ -400,9 +401,11 @@ public class MapActivity extends Activity {
         @Override
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-            int time = arrivalEst();
-            if (time != 0){
+            int time = arrivalEst()/60;
+            if (time != 0 &&  time >= 60) {
                 Log.d("kyle", Integer.toString(time));
+            }else if(time < 60) {
+                Log.d("kyle", "Soon.tm");
             }
 
             createBus(busLocation);
@@ -464,7 +467,7 @@ public class MapActivity extends Activity {
                                 m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
                                 m_mapRoute.setManeuverNumberVisible(true);
                                 arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
-                                map.addMapObject(m_mapRoute);
+                                //map.addMapObject(m_mapRoute);
 
                             } else {
                                 Log.e("Kyle", "Results are not valid");
