@@ -386,7 +386,8 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-                Integer time = arrivalEst();
+                arrivalEst();
+                Integer time = routeCalc();
                 Log.d("Kyle", Integer.toString(time));
             }
         });
@@ -401,6 +402,8 @@ public class MapActivity extends Activity {
         @Override
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+            arrivalEst();
+            routeCalc();
             createBus(busLocation);
             Log.d("HERE", "Bus location updated");
         }
@@ -430,7 +433,12 @@ public class MapActivity extends Activity {
 
     }
 
-    public int arrivalEst () {
+    public int routeCalc() {
+        arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
+        return arrTime;
+    }
+
+    public void arrivalEst () {
 
         RouteManager rm = new RouteManager();
         RoutePlan routePlan = new RoutePlan();
@@ -458,7 +466,6 @@ public class MapActivity extends Activity {
                                 m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
                                 m_mapRoute.setManeuverNumberVisible(true);
                                 map.addMapObject(m_mapRoute);
-                                arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
 
                             } else {
                                 Log.e("Kyle", "Results are not valid");
@@ -471,8 +478,6 @@ public class MapActivity extends Activity {
                         }
                     }
                 });
-
-        return arrTime;
     }
     
 
