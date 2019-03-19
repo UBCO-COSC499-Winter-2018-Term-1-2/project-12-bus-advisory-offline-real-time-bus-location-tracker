@@ -95,6 +95,7 @@ public class MapActivity extends Activity {
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
     private MapRoute m_mapRoute;
+    private int arrTime;
     Timer t = null;
     BusTask tt = null;
 
@@ -429,7 +430,7 @@ public class MapActivity extends Activity {
 
     }
 
-    public void arrivalEst () {
+    public int arrivalEst () {
 
         RouteManager rm = new RouteManager();
         RoutePlan routePlan = new RoutePlan();
@@ -457,7 +458,7 @@ public class MapActivity extends Activity {
                                 m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
                                 m_mapRoute.setManeuverNumberVisible(true);
                                 map.addMapObject(m_mapRoute);
-
+                                arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
 
                             } else {
                                 Log.e("Kyle", "Results are not valid");
@@ -471,77 +472,9 @@ public class MapActivity extends Activity {
                     }
                 });
 
+        return arrTime;
     }
-
-        /**
-        RouteManager rm = new RouteManager();
-        RoutePlan routePlan = new RoutePlan();
-        RouteOptions routeOptions = new RouteOptions();
-        routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
-        routeOptions.setHighwaysAllowed(false);
-        routeOptions.setRouteType(RouteOptions.Type.SHORTEST);
-        routeOptions.setRouteCount(1);
-        routePlan.setRouteOptions(routeOptions);
-
-        routePlan.addWaypoint(stop);
-        routePlan.addWaypoint(bus);
-
-        rm.calculateRoute(routePlan, new RouteListener());
-
-
-/**
-
-        rm.calculateRoute(routePlan,
-                new RouteManager.Listener() {
-                    @Override
-                    public void onProgress(int i) {
-
-                    }
-
-                    @Override
-                    public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> list) {
-                        if (error == RouteManager.Error.NONE) {
-                            if (list.get(0).getRoute() != null) {
-                                mapRoute = new MapRoute(list.get(0).getRoute());
-                                map.addMapObject(mapRoute);
-                            }else {
-                                Log.e("Kyle", "Results are not valid");
-                            }
-                        } else {
-                            Log.e("Kyle", "Route calculation error");
-                        }
-                    }
-
-                });
-
-
-
-        int timeInSeconds = mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
-        Log.d("kyle", Integer.toString(timeInSeconds));
-        return timeInSeconds;
-
-         **/
-
-
-
-
-    private class RouteListener implements RouteManager.Listener {
-
-        public void onProgress(int percentage) {
-
-        }
-
-        public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> routeResult) {
-            if (error == RouteManager.Error.NONE) {
-                mapRoute = new MapRoute(routeResult.get(0).getRoute());
-                map.addMapObject(mapRoute);
-            }
-            else {
-                Log.e("Kyle", "Route calculation error");
-            }
-        }
-    }
-
+    
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
