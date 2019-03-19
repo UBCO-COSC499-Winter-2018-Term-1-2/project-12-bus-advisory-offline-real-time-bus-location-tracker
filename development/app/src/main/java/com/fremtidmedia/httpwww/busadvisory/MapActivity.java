@@ -111,7 +111,7 @@ public class MapActivity extends Activity {
     public void testBus(View views){
         t = new Timer();
         tt = new BusTask();
-        t.schedule(tt, 0, 5000);
+        t.schedule(tt, 0, 10000);
         TextView t3 = findViewById(R.id.textView3);
         t3.setClickable(false);
         centerView(busLocation);
@@ -245,6 +245,7 @@ public class MapActivity extends Activity {
         });
         KontaktSDK.initialize("zwPcatzTlLvusdiKXJKImhTqqhVbAJyN");
         kontaktDetect();
+        arrivalEst();
 
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapfragment);
 
@@ -268,6 +269,7 @@ public class MapActivity extends Activity {
                         Image userImage = new Image();
                         userImage.setImageResource(R.drawable.ic_action_person_pin);
                         map.getPositionIndicator().setMarker(userImage);
+                        routeCalc();
 
                         busStops.add(stop1);
                         busStops.add(stop2);
@@ -335,6 +337,7 @@ public class MapActivity extends Activity {
                 tt.cancel();
                 t.cancel();
                 TextView t3 = findViewById(R.id.textView3);
+                map.removeMapObject(m_mapRoute);
                 t3.setClickable(true);
 
             }
@@ -386,8 +389,7 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Log.i("Info", "GO pressed");
-                Integer time = arrivalEst();
-                Log.d("Kyle", Integer.toString(time));
+                
             }
         });
 
@@ -401,7 +403,11 @@ public class MapActivity extends Activity {
         @Override
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+            arrivalEst();
             createBus(busLocation);
+            int time = routeCalc();
+            createRoute();
+            Log.d("Kyle", Integer.toString(time));
             Log.d("HERE", "Bus location updated");
         }
     }
@@ -430,7 +436,18 @@ public class MapActivity extends Activity {
 
     }
 
-    public int arrivalEst () {
+    public int routeCalc (){
+
+        arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
+        return arrTime;
+
+    }
+
+    public void createRoute(){
+        map.addMapObject(m_mapRoute);
+    }
+
+    public void arrivalEst () {
 
         RouteManager rm = new RouteManager();
         RoutePlan routePlan = new RoutePlan();
@@ -456,9 +473,6 @@ public class MapActivity extends Activity {
                         if (error == RouteManager.Error.NONE) {
                             if (routeResults.get(0).getRoute() != null) {
                                 m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
-                                m_mapRoute.setManeuverNumberVisible(true);
-                                map.addMapObject(m_mapRoute);
-                                arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
 
                             } else {
                                 Log.e("Kyle", "Results are not valid");
@@ -472,9 +486,9 @@ public class MapActivity extends Activity {
                     }
                 });
 
-        return arrTime;
+
     }
-    
+
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
