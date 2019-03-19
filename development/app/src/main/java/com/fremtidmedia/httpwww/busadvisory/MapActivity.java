@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.JsonObject;
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPosition;
 import com.here.android.mpa.common.Image;
@@ -76,8 +77,8 @@ import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 public class MapActivity extends Activity {
 
     private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
-    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[] {
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     IBeaconDevice searchBeacon;
 
@@ -91,7 +92,6 @@ public class MapActivity extends Activity {
     BusTask tt = null;
 
 
-
     private ArrayList<MapMarker> busStops = new ArrayList<>();
     private ArrayList<MapObject> markerList = new ArrayList<>();
     RequestQueue queue;
@@ -99,7 +99,7 @@ public class MapActivity extends Activity {
     Network network;
     String id;
 
-    public void testBus(View views){
+    public void testBus(View views) {
         t = new Timer();
         tt = new BusTask();
         t.schedule(tt, 0, 5000);
@@ -109,20 +109,18 @@ public class MapActivity extends Activity {
 
 
     }
-
-
-
-    public void centerView (View views) {
+    
+    public void centerView(View views) {
         centerView(userLocation);
     }
 
     public void onResume() {
         super.onResume();
         if (positioningManager != null) {
-             positioningManager.start(
-                PositioningManager.LocationMethod.GPS_NETWORK);
+            positioningManager.start(
+                    PositioningManager.LocationMethod.GPS_NETWORK);
+        }
     }
-}
 
     public void onPause() {
         super.onPause();
@@ -145,56 +143,65 @@ public class MapActivity extends Activity {
     }
 
     public void makePostRequest(String url) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
+        JsonObject jsonRequest = new JsonObject();
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
-            }
-        });
-        queue.add(stringRequest);
+                        try {
+
+                        } catch (Exception e) {
+
+                            Log.e("HERE", "Caught: " + e.getMessage());
+
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+
+                    }
+                });
+        queue.add(jsonObjectRequest);
     }
 
+    public void makeGetRequest(String url) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
-    public void makeGetRequest(String url){
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray location = response.getJSONArray("buslocation");
+                            JSONObject object1 = location.getJSONObject(0);
+                            JSONObject object2 = object1.getJSONObject("location");
+                            JSONArray object3 = object2.getJSONArray("coordinates");
+                            String lon = object3.getString(0);
+                            String lat = object3.getString(1);
+                            busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon));
+                            Log.d("Location", busLocation.getLatitude() + ", " + busLocation.getLongitude());
+                        } catch (Exception e) {
 
-                            try {
-                               JSONArray location = response.getJSONArray("buslocation");
-                               JSONObject object1 = location.getJSONObject(0);
-                               JSONObject object2 = object1.getJSONObject("location");
-                               JSONArray object3 = object2.getJSONArray("coordinates");
-                               String lon = object3.getString(0);
-                               String lat = object3.getString(1);
-                               busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
-                               Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
-                            }
-                            catch (Exception e){
-
-                                Log.e("HERE", "Caught: " + e.getMessage());
-
-                            }
+                            Log.e("HERE", "Caught: " + e.getMessage());
 
                         }
-                    }, new Response.ErrorListener() {
 
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // TODO: Handle error
+                    }
+                }, new Response.ErrorListener() {
 
-                        }
-                    });
-            queue.add(jsonObjectRequest);
-        }
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
 
-
+                    }
+                });
+        queue.add(jsonObjectRequest);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -203,19 +210,17 @@ public class MapActivity extends Activity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
-                         Log.d("HERE", "Permissions not accepted");
-                     } else {
-                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
-                     }
-                }
-                else{
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        Log.d("HERE", "Permissions not accepted");
+                    } else {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
+                    }
+                } else {
                     positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
                 }
             }
         }
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -245,14 +250,13 @@ public class MapActivity extends Activity {
                 if (error == OnEngineInitListener.Error.NONE) {
                     map = mapFragment.getMap();
                     map.setCenter(userLocation, Map.Animation.NONE);
-                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) /1.75);
-
+                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.75);
 
 
                     try {
                         Image image = new Image();
                         image.setImageResource(R.drawable.ic_trip_origin);
-                        MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
+                        MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073, -119.394334, 0.0), image);
                         map.addMapObject(stop1);
                         MapMarker stop2 = new MapMarker(new GeoCoordinate(49.934023, -119.401581, 0.0), image);
                         map.addMapObject(stop2);
@@ -268,20 +272,21 @@ public class MapActivity extends Activity {
                     }
 
 
-
                     positioningManager = PositioningManager.getInstance();
                     positionListener = new PositioningManager.OnPositionChangedListener() {
                         @Override
                         public void onPositionUpdated(PositioningManager.LocationMethod method, GeoPosition position, boolean isMapMatched) {
                             userLocation = position.getCoordinate();
                         }
+
                         @Override
-                        public void onPositionFixChanged(PositioningManager.LocationMethod method, PositioningManager.LocationStatus status) { }
+                        public void onPositionFixChanged(PositioningManager.LocationMethod method, PositioningManager.LocationStatus status) {
+                        }
                     };
 
                     try {
                         positioningManager.addListener(new WeakReference<PositioningManager.OnPositionChangedListener>(positionListener));
-                        if(!positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK)) {
+                        if (!positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK)) {
                             Log.e("HERE", "PositioningManager.start: Failed to start...");
                         }
                     } catch (Exception e) {
@@ -294,10 +299,6 @@ public class MapActivity extends Activity {
                 }
             }
         });
-
-
-
-
 
 
         //TRACKING & its animation
@@ -319,7 +320,7 @@ public class MapActivity extends Activity {
                 TRACKING.clearAnimation();
                 TRACKING.setVisibility(View.INVISIBLE);
                 fabEXIT.hide();
-                if(!markerList.isEmpty()) {
+                if (!markerList.isEmpty()) {
                     map.removeMapObjects(markerList);
                     markerList.clear();
                 }
@@ -368,7 +369,6 @@ public class MapActivity extends Activity {
                 newAL.create().show();
 
 
-
             }
         });
 
@@ -383,20 +383,7 @@ public class MapActivity extends Activity {
         });
 
 
-        }
-
-
-
-    class BusTask extends TimerTask {
-
-        @Override
-         public void run() {
-            makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-            createBus(busLocation);
-            Log.d("HERE", "Bus location updated");
-        }
     }
-
 
     public void createStops(GeoCoordinate location) {
         Image marker_img = new Image();
@@ -415,7 +402,7 @@ public class MapActivity extends Activity {
 
     }
 
-    public void centerView (GeoCoordinate location){
+    public void centerView(GeoCoordinate location) {
         map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.6);
         map.setCenter(location, Map.Animation.NONE);
     }
@@ -425,7 +412,7 @@ public class MapActivity extends Activity {
             Image image = new Image();
             image.setImageResource(R.drawable.ic_action_directions_bus);
 
-            if(!markerList.isEmpty()) {
+            if (!markerList.isEmpty()) {
                 map.removeMapObjects(markerList);
                 markerList.clear();
             }
@@ -433,34 +420,33 @@ public class MapActivity extends Activity {
             markerList.add(busMarker);
             map.addMapObjects(markerList);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.e("HERE", "Caught: " + e.getMessage());
         }
 
     }
 
-    public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
+    public GeoCoordinate closestStop(ArrayList<MapMarker> stops) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
         double tempX1 = Math.abs(userLocation.getLongitude() - stops.get(0).getCoordinate().getLatitude());
         double smallestHyp = Math.hypot(tempY1, tempX1);
         MapMarker closest = stops.get(0);
-        for (int i = 0; i < stops.size() ; i++) {
+        for (int i = 0; i < stops.size(); i++) {
             double tempY = Math.abs(stops.get(i).getCoordinate().getLatitude() - userLocation.getLatitude());
             double tempX = Math.abs(stops.get(i).getCoordinate().getLongitude() - userLocation.getLongitude());
             double tempHyp = Math.hypot(tempY, tempX);
-            if ( tempHyp < smallestHyp ){
+            if (tempHyp < smallestHyp) {
                 smallestHyp = tempHyp;
                 closest = stops.get(i);
 
             }
         }
-        GeoCoordinate closeStop = new GeoCoordinate(closest.getCoordinate().getLatitude(),closest.getCoordinate().getLongitude());
+        GeoCoordinate closeStop = new GeoCoordinate(closest.getCoordinate().getLatitude(), closest.getCoordinate().getLongitude());
         return closeStop;
 
     }
 
-
-    private void topicSubscribe(String topic){
+    private void topicSubscribe(String topic) {
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -471,15 +457,27 @@ public class MapActivity extends Activity {
                     }
                 });
     }
+
     private void kontaktDetect() {
         IBeaconListener iBeaconListener = new SimpleIBeaconListener() {
             @Override
             public void onIBeaconDiscovered(IBeaconDevice ibeacon, IBeaconRegion region) {
                 Log.e("beacon", ibeacon.toString());
-                if(ibeacon.equals(searchBeacon)){
+                if (ibeacon.equals(searchBeacon)) {
 
                 }
             }
         };
     }
+
+    class BusTask extends TimerTask {
+
+        @Override
+        public void run() {
+            makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+            createBus(busLocation);
+            Log.d("HERE", "Bus location updated");
+        }
+    }
+
 }
