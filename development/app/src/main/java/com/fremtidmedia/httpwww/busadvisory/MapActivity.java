@@ -403,7 +403,7 @@ public class MapActivity extends Activity {
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
             arrivalEst();
-            routeCalc();
+            //routeCalc();
             createBus(busLocation);
             Log.d("HERE", "Bus location updated");
         }
@@ -465,6 +465,7 @@ public class MapActivity extends Activity {
                             if (routeResults.get(0).getRoute() != null) {
                                 m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
                                 m_mapRoute.setManeuverNumberVisible(true);
+                                routeCalc();
                                 map.addMapObject(m_mapRoute);
 
                             } else {
