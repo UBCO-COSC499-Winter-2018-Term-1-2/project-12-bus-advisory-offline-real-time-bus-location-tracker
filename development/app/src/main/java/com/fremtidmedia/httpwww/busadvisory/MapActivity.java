@@ -101,13 +101,13 @@ public class MapActivity extends Activity {
     String id;
 
     public void testBus(View views){
-        t = new Timer();
+      /*  t = new Timer();
         tt = new BusTask();
         t.schedule(tt, 0, 5000);
         TextView t3 = findViewById(R.id.textView3);
         t3.setClickable(false);
         centerView(busLocation);
-
+*/
 
     }
 
@@ -327,7 +327,7 @@ public class MapActivity extends Activity {
                 //ARE U SURE ALERT
                 AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
                 builder.setTitle("Confirmation");
-                builder.setMessage("Are you sure you want to stop tracking the bus?");
+                builder.setMessage("Are you sure you want to cancel your reminder?");
 
                 builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -339,7 +339,7 @@ public class MapActivity extends Activity {
                         }
                      //   tt.cancel();
                       //  t.cancel();
-                        TextView t3 = findViewById(R.id.textView3);
+                        TextView t3 = findViewById(R.id.BottomBAR);
                         t3.setClickable(true);
 
                         fabGO.hide();
@@ -390,7 +390,7 @@ public class MapActivity extends Activity {
 
                 final AlertDialog.Builder newAL = new AlertDialog.Builder(MapActivity.this);
 
-                newAL.setTitle("Remind me (in minutes) of my bus arrival at my stop (in minutes)");
+                newAL.setTitle("Remind me before the bus arrival \n (in minutes) at my stop");
                 newAL.setView(numberPicker);
 
                 newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
@@ -410,12 +410,18 @@ public class MapActivity extends Activity {
         });
 
         TextView t0 = findViewById(R.id.textView97);
+        final TextView BottomBar = findViewById(R.id.BottomBAR);
 
-        t0.setOnClickListener(new View.OnClickListener() {
+        BottomBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fabGO.show();
                 GoText.setVisibility(View.VISIBLE);
+                t = new Timer();
+                tt = new BusTask();
+                t.schedule(tt, 0, 5000);
+                BottomBar.setClickable(false);
+                centerView(busLocation);
             }
         });
 

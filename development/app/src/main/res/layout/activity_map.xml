@@ -22,14 +22,14 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="1dp"
+        android:layout_marginStart="2dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp"
         android:onClick="testStopLoc" />
 
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/BottomBAR"
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:layout_alignParentStart="true"
@@ -51,10 +51,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="224dp"
-        android:layout_marginBottom="31dp"
-        android:text="10 Minutes"
+        android:layout_marginBottom="33dp"
+        android:text="97"
         android:textColor="@android:color/white"
-        android:textSize="30sp"
+        android:textSize="36sp"
         android:textStyle="bold" />
 
     <android.support.design.widget.FloatingActionButton
@@ -151,11 +151,23 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/FL1"
         android:layout_alignBottom="@+id/textView5"
-        android:layout_marginEnd="-10dp"
-        android:layout_marginBottom="-23dp"
-        android:text="97"
+        android:layout_marginEnd="-6dp"
+        android:layout_marginBottom="-6dp"
+        android:text="10"
         android:textColor="@color/white"
-        android:textSize="50sp"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/mins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView5"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-33dp"
+        android:layout_marginEnd="16dp"
+        android:text="minutes"
+        android:textColor="@color/white"
         android:textStyle="bold" />
 
 
