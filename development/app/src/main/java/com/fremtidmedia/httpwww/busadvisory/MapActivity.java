@@ -171,7 +171,7 @@ public class MapActivity extends Activity {
                                JSONArray location = response.getJSONArray("buslocation");
                                JSONObject object1 = location.getJSONObject(0);
                                JSONObject object2 = object1.getJSONObject("location");
-                                                               JSONArray object3 = object2.getJSONArray("coordinates");
+                               JSONArray object3 = object2.getJSONArray("coordinates");
                                String lon = object3.getString(0);
                                String lat = object3.getString(1);
                                busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
@@ -310,7 +310,12 @@ public class MapActivity extends Activity {
         anim.setStartOffset(20);
         anim.setRepeatMode(Animation.REVERSE);
         anim.setRepeatCount(Animation.INFINITE);
+
+        final TextView GoText = findViewById(R.id.GoText);
+        GoText.setVisibility(View.INVISIBLE);
         final FloatingActionButton fabGO = findViewById(R.id.newGO);
+        fabGO.hide();
+
 
         final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
         fabEXIT.hide();
@@ -337,7 +342,8 @@ public class MapActivity extends Activity {
                         TextView t3 = findViewById(R.id.textView3);
                         t3.setClickable(true);
 
-                        fabGO.show();
+                        fabGO.hide();
+                        GoText.setVisibility(View.INVISIBLE);
 
                         dialog.dismiss();
                     }
@@ -361,7 +367,7 @@ public class MapActivity extends Activity {
         });
 
 
-        final TextView GoText = findViewById(R.id.GoText);
+
 
 
 
@@ -403,6 +409,15 @@ public class MapActivity extends Activity {
             }
         });
 
+        TextView t0 = findViewById(R.id.textView97);
+
+        t0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabGO.show();
+                GoText.setVisibility(View.VISIBLE);
+            }
+        });
 
 
 
