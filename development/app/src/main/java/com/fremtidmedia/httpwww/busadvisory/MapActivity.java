@@ -21,13 +21,6 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 import android.util.Log;
 import android.view.View;
-import com.here.android.mpa.mapping.MapRoute;
-import com.here.android.mpa.routing.Route;
-import com.here.android.mpa.routing.RouteManager;
-import com.here.android.mpa.routing.RouteOptions;
-import com.here.android.mpa.routing.RoutePlan;
-import com.here.android.mpa.routing.RouteResult;
-import com.here.android.mpa.routing.RouteTta;
 
 import android.content.DialogInterface;
 import android.app.AlertDialog;
@@ -95,10 +88,8 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
-    private MapRoute m_mapRoute;
-    private int arrTime;
-    Timer timer = null;
-    BusTask timerTask = null;
+    Timer t = null;
+    BusTask tt = null;
 
 
 
@@ -148,8 +139,8 @@ public class MapActivity extends Activity {
             positioningManager.removeListener(
                     positionListener);
         }
-        timerTask.cancel();
-        timer.cancel();
+        tt.cancel();
+        t.cancel();
         map = null;
         super.onDestroy();
     }
@@ -167,42 +158,6 @@ public class MapActivity extends Activity {
             }
         });
         queue.add(stringRequest);
-    }
-    public void initialize(String url){
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        try {
-                            JSONArray location = response.getJSONArray("buslocation");
-                            JSONObject object1 = location.getJSONObject(0);
-                            JSONObject object2 = object1.getJSONObject("location");
-                            JSONArray object3 = object2.getJSONArray("coordinates");
-                            String lon = object3.getString(0);
-                            String lat = object3.getString(1);
-                            busLocation = new GeoCoordinate(Double.parseDouble(lat), Double.parseDouble(lon) );
-                            Log.d("Location", busLocation.getLatitude() + ", " +  busLocation.getLongitude());
-                            timer = new Timer();
-                            timerTask = new BusTask();
-                            timer.schedule(timerTask, 0, 5000);
-                        }
-                        catch (Exception e){
-
-                            Log.e("HERE", "Caught: " + e.getMessage());
-
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-
-                    }
-                });
-        queue.add(jsonObjectRequest);
     }
 
 
@@ -271,7 +226,7 @@ public class MapActivity extends Activity {
         network = new BasicNetwork(new HurlStack());
         queue = Volley.newRequestQueue(this);
         queue.start();
-//        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+        makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
         id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -290,6 +245,30 @@ public class MapActivity extends Activity {
             public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
                 if (error == OnEngineInitListener.Error.NONE) {
                     map = mapFragment.getMap();
+                    map.setCenter(userLocation, Map.Animation.NONE);
+                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) /1.75);
+
+
+
+                    try {
+                        Image image = new Image();
+                        image.setImageResource(R.drawable.ic_trip_origin);
+                        MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
+                        map.addMapObject(stop1);
+                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.934023, -119.401581, 0.0), image);
+                        map.addMapObject(stop2);
+                        Image userImage = new Image();
+                        userImage.setImageResource(R.drawable.ic_action_person_pin);
+                        map.getPositionIndicator().setMarker(userImage);
+
+                        busStops.add(stop1);
+                        busStops.add(stop2);
+
+                    } catch (Exception e) {
+                        Log.e("HERE", e.getMessage());
+                    }
+
+
 
                     positioningManager = PositioningManager.getInstance();
                     positionListener = new PositioningManager.OnPositionChangedListener() {
@@ -314,34 +293,6 @@ public class MapActivity extends Activity {
                 } else {
                     System.out.println("ERROR: Cannot initialize Map Fragment");
                 }
-
-                    map.setCenter(userLocation, Map.Animation.NONE);
-                    map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) /1.75);
-
-
-
-                    try {
-                        Image image = new Image();
-                        image.setImageResource(R.drawable.ic_trip_origin);
-                        MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
-                        map.addMapObject(stop1);
-                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.934023, -119.401581, 0.0), image);
-                        map.addMapObject(stop2);
-                        Image userImage = new Image();
-                        userImage.setImageResource(R.drawable.ic_action_person_pin);
-                        map.getPositionIndicator().setMarker(userImage);
-                        initialize("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-
-                        busStops.add(stop1);
-                        busStops.add(stop2);
-
-                    } catch (Exception e) {
-                        Log.e("HERE", e.getMessage());
-                    }
-
-
-
-
             }
         });
 
@@ -359,7 +310,6 @@ public class MapActivity extends Activity {
         anim.setStartOffset(20);
         anim.setRepeatMode(Animation.REVERSE);
         anim.setRepeatCount(Animation.INFINITE);
-
 
         final TextView GoText = findViewById(R.id.GoText);
         GoText.setVisibility(View.INVISIBLE);
@@ -468,9 +418,9 @@ public class MapActivity extends Activity {
             public void onClick(View v) {
                 fabGO.show();
                 GoText.setVisibility(View.VISIBLE);
-                timer = new Timer();
-                timerTask = new BusTask();
-                timer.schedule(timerTask, 0, 5000);
+                t = new Timer();
+                tt = new BusTask();
+                t.schedule(tt, 0, 5000);
                 BottomBar.setClickable(false);
                 centerView(busLocation);
             }
@@ -487,75 +437,33 @@ public class MapActivity extends Activity {
         @Override
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
-            int time = arrivalEst()/60;
-            if (time != 0 &&  time >= 60) {
-                Log.d("kyle", Integer.toString(time));
-            }else if(time < 60) {
-                Log.d("kyle", "<1 minute");
-            }
             createBus(busLocation);
             Log.d("HERE", "Bus location updated");
         }
     }
 
 
+    public void createStops(GeoCoordinate location) {
+        Image marker_img = new Image();
+        try {
+            marker_img.setImageResource(R.drawable.bus_stop);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        map = mapFragment.getMap();
+        MapMarker stop1 = new MapMarker(location, marker_img);
+        busStops.add(stop1);
+        map.addMapObject(stop1);
+        MapMarker stop2 = new MapMarker(location, marker_img);
+        busStops.add(stop2);
+        map.addMapObject(stop2);
 
+    }
 
     public void centerView (GeoCoordinate location){
         map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.6);
         map.setCenter(location, Map.Animation.NONE);
     }
-    public int arrivalEst () {
-
-        RouteManager rm = new RouteManager();
-        RoutePlan routePlan = new RoutePlan();
-        RouteOptions routeOptions = new RouteOptions();
-        routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
-        routeOptions.setHighwaysAllowed(false);
-        routeOptions.setRouteType(RouteOptions.Type.SHORTEST);
-        routeOptions.setRouteCount(1);
-        routePlan.setRouteOptions(routeOptions);
-
-        if (busLocation != null && closestStop(busStops) != null){
-            routePlan.addWaypoint(busLocation);
-            routePlan.addWaypoint(closestStop(busStops));
-
-
-
-
-            rm.calculateRoute(routePlan,
-                    new RouteManager.Listener() {
-                        @Override
-                        public void onProgress(int i) {
-
-                        }
-
-                        @Override
-                        public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> routeResults) {
-                            if (error == RouteManager.Error.NONE) {
-                                if (routeResults.get(0).getRoute() != null) {
-                                    m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
-                                    m_mapRoute.setManeuverNumberVisible(true);
-                                    arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
-                                    //map.addMapObject(m_mapRoute);
-
-                                } else {
-                                    Log.e("Kyle", "Results are not valid");
-
-
-                                }
-                            } else {
-                                Log.e("Kyle", "Route calculation error");
-
-                            }
-                        }
-                    });
-        }else{
-            Log.d("Kyle", "null waypoints");
-        }
-        return arrTime;
-    }
-
 
     public void createBus(GeoCoordinate location) {
         try {
@@ -577,12 +485,8 @@ public class MapActivity extends Activity {
     }
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
-        if(stops == null)
-            return null;
-        double tempY1 = Math.abs(userLocation.getLatitude()
-                - stops.get(0).getCoordinate().getLatitude());
-        double tempX1 = Math.abs(userLocation.getLongitude()
-                - stops.get(0).getCoordinate().getLongitude());
+        double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
+        double tempX1 = Math.abs(userLocation.getLongitude() - stops.get(0).getCoordinate().getLatitude());
         double smallestHyp = Math.hypot(tempY1, tempX1);
         MapMarker closest = stops.get(0);
         for (int i = 0; i < stops.size() ; i++) {
