@@ -52,13 +52,13 @@ var sendRequest = (startLatLng, endLatLng, busStopName) => {
 //     console.log(err)
 // });
 
-sendRequest("49.9399807,-119.395521", "49.9081381,-119.3917857", "UBCOA").then(() => {
-  console.log("success");
-  process.exit();
-}).catch((err) => {
-  console.log(err);
-  process.exit();
-});
+// sendRequest("49.9399807,-119.395521", "49.9081381,-119.3917857", "UBCOA").then(() => {
+//   console.log("success");
+//   process.exit();
+// }).catch((err) => {
+//   console.log(err);
+//   process.exit();
+// });
 
 
 

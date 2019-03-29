@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('underscore');
 const {ObjectID} = require('mongodb');
+var { getTime } = require('./here_maps/here_maps_trigger');
 //var moment = require('moment');
 
 var {mongoose} = require('./db/mongoose');
@@ -160,6 +161,54 @@ app.get('/triprequest/:busstop', (req, res) => {
     }).catch((e) => {
         res.status(400).send(e);
     })
+});
+app.get('/buslocation/:busstop', (req, res) => {
+
+    BusLocation.find().sort({ timestamp: -1 }).limit(1).then((buslocation) => {
+        var long = buslocation[0].location.coordinates[0];
+        var lat = buslocation[0].location.coordinates[1];
+        var latlng = { lat, long };
+        //        var latlngString = latlng;
+        //        var longString = JSON.stringify(long);
+
+        console.log(typeof latlng);
+        console.log(typeof longString);
+
+
+        getTime("49.9399807,-119.395521", "49.9081381,-119.3917857").then((trafficTime) => {
+            console.log(trafficTime);
+            res.send({ trafficTime });
+        }, (err) => {
+            console.log(err)
+        });
+        //    console.log(buslocation);
+    }, (e) => {
+        res.status(400).send(e);
+    });
+
+    //    TripRequest.find({
+    //        requestedTime : 
+    //        { $gte :  new Date(new Date().getTime() - 1000 * 60 * 100) }
+    //    }).then((tripreqs) => {
+    //        
+    //        const passengerWaiting = tripreqs.filter((user) => {
+    //            var requestedStop = null;
+    //
+    //            if (req.params.busstop == "ubco-a"){
+    //                requestedStop = "UBCO A";
+    //            } else if (req.params.busstop == "ubco-b"){
+    //                requestedStop = "UBCO B";
+    //            }
+    //
+    //            return user.busStop === requestedStop;
+    //
+    //        });
+    ////        console.log('reqs', passengerWaiting);
+    //
+    //        res.send({passengerWaiting});
+    //    }).catch((e) => {
+    //        res.status(400).send(e);
+    //    })
 });
 
 //updates bus location
