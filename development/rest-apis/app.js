@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('underscore');
 const {ObjectID} = require('mongodb');
-var { getTime } = require('./here_maps/here_maps_trigger');
+var ggtime = require('./here_maps/here_maps_trigger');
 //var moment = require('moment');
 
 var {mongoose} = require('./db/mongoose');
@@ -175,9 +175,9 @@ app.get('/buslocation/:busstop', (req, res) => {
         console.log(typeof longString);
 
 
-        getTime("49.9399807,-119.395521", "49.9081381,-119.3917857").then((trafficTime) => {
+        ggtime.sendRequest("49.9399807,-119.395521", "49.9081381,-119.3917857", "UBCOA").then((trafficTime) => {
             console.log(trafficTime);
-            res.send({ trafficTime });
+            // res.send({ trafficTime });
         }, (err) => {
             console.log(err)
         });

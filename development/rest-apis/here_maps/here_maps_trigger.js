@@ -6,7 +6,10 @@ const hm = require('./here_maps_wrapper');
 firebase.initializeApp(config.firebaseConfig);
 
 
-var getTime = (startLatLng, endLatLng) => {
+var getTime = (buslat, buslng, stoplat, stoplng) => {
+var startLatLng = `${buslat},${buslng}`;
+var endLatLng = `${stoplat},${stoplng}`;
+
 return new Promise((resolve, reject) => {
     hm.configure(config.here_maps_config).then(() => {
 hm.requestSimpleString(startLatLng, endLatLng).then(
@@ -19,7 +22,9 @@ hm.requestSimpleString(startLatLng, endLatLng).then(
 });
 };
 
-var sendRequest = (startLatLng, endLatLng, busStopName) => {
+var sendRequest = (buslat, buslng, stoplat, stoplng, busStopName) => {
+  var startLatLng = `${buslat},${buslng}`;
+  var endLatLng = `${stoplat},${stoplng}`;
     return new Promise((resolve, reject) => {
         getTime(startLatLng, endLatLng).then( (time) => {
         if( time <= 100 ) {
@@ -34,11 +39,11 @@ var sendRequest = (startLatLng, endLatLng, busStopName) => {
                 // Response is a message ID string.
                 resolve(response);
                 console.log('Successfully sent message:', response);
-                firebase.messaging().goOffline();
+                // firebase.messaging().goOffline();
               })
               .catch((error) => {
                 console.log('Error sending message:', error);
-                firebase.messaging().goOffline();
+                // firebase.messaging().goOffline();
               });
         }
       }).catch((err) => reject(err));
