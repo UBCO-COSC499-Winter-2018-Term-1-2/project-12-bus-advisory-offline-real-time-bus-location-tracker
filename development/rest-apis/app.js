@@ -175,9 +175,9 @@ app.get('/buslocation/:busstop', (req, res) => {
         console.log(typeof longString);
 
 
-        ggtime.sendRequest("49.9399807,-119.395521", "49.9081381,-119.3917857", "UBCOA").then((trafficTime) => {
+        ggtime.getTime("49.9399807", "-119.395521", "49.9081381", "-119.3917857").then((trafficTime) => {
             console.log(trafficTime);
-            // res.send({ trafficTime });
+            res.send({ trafficTime });
         }, (err) => {
             console.log(err)
         });
