@@ -128,7 +128,7 @@ app.get('/triprequest', (req, res) => {
         { $gte :  new Date(new Date().getTime() - 1000 * 60 * 100) }
     }).then((tripreqs) => {
         const uniqueLocations = _.uniq(tripreqs, (unique) => unique.busStop);
-    
+
         res.send({uniqueLocations});
     }, (e) => {
         res.status(400).send(e);
@@ -137,12 +137,12 @@ app.get('/triprequest', (req, res) => {
 
 //returns individual bus stop info, if a passenger has planned a trip in last 100 mins
 app.get('/triprequest/:busstop', (req, res) => {
-    
+
     TripRequest.find({
         requestedTime : 
         { $gte :  new Date(new Date().getTime() - 1000 * 60 * 100) }
     }).then((tripreqs) => {
-        
+
         const passengerWaiting = tripreqs.filter((user) => {
             var requestedStop = null;
 
@@ -155,7 +155,7 @@ app.get('/triprequest/:busstop', (req, res) => {
             return user.busStop === requestedStop;
 
         });
-//        console.log('reqs', passengerWaiting);
+        //        console.log('reqs', passengerWaiting);
 
         res.send({passengerWaiting});
     }).catch((e) => {
@@ -241,21 +241,21 @@ app.patch('/buslocation/:id', (req, res) => {
 
 //Cancels a trip request
 app.delete('/triprequest/:id', (req, res) => {
-  var id = req.params.id;
+    var id = req.params.id;
 
-  if (!ObjectID.isValid(id)) {
-    return res.status(404).send('Please provide correct id');
-  }
-
-  TripRequest.findByIdAndRemove(id).then((trip) => {
-    if (!trip) {
-      return res.status(404).send('The trip request was already deleted or cannot be found');
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send('Please provide correct id');
     }
 
-    res.send({trip});
-  }).catch((e) => {
-    res.status(400).send(e);
-  });
+    TripRequest.findByIdAndRemove(id).then((trip) => {
+        if (!trip) {
+            return res.status(404).send('The trip request was already deleted or cannot be found');
+        }
+
+        res.send({trip});
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
 });
 
 
