@@ -3,7 +3,11 @@ const firebase = require('firebase-admin');
 
 const config = require('./config');
 const hm = require('./here_maps_wrapper');
-firebase.initializeApp(config.firebaseConfig);
+const serviceAccount = require("./serviceAccount.json");
+firebase.initializeApp({
+  credential: firebase.credential.cert(serviceAccount),
+  databaseURL: "https://bus-advisory.firebaseio.com"
+});
 
 
 var getTime = (buslat, buslng, stoplat, stoplng) => {
