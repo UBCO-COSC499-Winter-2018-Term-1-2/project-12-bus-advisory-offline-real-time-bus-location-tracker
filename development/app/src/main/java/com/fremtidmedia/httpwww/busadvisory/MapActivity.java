@@ -88,6 +88,7 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
+    private boolean tracking = false;
     Timer t = null;
     BusTask tt = null;
 
@@ -109,6 +110,29 @@ public class MapActivity extends Activity {
         centerView(busLocation);
 */
 
+    }
+
+
+    protected void checkPermissions() {
+        final List<String> missingPermissions = new ArrayList<String>();
+        // check all required dynamic permissions
+        for (final String permission : REQUIRED_SDK_PERMISSIONS) {
+            final int result = ContextCompat.checkSelfPermission(this, permission);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission);
+            }
+        }
+        if (!missingPermissions.isEmpty()) {
+            // request all missing permissions
+            final String[] permissions = missingPermissions
+                    .toArray(new String[missingPermissions.size()]);
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
+        } else {
+            final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
+            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
+            onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS,
+                    grantResults);
+        }
     }
 
 
@@ -198,29 +222,25 @@ public class MapActivity extends Activity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
-                         Log.d("HERE", "Permissions not accepted");
-                     } else {
-                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
-                     }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                for (int index = permissions.length - 1; index >= 0; --index) {
+                    if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
+                        // exit the app if one permission is not granted
+                        Toast.makeText(this, "Required permission '" + permissions[index]
+                                + "' not granted, exiting", Toast.LENGTH_LONG).show();
+                        finish();
+                        return;
+                    }
                 }
-                else{
-                    positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
-                }
-            }
+                initialize();
+                break;
         }
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void initialize (){
         setContentView(R.layout.activity_map);
         cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         network = new BasicNetwork(new HurlStack());
@@ -275,6 +295,8 @@ public class MapActivity extends Activity {
                         @Override
                         public void onPositionUpdated(PositioningManager.LocationMethod method, GeoPosition position, boolean isMapMatched) {
                             userLocation = position.getCoordinate();
+                            GeoCoordinate stop = closestStop(busStops);
+
                         }
                         @Override
                         public void onPositionFixChanged(PositioningManager.LocationMethod method, PositioningManager.LocationStatus status) { }
@@ -337,10 +359,11 @@ public class MapActivity extends Activity {
                             map.removeMapObjects(markerList);
                             markerList.clear();
                         }
-                     //   tt.cancel();
-                      //  t.cancel();
-                        TextView t3 = findViewById(R.id.BottomBAR);
-                        t3.setClickable(true);
+                        if (tracking == true){
+                            tt.cancel();
+                            t.cancel();
+                            tracking = false;
+                        }
 
                         fabGO.hide();
                         GoText.setVisibility(View.INVISIBLE);
@@ -393,6 +416,12 @@ public class MapActivity extends Activity {
 
                 newAL.setTitle("Remind me before the bus arrival \n (in minutes) at my stop");
                 newAL.setView(numberPicker);
+                if (tracking == false) {
+                    tracking = true;
+                    t = new Timer();
+                    tt = new BusTask();
+                    t.schedule(tt, 0, 5000);
+                }
 
                 newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -418,15 +447,25 @@ public class MapActivity extends Activity {
             public void onClick(View v) {
                 fabGO.show();
                 GoText.setVisibility(View.VISIBLE);
-                t = new Timer();
-                tt = new BusTask();
-                t.schedule(tt, 0, 5000);
-                BottomBar.setClickable(false);
+                if (tracking == false) {
+                    tracking = true;
+                    t = new Timer();
+                    tt = new BusTask();
+                    t.schedule(tt, 0, 5000);
+                }
                 centerView(busLocation);
             }
         });
 
 
+
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        checkPermissions();
 
         }
 
