@@ -62,6 +62,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.here.android.mpa.mapping.MapRoute;
+import com.here.android.mpa.routing.Route;
+import com.here.android.mpa.routing.RouteManager;
+import com.here.android.mpa.routing.RouteOptions;
+import com.here.android.mpa.routing.RoutePlan;
+import com.here.android.mpa.routing.RouteResult;
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
 import com.kontakt.sdk.android.common.KontaktSDK;
@@ -89,6 +95,8 @@ public class MapActivity extends Activity {
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
     private boolean tracking = false;
+    private MapRoute m_mapRoute;
+    private int arrTime;
     Timer t = null;
     BusTask tt = null;
 
@@ -362,6 +370,7 @@ public class MapActivity extends Activity {
                         if (tracking == true){
                             tt.cancel();
                             t.cancel();
+                            map.removeMapObject(m_mapRoute);
                             tracking = false;
                         }
 
@@ -477,6 +486,12 @@ public class MapActivity extends Activity {
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
             createBus(busLocation);
+            int time = arrivalEst();
+            if (time != 0 &&  time >= 60) {
+                Log.d("kyle", Integer.toString(time));
+            }else if(time < 60) {
+                Log.d("kyle", "<1 minute");
+            }
             Log.d("HERE", "Bus location updated");
         }
     }
@@ -522,6 +537,59 @@ public class MapActivity extends Activity {
         }
 
     }
+
+    public int arrivalEst () {
+
+        RouteManager rm = new RouteManager();
+        RoutePlan routePlan = new RoutePlan();
+        RouteOptions routeOptions = new RouteOptions();
+        routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
+        routeOptions.setHighwaysAllowed(false);
+        routeOptions.setRouteType(RouteOptions.Type.SHORTEST);
+        routeOptions.setRouteCount(1);
+        routePlan.setRouteOptions(routeOptions);
+
+
+        if (busLocation != null && closestStop(busStops) != null){
+            routePlan.addWaypoint(busLocation);
+            routePlan.addWaypoint(closestStop(busStops));
+
+
+
+
+            rm.calculateRoute(routePlan,
+                    new RouteManager.Listener() {
+                        @Override
+                        public void onProgress(int i) {
+
+                        }
+
+                        @Override
+                        public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> routeResults) {
+                            if (error == RouteManager.Error.NONE) {
+                                if (routeResults.get(0).getRoute() != null) {
+                                    m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
+                                    m_mapRoute.setManeuverNumberVisible(true);
+                                    arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
+                                    map.addMapObject(m_mapRoute);
+
+                                } else {
+                                    Log.e("Kyle", "Results are not valid");
+
+
+                                }
+                            } else {
+                                Log.e("Kyle", "Route calculation error");
+
+                            }
+                        }
+                    });
+        }else{
+            Log.d("Kyle", "null waypoints");
+        }
+        return arrTime;
+    }
+
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
