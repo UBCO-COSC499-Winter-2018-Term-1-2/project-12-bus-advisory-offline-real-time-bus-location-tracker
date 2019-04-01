@@ -500,7 +500,7 @@ public class MapActivity extends Activity {
     }
 
     public void centerView (GeoCoordinate location){
-        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.6);
+        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.5);
         map.setCenter(location, Map.Animation.NONE);
     }
 
