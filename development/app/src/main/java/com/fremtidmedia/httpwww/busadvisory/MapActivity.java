@@ -485,7 +485,6 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View v) {
                 fabGO.show();
-                GoText.setVisibility(View.VISIBLE);
                 if (tracking == false) {
                     tracking = true;
                     t = new Timer();
