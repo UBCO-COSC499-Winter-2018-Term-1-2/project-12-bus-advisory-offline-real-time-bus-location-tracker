@@ -70,19 +70,6 @@
         app:srcCompat="@android:drawable/ic_delete" />
 
 
-    <TextView
-        android:id="@+id/tracking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="83dp"
-        android:text="@string/tracking"
-        android:textColor="@android:color/holo_red_light"
-        android:textSize="36sp"
-        android:textStyle="bold" />
-
-
     <FrameLayout
         android:id="@+id/FL1"
         android:layout_width="wrap_content"
@@ -116,36 +103,6 @@
             app:useCompatPadding="false" />
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="bottom|right"
-        android:layout_marginTop="500dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="9dp">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/newGO"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@android:color/transparent"
-            app:backgroundTint="@android:color/holo_green_light" />
-
-        <TextView
-            android:id="@+id/GoText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:elevation="16dp"
-            android:text="@string/go"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-    </FrameLayout>
-
     <TextView
         android:id="@+id/textView97"
         android:layout_width="wrap_content"
@@ -170,6 +127,29 @@
         android:text="@string/minutes"
         android:textColor="@color/white"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/NEWtrack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="39dp"
+        android:text="TRACKING"
+        android:textColor="@android:color/holo_blue_light"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/startBell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="102dp"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/ic_popup_reminder" />
 
 
 </RelativeLayout>
