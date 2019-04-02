@@ -63,6 +63,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.here.android.mpa.mapping.MapRoute;
+import com.here.android.mpa.routing.Route;
+import com.here.android.mpa.routing.RouteManager;
+import com.here.android.mpa.routing.RouteOptions;
+import com.here.android.mpa.routing.RoutePlan;
+import com.here.android.mpa.routing.RouteResult;
 import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
 import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
 import com.kontakt.sdk.android.common.KontaktSDK;
@@ -89,6 +95,9 @@ public class MapActivity extends Activity {
     private GeoCoordinate busLocation;
     private PositioningManager positioningManager = null;
     private PositioningManager.OnPositionChangedListener positionListener;
+    private boolean tracking = false;
+    private MapRoute m_mapRoute;
+    private int arrTime;
     Timer t = null;
     BusTask tt = null;
 
@@ -110,6 +119,29 @@ public class MapActivity extends Activity {
         centerView(busLocation);
 */
 
+    }
+
+
+    protected void checkPermissions() {
+        final List<String> missingPermissions = new ArrayList<String>();
+        // check all required dynamic permissions
+        for (final String permission : REQUIRED_SDK_PERMISSIONS) {
+            final int result = ContextCompat.checkSelfPermission(this, permission);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission);
+            }
+        }
+        if (!missingPermissions.isEmpty()) {
+            // request all missing permissions
+            final String[] permissions = missingPermissions
+                    .toArray(new String[missingPermissions.size()]);
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
+        } else {
+            final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
+            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
+            onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS,
+                    grantResults);
+        }
     }
 
 
@@ -199,29 +231,25 @@ public class MapActivity extends Activity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
-                         Log.d("HERE", "Permissions not accepted");
-                     } else {
-                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
-                     }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                for (int index = permissions.length - 1; index >= 0; --index) {
+                    if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
+                        // exit the app if one permission is not granted
+                        Toast.makeText(this, "Required permission '" + permissions[index]
+                                + "' not granted, exiting", Toast.LENGTH_LONG).show();
+                        finish();
+                        return;
+                    }
                 }
-                else{
-                    positioningManager.start(PositioningManager.LocationMethod.GPS_NETWORK);
-                }
-            }
+                initialize();
+                break;
         }
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void initialize (){
         setContentView(R.layout.activity_map);
         cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
         network = new BasicNetwork(new HurlStack());
@@ -276,6 +304,8 @@ public class MapActivity extends Activity {
                         @Override
                         public void onPositionUpdated(PositioningManager.LocationMethod method, GeoPosition position, boolean isMapMatched) {
                             userLocation = position.getCoordinate();
+                            GeoCoordinate stop = closestStop(busStops);
+
                         }
                         @Override
                         public void onPositionFixChanged(PositioningManager.LocationMethod method, PositioningManager.LocationStatus status) { }
@@ -339,10 +369,12 @@ public class MapActivity extends Activity {
                             map.removeMapObjects(markerList);
                             markerList.clear();
                         }
-                     //   tt.cancel();
-                      //  t.cancel();
-                        TextView t3 = findViewById(R.id.BottomBAR);
-                        t3.setClickable(true);
+                        if (tracking == true){
+                            tt.cancel();
+                            t.cancel();
+                            map.removeMapObject(m_mapRoute);
+                            tracking = false;
+                        }
 
                         fabGO.show();
                         //GoText.setVisibility(View.INVISIBLE);
@@ -404,6 +436,12 @@ public class MapActivity extends Activity {
                 //newAL.setTitle("Remind me before the bus arrival \n (in minutes) at my stop");
                 newAL.setCustomTitle(AlTitle);
                 newAL.setView(numberPicker);
+                if (tracking == false) {
+                    tracking = true;
+                    t = new Timer();
+                    tt = new BusTask();
+                    t.schedule(tt, 0, 5000);
+                }
 
                 newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
@@ -447,16 +485,27 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View v) {
                 fabGO.show();
-                //GoText.setVisibility(View.VISIBLE);
-                t = new Timer();
-                tt = new BusTask();
-                t.schedule(tt, 0, 5000);
-                BottomBar.setClickable(false);
+                GoText.setVisibility(View.VISIBLE);
+                if (tracking == false) {
+                    tracking = true;
+                    t = new Timer();
+                    tt = new BusTask();
+                    t.schedule(tt, 0, 5000);
+                }
+
                 centerView(busLocation);
             }
         });
 
 
+
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        checkPermissions();
 
         }
 
@@ -468,6 +517,12 @@ public class MapActivity extends Activity {
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
             createBus(busLocation);
+            int time = arrivalEst();
+            if (time != 0 &&  time >= 60) {
+                Log.d("kyle", Integer.toString(time));
+            }else if(time < 60) {
+                Log.d("kyle", "<1 minute");
+            }
             Log.d("HERE", "Bus location updated");
         }
     }
@@ -491,7 +546,7 @@ public class MapActivity extends Activity {
     }
 
     public void centerView (GeoCoordinate location){
-        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.6);
+        map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) / 1.5);
         map.setCenter(location, Map.Animation.NONE);
     }
 
@@ -513,6 +568,59 @@ public class MapActivity extends Activity {
         }
 
     }
+
+    public int arrivalEst () {
+
+        RouteManager rm = new RouteManager();
+        RoutePlan routePlan = new RoutePlan();
+        RouteOptions routeOptions = new RouteOptions();
+        routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
+        routeOptions.setHighwaysAllowed(false);
+        routeOptions.setRouteType(RouteOptions.Type.SHORTEST);
+        routeOptions.setRouteCount(1);
+        routePlan.setRouteOptions(routeOptions);
+
+
+        if (busLocation != null && closestStop(busStops) != null){
+            routePlan.addWaypoint(busLocation);
+            routePlan.addWaypoint(closestStop(busStops));
+
+
+
+
+            rm.calculateRoute(routePlan,
+                    new RouteManager.Listener() {
+                        @Override
+                        public void onProgress(int i) {
+
+                        }
+
+                        @Override
+                        public void onCalculateRouteFinished(RouteManager.Error error, List<RouteResult> routeResults) {
+                            if (error == RouteManager.Error.NONE) {
+                                if (routeResults.get(0).getRoute() != null) {
+                                    m_mapRoute = new MapRoute(routeResults.get(0).getRoute());
+                                    m_mapRoute.setManeuverNumberVisible(true);
+                                    arrTime = m_mapRoute.getRoute().getTta(Route.TrafficPenaltyMode.DISABLED, Route.WHOLE_ROUTE).getDuration();
+                                    map.addMapObject(m_mapRoute);
+
+                                } else {
+                                    Log.e("Kyle", "Results are not valid");
+
+
+                                }
+                            } else {
+                                Log.e("Kyle", "Route calculation error");
+
+                            }
+                        }
+                    });
+        }else{
+            Log.d("Kyle", "null waypoints");
+        }
+        return arrTime;
+    }
+
 
     public GeoCoordinate closestStop(ArrayList<MapMarker> stops ) {
         double tempY1 = Math.abs(userLocation.getLatitude() - stops.get(0).getCoordinate().getLatitude());
