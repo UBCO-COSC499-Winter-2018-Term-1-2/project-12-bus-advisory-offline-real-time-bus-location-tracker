@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -302,8 +303,9 @@ public class MapActivity extends Activity {
 
 
         //TRACKING & its animation (might not use)
-        final TextView TRACKING = findViewById(R.id.tracking);
-        TRACKING.setVisibility(View.INVISIBLE);
+        //final TextView TRACKING = findViewById(R.id.tracking);
+        final TextView newTRACKING = findViewById(R.id.NEWtrack);
+        newTRACKING.setVisibility(View.INVISIBLE);
 
         final Animation anim = new AlphaAnimation(0.0f, 1.0f);
         anim.setDuration(200);
@@ -311,10 +313,10 @@ public class MapActivity extends Activity {
         anim.setRepeatMode(Animation.REVERSE);
         anim.setRepeatCount(Animation.INFINITE);
 
-        final TextView GoText = findViewById(R.id.GoText);
-        GoText.setVisibility(View.INVISIBLE);
-        final FloatingActionButton fabGO = findViewById(R.id.newGO);
-        fabGO.hide();
+        //final TextView GoText = findViewById(R.id.GoText);
+        //GoText.setVisibility(View.INVISIBLE);
+        final FloatingActionButton fabGO = findViewById(R.id.startBell);
+        //fabGO.hide();
 
 
         final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
@@ -342,8 +344,10 @@ public class MapActivity extends Activity {
                         TextView t3 = findViewById(R.id.BottomBAR);
                         t3.setClickable(true);
 
-                        fabGO.hide();
-                        GoText.setVisibility(View.INVISIBLE);
+                        fabGO.show();
+                        //GoText.setVisibility(View.INVISIBLE);
+                        newTRACKING.setVisibility(View.INVISIBLE);
+                        anim.cancel();
 
                         dialog.dismiss();
                     }
@@ -391,7 +395,14 @@ public class MapActivity extends Activity {
 
                 final AlertDialog.Builder newAL = new AlertDialog.Builder(MapActivity.this);
 
-                newAL.setTitle("Remind me before the bus arrival \n (in minutes) at my stop");
+                TextView AlTitle = new TextView(MapActivity.this);
+                AlTitle.setText("Remind me before the bus arrival \n (in minutes) at my stop");
+                AlTitle.setTextSize(17);
+                AlTitle.setTextColor(Color.BLACK);
+                AlTitle.setTypeface(null, Typeface.BOLD);
+
+                //newAL.setTitle("Remind me before the bus arrival \n (in minutes) at my stop");
+                newAL.setCustomTitle(AlTitle);
                 newAL.setView(numberPicker);
 
                 newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
@@ -400,6 +411,25 @@ public class MapActivity extends Activity {
 
                         fabEXIT.show();
                         fabGO.hide();
+                        newTRACKING.setVisibility(View.VISIBLE);
+                        anim.start();
+
+                        // THANK YOU ALERT
+                        final AlertDialog.Builder TY = new AlertDialog.Builder(MapActivity.this);
+                        TY.setTitle("Reminder");
+                        TY.setMessage("Thank you for setting a reminder. We will notifiy you.");
+
+                        TY.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //here you can add functions
+                                dialog.dismiss();
+
+                            } });
+
+                        AlertDialog TYdone = TY.create();
+                        TYdone.show();
+
 
                     }
                 });
@@ -417,7 +447,7 @@ public class MapActivity extends Activity {
             @Override
             public void onClick(View v) {
                 fabGO.show();
-                GoText.setVisibility(View.VISIBLE);
+                //GoText.setVisibility(View.VISIBLE);
                 t = new Timer();
                 tt = new BusTask();
                 t.schedule(tt, 0, 5000);
