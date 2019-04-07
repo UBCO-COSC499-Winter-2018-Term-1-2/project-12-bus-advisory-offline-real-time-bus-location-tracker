@@ -100,6 +100,8 @@ public class MapActivity extends Activity {
     private int arrTime;
     Timer t = null;
     BusTask tt = null;
+    protected FloatingActionButton fabEXIT;
+    protected TextView BottomBar;
 
 
     private ArrayList<MapRoute> mRoute = new ArrayList<>();
@@ -304,7 +306,14 @@ public class MapActivity extends Activity {
                         @Override
                         public void onPositionUpdated(PositioningManager.LocationMethod method, GeoPosition position, boolean isMapMatched) {
                             userLocation = position.getCoordinate();
+                            BottomBar = findViewById(R.id.BottomBAR);
                             GeoCoordinate stop = closestStop(busStops);
+                            if (stop.getLatitude() == 49.939073 && stop.getLongitude() == -119.394334){
+                                BottomBar.setText("UBCO Exchange");
+                            }
+                            else if (stop.getLatitude() == 49.934023 && stop.getLongitude() == -119.401581){
+                                BottomBar.setText("Academy Hill");
+                            }
 
                         }
                         @Override
@@ -349,7 +358,7 @@ public class MapActivity extends Activity {
         //fabGO.hide();
 
 
-        final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
+        fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
         fabEXIT.hide();
         fabEXIT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -482,7 +491,7 @@ public class MapActivity extends Activity {
         });
 
         TextView t0 = findViewById(R.id.textView97);
-        final TextView BottomBar = findViewById(R.id.BottomBAR);
+        BottomBar = findViewById(R.id.BottomBAR);
 
         BottomBar.setOnClickListener(new View.OnClickListener() {
             @Override
