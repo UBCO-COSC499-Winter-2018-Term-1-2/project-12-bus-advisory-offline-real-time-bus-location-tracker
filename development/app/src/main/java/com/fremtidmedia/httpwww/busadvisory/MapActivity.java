@@ -312,7 +312,7 @@ public class MapActivity extends Activity {
                                 BottomBar.setText("UBCO Exchange");
                             }
                             else if (stop.getLatitude() == 49.934023 && stop.getLongitude() == -119.401581){
-                                BottomBar.setText("Academy Hill");
+                                BottomBar.setText("Academy Hill Stop");
                             }
 
                         }
