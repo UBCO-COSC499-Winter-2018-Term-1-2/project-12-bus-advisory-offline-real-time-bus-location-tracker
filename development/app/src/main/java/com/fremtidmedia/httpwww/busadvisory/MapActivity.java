@@ -100,6 +100,10 @@ public class MapActivity extends Activity {
     private int arrTime;
     Timer t = null;
     BusTask tt = null;
+    protected FloatingActionButton fabEXIT;
+    protected TextView BottomBar;
+    private TextView numText;
+    private TextView mins;
 
 
     private ArrayList<MapRoute> mRoute = new ArrayList<>();
@@ -109,17 +113,6 @@ public class MapActivity extends Activity {
     Cache cache;
     Network network;
     String id;
-
-    public void testBus(View views){
-      /*  t = new Timer();
-        tt = new BusTask();
-        t.schedule(tt, 0, 5000);
-        TextView t3 = findViewById(R.id.textView3);
-        t3.setClickable(false);
-        centerView(busLocation);
-*/
-
-    }
 
 
     protected void checkPermissions() {
@@ -229,6 +222,47 @@ public class MapActivity extends Activity {
         }
 
 
+    public void busGetRequest(String url){
+        numText = findViewById(R.id.textView97);
+        mins = findViewById(R.id.mins);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            arrTime = response.getInt("trafficTime");
+                            Log.d("Time", Integer.toString(arrTime));
+                            if (arrTime <= 1) {
+                                mins.setText("minute");
+                            }
+                            if (arrTime < 1) {
+                                numText.setText("<1");
+                            }
+                            if (arrTime >= 1) {
+                                numText.setText(Integer.toString(arrTime));
+                            }
+                            if (arrTime > 1) {
+                                mins.setText("minutes");
+                            }
+                        }
+                        catch (Exception e){
+
+                            Log.e("HERE", "Caught: " + e.getMessage());
+
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+
+                    }
+                });
+        queue.add(jsonObjectRequest);
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
@@ -256,6 +290,7 @@ public class MapActivity extends Activity {
         queue = Volley.newRequestQueue(this);
         queue.start();
         makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+
         id = FirebaseInstanceId.getInstance().getInstanceId().toString();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MapActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
@@ -277,26 +312,16 @@ public class MapActivity extends Activity {
                     map.setCenter(userLocation, Map.Animation.NONE);
                     map.setZoomLevel((map.getMaxZoomLevel() + map.getMinZoomLevel()) /1.75);
 
-
-
                     try {
-                        Image image = new Image();
-                        image.setImageResource(R.drawable.ic_trip_origin);
-                        MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073 , -119.394334, 0.0), image);
-                        map.addMapObject(stop1);
-                        MapMarker stop2 = new MapMarker(new GeoCoordinate(49.934023, -119.401581, 0.0), image);
-                        map.addMapObject(stop2);
+
                         Image userImage = new Image();
                         userImage.setImageResource(R.drawable.ic_action_person_pin);
                         map.getPositionIndicator().setMarker(userImage);
-
-                        busStops.add(stop1);
-                        busStops.add(stop2);
+                        createStops();
 
                     } catch (Exception e) {
                         Log.e("HERE", e.getMessage());
                     }
-
 
 
                     positioningManager = PositioningManager.getInstance();
@@ -304,7 +329,16 @@ public class MapActivity extends Activity {
                         @Override
                         public void onPositionUpdated(PositioningManager.LocationMethod method, GeoPosition position, boolean isMapMatched) {
                             userLocation = position.getCoordinate();
+                            BottomBar = findViewById(R.id.BottomBAR);
                             GeoCoordinate stop = closestStop(busStops);
+                            if (stop.getLatitude() == 49.939073 && stop.getLongitude() == -119.394334){
+                                BottomBar.setText("UBCO Exchange");
+                                busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-a");
+                            }
+                            else if (stop.getLatitude() == 49.934023 && stop.getLongitude() == -119.401581){
+                                BottomBar.setText("Academy Hill Stop");
+                                busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-b");
+                            }
 
                         }
                         @Override
@@ -329,9 +363,6 @@ public class MapActivity extends Activity {
 
 
 
-
-
-
         //TRACKING & its animation (might not use)
         //final TextView TRACKING = findViewById(R.id.tracking);
         final TextView newTRACKING = findViewById(R.id.NEWtrack);
@@ -349,7 +380,7 @@ public class MapActivity extends Activity {
         //fabGO.hide();
 
 
-        final FloatingActionButton fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
+        fabEXIT = findViewById(R.id.floatingActionButtonEXIT);
         fabEXIT.hide();
         fabEXIT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -482,7 +513,7 @@ public class MapActivity extends Activity {
         });
 
         TextView t0 = findViewById(R.id.textView97);
-        final TextView BottomBar = findViewById(R.id.BottomBAR);
+        BottomBar = findViewById(R.id.BottomBAR);
 
         BottomBar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -494,7 +525,6 @@ public class MapActivity extends Activity {
                     tt = new BusTask();
                     t.schedule(tt, 0, 5000);
                 }
-
                 centerView(busLocation);
             }
         });
@@ -518,26 +548,33 @@ public class MapActivity extends Activity {
         @Override
          public void run() {
             makeGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/buslocation");
+            GeoCoordinate stop = closestStop(busStops);
+            if (stop.getLatitude() == 49.939073 && stop.getLongitude() == -119.394334){
+                busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-a");
+            }
+            else if (stop.getLatitude() == 49.934023 && stop.getLongitude() == -119.401581){
+                busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-b");
+            }
+
             createBus(busLocation);
             Log.d("HERE", "Bus location updated");
         }
     }
 
 
-    public void createStops(GeoCoordinate location) {
-        Image marker_img = new Image();
+    public void createStops() {
         try {
-            marker_img.setImageResource(R.drawable.bus_stop);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Image image = new Image();
+            image.setImageResource(R.drawable.ic_trip_origin);
+            MapMarker stop1 = new MapMarker(new GeoCoordinate(49.939073, -119.394334, 0.0), image);
+            map.addMapObject(stop1);
+            MapMarker stop2 = new MapMarker(new GeoCoordinate(49.934023, -119.401581, 0.0), image);
+            map.addMapObject(stop2);
+            busStops.add(stop1);
+            busStops.add(stop2);
+        } catch (Exception e) {
+            Log.e("HERE", e.getMessage());
         }
-        map = mapFragment.getMap();
-        MapMarker stop1 = new MapMarker(location, marker_img);
-        busStops.add(stop1);
-        map.addMapObject(stop1);
-        MapMarker stop2 = new MapMarker(location, marker_img);
-        busStops.add(stop2);
-        map.addMapObject(stop2);
 
     }
 
