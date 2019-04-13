@@ -1,0 +1,14 @@
+Log for March 2019
+
+.5 hrs- Edit fake bus data for easier testing
+		- Change data to follow John Hindle up to Academy
+		- Create new JSON file
+		- Have fake bus read from new JSON file
+1 hr  - Design usability testing survey
+3 hrs - Connect fake bus to back-end server
+2 hrs - Prepare for test jam event
+		- Team meeting
+		- Review of survey questions
+		- Preparing app demo on device
+		
+Total: 6.5 hrs
