@@ -6,6 +6,7 @@ const _ = require('underscore');
 const {ObjectID} = require('mongodb');
 
 var {getTime} = require('./here_maps/here_maps_trigger');
+var {sendRequest} = require('./here_maps/here_maps_trigger');
 //var moment = require('moment');
 
 var {mongoose} = require('./db/mongoose');
@@ -198,12 +199,11 @@ app.patch('/buslocation/:id', (req, res) => {
 
     if (body.location.coordinates) {
         body.timestamp = new Date().getTime();
-
+        
         BusLocation.findByIdAndUpdate(id, {$set: body}, {new: true}).then((newLocation) => {
             if (!newLocation) {
                 return res.status(404).send();
             }
-
             res.send({newLocation});
         }).catch((e) => {
             res.status(400).send(e);
