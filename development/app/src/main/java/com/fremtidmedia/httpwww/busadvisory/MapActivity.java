@@ -333,11 +333,15 @@ public class MapActivity extends Activity {
                             GeoCoordinate stop = closestStop(busStops);
                             if (stop.getLatitude() == 49.939073 && stop.getLongitude() == -119.394334){
                                 BottomBar.setText("UBCO Exchange");
-                                busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-a");
+                                if (tracking == false) {
+                                    busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-a");
+                                }
                             }
                             else if (stop.getLatitude() == 49.934023 && stop.getLongitude() == -119.401581){
                                 BottomBar.setText("Academy Hill Stop");
-                                busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-b");
+                                if (tracking == false) {
+                                    busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-b");
+                                }
                             }
 
                         }
@@ -355,6 +359,7 @@ public class MapActivity extends Activity {
                     }
 
                     map.getPositionIndicator().setVisible(true);
+
                 } else {
                     System.out.println("ERROR: Cannot initialize Map Fragment");
                 }
@@ -474,7 +479,7 @@ public class MapActivity extends Activity {
                     tracking = true;
                     t = new Timer();
                     tt = new BusTask();
-                    t.schedule(tt, 0, 5000);
+                    t.schedule(tt, 0, 7000);
                 }
 
                 newAL.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
@@ -518,12 +523,13 @@ public class MapActivity extends Activity {
         BottomBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fabGO.show();
+
                 if (tracking == false) {
+                    fabGO.show();
                     tracking = true;
                     t = new Timer();
                     tt = new BusTask();
-                    t.schedule(tt, 0, 5000);
+                    t.schedule(tt, 0, 7000);
                 }
                 centerView(busLocation);
             }
