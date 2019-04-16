@@ -1,0 +1,12 @@
+(2) Design the usability testing interview and team meeting [3]
+(3) team + client meeting [3]
+(6) Make draft presentation slides and practice presentation [6]
+(5) Meeting with engineering team [5]
+(4) Finish ETA api [8]
+(4) Documentation [7]
+(3) fixing local environment [3]
+(2) Backend meeting [2]
+(6) Presentation slides and demo practice [8]
+(1) Client meeting [1]
+
+Total : 46 hours

@@ -1,0 +1,16 @@
+Log for April 2019
+
+5 hrs - Create slides for mock final presentation
+.5 hrs- Review API test data
+		- Gathering metrics of all tests
+		- Validating long-term results of API's
+1 hr  - Review user test data
+		- Team meeting to prepare for final demo
+		- Gather metrics for final presentation
+1 hr  - Team meeting to review mock presentation
+
+3 hrs - Finalize slides for final presentation
+3 hrs - Team meeting to prepare for final presentation
+1 hr  - Team meeting to show demo to client
+
+Total: 14.5 hrs

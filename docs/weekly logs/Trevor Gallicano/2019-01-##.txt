@@ -1,0 +1,10 @@
+Log for January 2019
+
+2 hrs - Preparing for MVP presentation
+3 hrs - Create fake bus data
+		- Create JSON file for fake bus location coordinates
+		- Required for testing due to no viable way to aquire real data
+3 hrs - Create Node server for bus data
+5 hrs - Team meetings
+
+Total: 13 hrs

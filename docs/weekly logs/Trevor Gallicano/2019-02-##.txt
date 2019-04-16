@@ -1,0 +1,16 @@
+Log for February 2019
+
+.5 hrs- Connect Jenkins Job to GitHub repository
+4 hrs - Put fake bus into a Node application
+		- Application hosted on AWS EC2 Instance
+		- Application to be started manually to prevent unneeded api calls
+		- NB: The Node server from previous log was unneeded. The code was reused for this task.
+4 hrs - Write tests for API's
+		- Create tests
+		- Schedule automated tests
+		- Ensure automated report is created
+		- Initial review of API test results
+4 hrs - Set up Jenkins to build using Gradle
+3 hrs - Team meetings
+
+Total - 15.5 hrs
