@@ -3,6 +3,7 @@ package com.fremtidmedia.httpwww.busadvisory;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -37,6 +38,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -76,6 +78,7 @@ import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
@@ -104,7 +107,7 @@ public class MapActivity extends Activity {
     protected TextView BottomBar;
     private TextView numText;
     private TextView mins;
-
+    private SharedPreferences sp = getSharedPreferences("bus advisory app",  Context.MODE_PRIVATE);
 
     private ArrayList<MapRoute> mRoute = new ArrayList<>();
     private ArrayList<MapMarker> busStops = new ArrayList<>();
@@ -171,10 +174,26 @@ public class MapActivity extends Activity {
         super.onDestroy();
     }
 
-    public void makePostRequest(String url) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+    public void makePostRequest(String url){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("userId", id);
+            jsonObject.put("tripId", tripId);
+            jsonObject.put("busId", busId);
+            JSONArray coordinates = new JSONArray();
+            coordinates.put(stoplng);
+            coordinates.put(stoplat);
+            JSONObject stopLocation = new JSONObject();
+            stopLocation.put("type", "Point");
+            stopLocation.put("coordinates", coordinates);
+            stopLocation.put("reminderTime", reminderTime);
+            jsonObject.put("stopLocation", stopLocation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,  new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONObject response) {
 
             }
         }, new Response.ErrorListener() {
@@ -182,8 +201,9 @@ public class MapActivity extends Activity {
             public void onErrorResponse(VolleyError error) {
 
             }
-        });
-        queue.add(stringRequest);
+        }
+        );
+        queue.add(jsonObjectRequest);
     }
 
 
