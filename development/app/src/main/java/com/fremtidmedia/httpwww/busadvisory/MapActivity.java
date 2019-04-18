@@ -22,15 +22,10 @@ import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.widget.Toast;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -96,12 +91,15 @@ public class MapActivity extends Activity {
     private TextView numText;
     private TextView mins;
     private SharedPreferences sp;
+    private String _id;
+    private String busName;
 
 //    private ArrayList<MapRoute> mRoute = new ArrayList<>();
     private ArrayList<MapMarker> busStops = new ArrayList<>();
     private ArrayList<MapObject> markerList = new ArrayList<>();
     private RequestQueue queue;
     private String id;
+    private String triggerURL;
 
 
     private void checkPermissions() {
@@ -193,6 +191,67 @@ public class MapActivity extends Activity {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+            }
+        }
+        );
+        queue.add(jsonObjectRequest);
+    }
+    public void postTriggerRequest(String url){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("userId", id);
+            jsonObject.put("tripId", tripId);
+            jsonObject.put("beaconTrigger", busId);
+            jsonObject.put("busId", busId);
+            JSONArray coordinates = new JSONArray();
+            coordinates.put(userLocation.getLongitude());
+            coordinates.put(userLocation.getLatitude());
+            JSONObject stopLocation = new JSONObject();
+            stopLocation.put("type", "Point");
+            stopLocation.put("coordinates", coordinates);
+            jsonObject.put("startLocation", stopLocation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,  new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    _id = (String) response.get("_id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }
+        );
+        queue.add(jsonObjectRequest);
+    }
+    public void patchTriggerRequest(String url){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray coordinates = new JSONArray();
+            coordinates.put(userLocation.getLongitude());
+            coordinates.put(userLocation.getLatitude());
+            JSONObject stopLocation = new JSONObject();
+            stopLocation.put("type", "Point");
+            stopLocation.put("coordinates", coordinates);
+            stopLocation.put("reminderTime", reminderTime);
+            jsonObject.put("endlocation", stopLocation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PATCH, url + _id, null,  new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
             }
         }
         );
@@ -349,12 +408,14 @@ public class MapActivity extends Activity {
                             if ((stoplat = stop.getLatitude()) == 49.939073 && (stoplng = stop.getLongitude()) == -119.394334){
                                 BottomBar.setText("UBCO Exchange");
                                 if (!tracking) {
+                                    busName = "ubcoa";
                                     busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-a");
                                 }
                             }
                             else if (stop.getLatitude() == 49.934023 && stop.getLongitude() == -119.401581){
                                 BottomBar.setText("Academy Hill Stop");
                                 if (!tracking) {
+                                    busName = "ubcob";
                                     busGetRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/bustime/ubco-b");
                                 }
                             }
@@ -426,6 +487,7 @@ public class MapActivity extends Activity {
                         if (tracking){
                             tt.cancel();
                             t.cancel();
+                            topicUnSubscribe("bus" + busName + "time" + reminderTime);
 
                             tracking = false;
                         }
@@ -515,7 +577,8 @@ public class MapActivity extends Activity {
                             public void onClick(DialogInterface dialog, int which) {
                                 reminderTime = which;
                                 makePostRequest("https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/triprequest");
-                                //TODO
+                                topicSubscribe("bus" + busName + "time" + reminderTime);
+                                // TODO
                                 dialog.dismiss();
 
                             } });
@@ -559,6 +622,7 @@ public class MapActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        triggerURL = "https://oyojktxw02.execute-api.us-east-1.amazonaws.com/dev/triggers";
         checkPermissions();
 
         }
@@ -657,13 +721,24 @@ public class MapActivity extends Activity {
                     }
                 });
     }
+    private void topicUnSubscribe(String topic){
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(MapActivity.this, "Couldn't connect to server", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
     private void kontaktDetect() {
         IBeaconListener iBeaconListener = new IBeaconListener() {
             @Override
             public void onIBeaconDiscovered(IBeaconDevice ibeacon, IBeaconRegion region) {
                 Log.e("beacon", ibeacon.toString());
-                if (ibeacon.getAddress().equals(busId)) {
-//                    postTriggerRequest(url);
+                if (busId != null && ibeacon.getAddress().equals(busId)) {
+                    postTriggerRequest(triggerURL);
 
                 }
 
@@ -676,8 +751,8 @@ public class MapActivity extends Activity {
 
             @Override
             public void onIBeaconLost(IBeaconDevice iBeacon, IBeaconRegion region) {
-                if (iBeacon.getAddress().equals(busId)) {
-//                    patchTriggerRequest(url);
+                if (busId != null && _id != null && iBeacon.getAddress().equals(busId)) {
+                    patchTriggerRequest(triggerURL);
 
                 }
             }

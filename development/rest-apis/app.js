@@ -193,6 +193,18 @@ app.patch('/buslocation/:id', (req, res) => {
     var body = _.pick(req.body, 'location');
     //    console.log('bd', body.location.coordinates);
     // TODO: add trigger Here
+    var busLong = buslocation[0].location.coordinates[0];
+    var busLat = buslocation[0].location.coordinates[1];
+
+    var stopLong = "-119.394334";
+    var stopLat = "49.939073";
+
+    sendRequest(busLat, busLong, stopLat, stopLong, "ubcoa");
+
+    var stopLong = "-119.401581";
+    var stopLat = "49.934023";
+    sendRequest(busLat, busLong, stopLat, stopLong, "ubcob")
+
     if (!ObjectID.isValid(id)) {
         return res.status(404).send('Please provide correct id');
     }
