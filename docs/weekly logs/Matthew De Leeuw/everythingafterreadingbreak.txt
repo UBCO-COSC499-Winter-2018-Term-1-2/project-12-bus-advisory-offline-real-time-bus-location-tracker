@@ -1,0 +1,8 @@
+24 hours meetings with group members to help them work on their parts
+9 hours code cleaning
+3 hours enable push notifications
+2 hours fix local bug
+4 hours api trigger for here maps
+4 hours api trigger for fcm to send messages
+1 hour call post and delete tripRequest
+0.5 hour remake the config files
