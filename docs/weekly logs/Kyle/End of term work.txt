@@ -1,0 +1,13 @@
+text view center - 1
+track bus - 1 
+functionality to ui changes - 2
+permission requests - 1
+dynamic bus stop text - 2
+estimated arrival time of bus - 8
+dynamic eta - 2 
+meetings - 4
+Final presentation - 8
+Documentation - 8
+Client Comms - 5
+
+42 total

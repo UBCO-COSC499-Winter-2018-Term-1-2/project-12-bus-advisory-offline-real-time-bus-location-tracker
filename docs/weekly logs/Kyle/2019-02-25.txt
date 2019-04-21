@@ -1,0 +1,16 @@
+reading week:
+
+code to here api - 4
+enable disable tracvking - 2
+fake bus stops - 2
+find closest bus - 2
+client coms - 1.5
+fix stop locations - 0.5
+team meetings - 2.5
+change user indicator - 0.5
+bus added to map - 2
+tracking added to list view - 3
+center on user button - 2 
+bus location - 2
+
+total 24

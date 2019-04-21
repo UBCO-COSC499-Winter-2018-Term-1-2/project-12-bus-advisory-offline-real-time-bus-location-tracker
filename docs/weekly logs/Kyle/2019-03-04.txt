@@ -1,0 +1,6 @@
+asynch bus api calls - 5
+closest bus - .5
+change bus stop - .5
+testing closest stop - 1
+
+total 7

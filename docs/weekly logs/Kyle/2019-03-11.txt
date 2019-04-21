@@ -1,0 +1,7 @@
+client com - 1
+team meeting - 1
+send location data to matt - 2
+change assets to scaleable versions - 2 
+move center button - 0.5
+
+6.5

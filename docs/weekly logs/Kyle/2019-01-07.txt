@@ -1,0 +1,11 @@
+Break logs
+map markers - 1
+user location - 5
+track location on map - 3
+focus map - 1
+investigate tracking -2 
+investigate locaton services - 3
+client coms - 2
+group meetings and documentationn - 5
+
+Tot - 22
