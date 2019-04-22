@@ -1,39 +1,37 @@
 {
   "project_info": {
-    "project_number": "691626187941",
-    "firebase_url": "https://bus-advisory.firebaseio.com",
-    "project_id": "bus-advisory",
-    "storage_bucket": "bus-advisory.appspot.com"
+    "project_number": "51901306189",
+    "firebase_url": "https://bus-advisory-a28d1.firebaseio.com",
+    "project_id": "bus-advisory-a28d1",
+    "storage_bucket": "bus-advisory-a28d1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:691626187941:android:6e653ae9422cd140",
+        "mobilesdk_app_id": "1:51901306189:android:6e653ae9422cd140",
         "android_client_info": {
           "package_name": "com.fremtidmedia.httpwww.busadvisory"
         }
       },
       "oauth_client": [
         {
-          "client_id": "691626187941-d38qs2i1ei067ne8klgptkj3ar16f3tk.apps.googleusercontent.com",
+          "client_id": "51901306189-6979k2pfmubu3fd9lrrn6klpdpkjckso.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCcXJwglxK4-bXPzCj2x_n7PzLqLIhG1HU"
+          "current_key": "AIzaSyDgmPv611UgvAelN32mGdN_tVsYsj3GeoE"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "51901306189-6979k2pfmubu3fd9lrrn6klpdpkjckso.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -6,7 +6,7 @@ const hm = require('./here_maps_wrapper');
 const serviceAccount = require("./serviceAccount.json");
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
-  databaseURL: "https://bus-advisory.firebaseio.com"
+  databaseURL: "https://bus-advisory-a28d1.firebaseio.com"
 });
 
 
